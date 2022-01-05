@@ -1,0 +1,34 @@
+// To regenerate api.pb.go run `codegen -p`.
+syntax = "proto3";
+
+package api;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "ctrt/v0/api.proto";
+
+option go_package = "alt-os/api/api/v0";
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.stringer_all) =  true;
+option (gogoproto.populate_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+
+// ApiMessage specifies a general message that might be for any OS API.
+message ApiMessage {
+	// The kind of message this is.
+	string kind = 1;
+	// The version of the kind's api.
+	string version = 2;
+	// The message definition to send to the kind's api.
+	google.protobuf.Any def = 3;
+}
+
+// ApiMessageList wraps a sequence of api messages.
+message ApiMessageList {
+	// The messages.
+	repeated ApiMessage messages = 1;
+}

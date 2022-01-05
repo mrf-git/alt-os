@@ -1,0 +1,11 @@
+{
+    "gopls": {
+        "build.experimentalWorkspaceModule": true
+    },
+    "protoc": {
+        "compile_on_save": false,
+        "options": [
+            "--proto_path=${env.GOPATH}/src/github.com/gogo/**"
+        ]
+    }
+}

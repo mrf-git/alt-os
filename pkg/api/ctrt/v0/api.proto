@@ -1,0 +1,115 @@
+// To regenerate api.pb.go run `codegen -p`.
+syntax = "proto3";
+
+package ctrt;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "alt-os/api/ctrt/v0";
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.stringer_all) =  true;
+option (gogoproto.populate_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+
+// ContainerRuntime is the service advertised by ctrt.
+// After a successful call to Host the runtime can begin
+// operating containers using the other service methods.
+service ContainerRuntime {
+	// Host enables hosting of container runtimes according to the given configuration.
+	rpc Host(HostConfiguration) returns (google.protobuf.Empty) {}
+	// Exit stops all containers and exits hosting.
+	rpc Exit(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+	// List gets all containers the runtime knows about.
+	rpc List(google.protobuf.Empty) returns (ListResponse) {}
+	// QueryState gets the state of a specified container.
+	rpc QueryState(QueryStateRequest) returns (google.protobuf.Empty) {}
+	// Create creates a new container and begins preparing it to be started.
+	rpc Create(CreateRequest) returns (google.protobuf.Empty) {}
+	// Start begins running a created container.
+	rpc Start(StartRequest) returns (google.protobuf.Empty) {}
+	// Kill stops a running container.
+	rpc Kill(KillRequest) returns (google.protobuf.Empty) {}
+	// Delete removes a stopped container from the runtime.
+	rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {}
+}
+
+// HostConfiguration specifies the parameters to a ContainerRuntime.Host call.
+message HostConfiguration {
+	// The maximum number of containers to allow.
+	int64 max_containers = 1;
+	// The maximum amount of memory to allow a single container to consume.
+	int64 max_container_memory = 2;
+}
+
+// ListResponse returns the result of a ContainerRuntime.List call.
+message ListResponse {
+	// The unique id of the container.
+	repeated string id = 1;
+}
+
+// QueryStateRequest specifies the parameters to a ContainerRuntime.QueryState call.
+message QueryStateRequest {
+	// The unique id of the container.
+	string id = 1;
+}
+
+// QueryStateResponse returns the result of a ContainerRuntime.QueryState call.
+message QueryStateResponse {
+	// The unique id of the container.
+	string oci_version = 1;
+	// The unique id of the container.
+	string id = 2;
+	// The runtime status of the container.
+	ContainerStatus status = 3;
+	// The ID of the container process as seen by the host.
+	int32 pid = 4;
+	// The container's bundle directory.
+	string bundle = 5;
+	// The annotations associated with the container.
+	map<string, string> annotations = 6;
+}
+
+// CreateRequest specifies the parameters to a ContainerRuntime.Create call.
+message CreateRequest {
+	// The unique id of the container.
+	string id = 1;
+	// The container's bundle directory.
+	string bundle = 2;
+}
+
+// StartRequest specifies the parameters to a ContainerRuntime.Start call.
+message StartRequest {
+	// The unique id of the container.
+	string id = 1;
+}
+
+// KillRequest specifies the parameters to a ContainerRuntime.Kill call.
+message KillRequest {
+	// The unique id of the container.
+	string id = 1;
+	// The kill signal to send.
+	int32 signal = 2;
+}
+
+// DeleteRequest specifies the parameters to a ContainerRuntime.Delete call.
+message DeleteRequest {
+	// The unique id of the container.
+	string container_id = 1;
+}
+
+// ContainerStatus represents the runtime state of a container.
+enum ContainerStatus {
+	// The container is being created.
+	CREATING = 0;
+	// The create operation has finished and the container has neither exited nor executed the user-specified program.
+	CREATED = 1;
+	// The container process has executed the user-specified program but has not exited.
+	RUNNING = 2;
+	// The container process has exited.
+	STOPPED = 3;
+}

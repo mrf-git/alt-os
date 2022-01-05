@@ -1,0 +1,13 @@
+.DS_Store
+
+*.o
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.dump
+*.efi
+*.code
+
+workspace/

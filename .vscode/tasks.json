@@ -1,0 +1,62 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Tool: codegen",
+            "type": "process",
+            "args": [
+                "build",
+                "-o",
+                "${workspaceFolder}/workspace/tools/codegen",
+                "./tools/codegen"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "go"
+        },
+        {
+            "label": "Build Exe: ctrt",
+            "type": "process",
+            "args": [
+                "build",
+                "-o",
+                "${workspaceFolder}/workspace/exe/ctrt",
+                "alt-os/exe/ctrt"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "go"
+        },
+        {
+            "label": "Generate Api Protos",
+            "type": "process",
+            "args": [
+                "-p"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/tools/codegen",
+            "problemMatcher": []
+        },
+        {
+            "label": "ContainerRuntime",
+            "type": "process",
+            "args": [
+                "-i",
+                "def/ctrt/conf.yml"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/exe/ctrt",
+            "problemMatcher": []
+        }
+    ]
+}
