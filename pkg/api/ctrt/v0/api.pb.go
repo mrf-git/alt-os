@@ -68,28 +68,34 @@ func (ContainerStatus) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_9444ff23689c22f9, []int{0}
 }
 
-// HostConfiguration specifies the parameters to a ContainerRuntime.Host call.
-type HostConfiguration struct {
+// ApiServeRequest specifies the parameters to a ContainerRuntime.Serve call.
+type ApiServeRequest struct {
+	// The hostname to listen on.
+	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// The port to listen on.
+	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	// The number of seconds to timeout the request.
+	Timeout int32 `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
 	// The maximum number of containers to allow.
-	MaxContainers int64 `protobuf:"varint,1,opt,name=max_containers,json=maxContainers,proto3" json:"max_containers,omitempty"`
+	MaxContainers int64 `protobuf:"varint,4,opt,name=max_containers,json=maxContainers,proto3" json:"max_containers,omitempty"`
 	// The maximum amount of memory to allow a single container to consume.
-	MaxContainerMemory   int64    `protobuf:"varint,2,opt,name=max_container_memory,json=maxContainerMemory,proto3" json:"max_container_memory,omitempty"`
+	MaxContainerMemory   int64    `protobuf:"varint,5,opt,name=max_container_memory,json=maxContainerMemory,proto3" json:"max_container_memory,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *HostConfiguration) Reset()      { *m = HostConfiguration{} }
-func (*HostConfiguration) ProtoMessage() {}
-func (*HostConfiguration) Descriptor() ([]byte, []int) {
+func (m *ApiServeRequest) Reset()      { *m = ApiServeRequest{} }
+func (*ApiServeRequest) ProtoMessage() {}
+func (*ApiServeRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9444ff23689c22f9, []int{0}
 }
-func (m *HostConfiguration) XXX_Unmarshal(b []byte) error {
+func (m *ApiServeRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *HostConfiguration) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ApiServeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_HostConfiguration.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ApiServeRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -99,36 +105,195 @@ func (m *HostConfiguration) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *HostConfiguration) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HostConfiguration.Merge(m, src)
+func (m *ApiServeRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ApiServeRequest.Merge(m, src)
 }
-func (m *HostConfiguration) XXX_Size() int {
+func (m *ApiServeRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *HostConfiguration) XXX_DiscardUnknown() {
-	xxx_messageInfo_HostConfiguration.DiscardUnknown(m)
+func (m *ApiServeRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ApiServeRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_HostConfiguration proto.InternalMessageInfo
+var xxx_messageInfo_ApiServeRequest proto.InternalMessageInfo
 
-func (m *HostConfiguration) GetMaxContainers() int64 {
+func (m *ApiServeRequest) GetHostname() string {
+	if m != nil {
+		return m.Hostname
+	}
+	return ""
+}
+
+func (m *ApiServeRequest) GetPort() int32 {
+	if m != nil {
+		return m.Port
+	}
+	return 0
+}
+
+func (m *ApiServeRequest) GetTimeout() int32 {
+	if m != nil {
+		return m.Timeout
+	}
+	return 0
+}
+
+func (m *ApiServeRequest) GetMaxContainers() int64 {
 	if m != nil {
 		return m.MaxContainers
 	}
 	return 0
 }
 
-func (m *HostConfiguration) GetMaxContainerMemory() int64 {
+func (m *ApiServeRequest) GetMaxContainerMemory() int64 {
 	if m != nil {
 		return m.MaxContainerMemory
 	}
 	return 0
 }
 
+// ApiUnserveRequest specifies the parameters to a ContainerRuntime.Unserve call.
+type ApiUnserveRequest struct {
+	// The hostname of the listening server to operate on.
+	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// The port of the listening server to operate on.
+	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	// The number of seconds to timeout the request.
+	Timeout              int32    `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ApiUnserveRequest) Reset()      { *m = ApiUnserveRequest{} }
+func (*ApiUnserveRequest) ProtoMessage() {}
+func (*ApiUnserveRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9444ff23689c22f9, []int{1}
+}
+func (m *ApiUnserveRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ApiUnserveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ApiUnserveRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ApiUnserveRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ApiUnserveRequest.Merge(m, src)
+}
+func (m *ApiUnserveRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ApiUnserveRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ApiUnserveRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ApiUnserveRequest proto.InternalMessageInfo
+
+func (m *ApiUnserveRequest) GetHostname() string {
+	if m != nil {
+		return m.Hostname
+	}
+	return ""
+}
+
+func (m *ApiUnserveRequest) GetPort() int32 {
+	if m != nil {
+		return m.Port
+	}
+	return 0
+}
+
+func (m *ApiUnserveRequest) GetTimeout() int32 {
+	if m != nil {
+		return m.Timeout
+	}
+	return 0
+}
+
+// ListRequest specifies the parameters to a ContainerRuntime.List call.
+type ListRequest struct {
+	// The hostname of the listening server to operate on.
+	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// The port of the listening server to operate on.
+	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	// The number of seconds to timeout the request.
+	Timeout              int32    `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ListRequest) Reset()      { *m = ListRequest{} }
+func (*ListRequest) ProtoMessage() {}
+func (*ListRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9444ff23689c22f9, []int{2}
+}
+func (m *ListRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListRequest.Merge(m, src)
+}
+func (m *ListRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListRequest proto.InternalMessageInfo
+
+func (m *ListRequest) GetHostname() string {
+	if m != nil {
+		return m.Hostname
+	}
+	return ""
+}
+
+func (m *ListRequest) GetPort() int32 {
+	if m != nil {
+		return m.Port
+	}
+	return 0
+}
+
+func (m *ListRequest) GetTimeout() int32 {
+	if m != nil {
+		return m.Timeout
+	}
+	return 0
+}
+
 // ListResponse returns the result of a ContainerRuntime.List call.
 type ListResponse struct {
+	// The hostname of the listening server to operate on.
+	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// The port of the listening server to operate on.
+	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	// The number of seconds to timeout the request.
+	Timeout int32 `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
 	// The unique id of the container.
-	Id                   []string `protobuf:"bytes,1,rep,name=id,proto3" json:"id,omitempty"`
+	Id                   []string `protobuf:"bytes,4,rep,name=id,proto3" json:"id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -137,7 +302,7 @@ type ListResponse struct {
 func (m *ListResponse) Reset()      { *m = ListResponse{} }
 func (*ListResponse) ProtoMessage() {}
 func (*ListResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9444ff23689c22f9, []int{1}
+	return fileDescriptor_9444ff23689c22f9, []int{3}
 }
 func (m *ListResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -166,6 +331,27 @@ func (m *ListResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ListResponse proto.InternalMessageInfo
 
+func (m *ListResponse) GetHostname() string {
+	if m != nil {
+		return m.Hostname
+	}
+	return ""
+}
+
+func (m *ListResponse) GetPort() int32 {
+	if m != nil {
+		return m.Port
+	}
+	return 0
+}
+
+func (m *ListResponse) GetTimeout() int32 {
+	if m != nil {
+		return m.Timeout
+	}
+	return 0
+}
+
 func (m *ListResponse) GetId() []string {
 	if m != nil {
 		return m.Id
@@ -175,8 +361,14 @@ func (m *ListResponse) GetId() []string {
 
 // QueryStateRequest specifies the parameters to a ContainerRuntime.QueryState call.
 type QueryStateRequest struct {
+	// The hostname of the listening server to operate on.
+	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// The port of the listening server to operate on.
+	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	// The number of seconds to timeout the request.
+	Timeout int32 `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
 	// The unique id of the container.
-	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id                   string   `protobuf:"bytes,4,opt,name=id,proto3" json:"id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -185,7 +377,7 @@ type QueryStateRequest struct {
 func (m *QueryStateRequest) Reset()      { *m = QueryStateRequest{} }
 func (*QueryStateRequest) ProtoMessage() {}
 func (*QueryStateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9444ff23689c22f9, []int{2}
+	return fileDescriptor_9444ff23689c22f9, []int{4}
 }
 func (m *QueryStateRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -213,6 +405,27 @@ func (m *QueryStateRequest) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_QueryStateRequest proto.InternalMessageInfo
+
+func (m *QueryStateRequest) GetHostname() string {
+	if m != nil {
+		return m.Hostname
+	}
+	return ""
+}
+
+func (m *QueryStateRequest) GetPort() int32 {
+	if m != nil {
+		return m.Port
+	}
+	return 0
+}
+
+func (m *QueryStateRequest) GetTimeout() int32 {
+	if m != nil {
+		return m.Timeout
+	}
+	return 0
+}
 
 func (m *QueryStateRequest) GetId() string {
 	if m != nil {
@@ -243,7 +456,7 @@ type QueryStateResponse struct {
 func (m *QueryStateResponse) Reset()      { *m = QueryStateResponse{} }
 func (*QueryStateResponse) ProtoMessage() {}
 func (*QueryStateResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9444ff23689c22f9, []int{3}
+	return fileDescriptor_9444ff23689c22f9, []int{5}
 }
 func (m *QueryStateResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -316,10 +529,16 @@ func (m *QueryStateResponse) GetAnnotations() map[string]string {
 
 // CreateRequest specifies the parameters to a ContainerRuntime.Create call.
 type CreateRequest struct {
+	// The hostname of the listening server to operate on.
+	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// The port of the listening server to operate on.
+	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	// The number of seconds to timeout the request.
+	Timeout int32 `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
 	// The unique id of the container.
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id string `protobuf:"bytes,4,opt,name=id,proto3" json:"id,omitempty"`
 	// The container's bundle directory.
-	Bundle               string   `protobuf:"bytes,2,opt,name=bundle,proto3" json:"bundle,omitempty"`
+	Bundle               string   `protobuf:"bytes,5,opt,name=bundle,proto3" json:"bundle,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -328,7 +547,7 @@ type CreateRequest struct {
 func (m *CreateRequest) Reset()      { *m = CreateRequest{} }
 func (*CreateRequest) ProtoMessage() {}
 func (*CreateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9444ff23689c22f9, []int{4}
+	return fileDescriptor_9444ff23689c22f9, []int{6}
 }
 func (m *CreateRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -357,6 +576,27 @@ func (m *CreateRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_CreateRequest proto.InternalMessageInfo
 
+func (m *CreateRequest) GetHostname() string {
+	if m != nil {
+		return m.Hostname
+	}
+	return ""
+}
+
+func (m *CreateRequest) GetPort() int32 {
+	if m != nil {
+		return m.Port
+	}
+	return 0
+}
+
+func (m *CreateRequest) GetTimeout() int32 {
+	if m != nil {
+		return m.Timeout
+	}
+	return 0
+}
+
 func (m *CreateRequest) GetId() string {
 	if m != nil {
 		return m.Id
@@ -373,8 +613,14 @@ func (m *CreateRequest) GetBundle() string {
 
 // StartRequest specifies the parameters to a ContainerRuntime.Start call.
 type StartRequest struct {
+	// The hostname of the listening server to operate on.
+	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// The port of the listening server to operate on.
+	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	// The number of seconds to timeout the request.
+	Timeout int32 `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
 	// The unique id of the container.
-	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id                   string   `protobuf:"bytes,4,opt,name=id,proto3" json:"id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -383,7 +629,7 @@ type StartRequest struct {
 func (m *StartRequest) Reset()      { *m = StartRequest{} }
 func (*StartRequest) ProtoMessage() {}
 func (*StartRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9444ff23689c22f9, []int{5}
+	return fileDescriptor_9444ff23689c22f9, []int{7}
 }
 func (m *StartRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -412,6 +658,27 @@ func (m *StartRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_StartRequest proto.InternalMessageInfo
 
+func (m *StartRequest) GetHostname() string {
+	if m != nil {
+		return m.Hostname
+	}
+	return ""
+}
+
+func (m *StartRequest) GetPort() int32 {
+	if m != nil {
+		return m.Port
+	}
+	return 0
+}
+
+func (m *StartRequest) GetTimeout() int32 {
+	if m != nil {
+		return m.Timeout
+	}
+	return 0
+}
+
 func (m *StartRequest) GetId() string {
 	if m != nil {
 		return m.Id
@@ -421,10 +688,16 @@ func (m *StartRequest) GetId() string {
 
 // KillRequest specifies the parameters to a ContainerRuntime.Kill call.
 type KillRequest struct {
+	// The hostname of the listening server to operate on.
+	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// The port of the listening server to operate on.
+	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	// The number of seconds to timeout the request.
+	Timeout int32 `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
 	// The unique id of the container.
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id string `protobuf:"bytes,4,opt,name=id,proto3" json:"id,omitempty"`
 	// The kill signal to send.
-	Signal               int32    `protobuf:"varint,2,opt,name=signal,proto3" json:"signal,omitempty"`
+	Signal               int32    `protobuf:"varint,5,opt,name=signal,proto3" json:"signal,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -433,7 +706,7 @@ type KillRequest struct {
 func (m *KillRequest) Reset()      { *m = KillRequest{} }
 func (*KillRequest) ProtoMessage() {}
 func (*KillRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9444ff23689c22f9, []int{6}
+	return fileDescriptor_9444ff23689c22f9, []int{8}
 }
 func (m *KillRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -462,6 +735,27 @@ func (m *KillRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_KillRequest proto.InternalMessageInfo
 
+func (m *KillRequest) GetHostname() string {
+	if m != nil {
+		return m.Hostname
+	}
+	return ""
+}
+
+func (m *KillRequest) GetPort() int32 {
+	if m != nil {
+		return m.Port
+	}
+	return 0
+}
+
+func (m *KillRequest) GetTimeout() int32 {
+	if m != nil {
+		return m.Timeout
+	}
+	return 0
+}
+
 func (m *KillRequest) GetId() string {
 	if m != nil {
 		return m.Id
@@ -478,8 +772,14 @@ func (m *KillRequest) GetSignal() int32 {
 
 // DeleteRequest specifies the parameters to a ContainerRuntime.Delete call.
 type DeleteRequest struct {
+	// The hostname of the listening server to operate on.
+	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// The port of the listening server to operate on.
+	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
+	// The number of seconds to timeout the request.
+	Timeout int32 `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
 	// The unique id of the container.
-	ContainerId          string   `protobuf:"bytes,1,opt,name=container_id,json=containerId,proto3" json:"container_id,omitempty"`
+	ContainerId          string   `protobuf:"bytes,4,opt,name=container_id,json=containerId,proto3" json:"container_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -488,7 +788,7 @@ type DeleteRequest struct {
 func (m *DeleteRequest) Reset()      { *m = DeleteRequest{} }
 func (*DeleteRequest) ProtoMessage() {}
 func (*DeleteRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9444ff23689c22f9, []int{7}
+	return fileDescriptor_9444ff23689c22f9, []int{9}
 }
 func (m *DeleteRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -517,6 +817,27 @@ func (m *DeleteRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_DeleteRequest proto.InternalMessageInfo
 
+func (m *DeleteRequest) GetHostname() string {
+	if m != nil {
+		return m.Hostname
+	}
+	return ""
+}
+
+func (m *DeleteRequest) GetPort() int32 {
+	if m != nil {
+		return m.Port
+	}
+	return 0
+}
+
+func (m *DeleteRequest) GetTimeout() int32 {
+	if m != nil {
+		return m.Timeout
+	}
+	return 0
+}
+
 func (m *DeleteRequest) GetContainerId() string {
 	if m != nil {
 		return m.ContainerId
@@ -526,7 +847,9 @@ func (m *DeleteRequest) GetContainerId() string {
 
 func init() {
 	proto.RegisterEnum("ctrt.ContainerStatus", ContainerStatus_name, ContainerStatus_value)
-	proto.RegisterType((*HostConfiguration)(nil), "ctrt.HostConfiguration")
+	proto.RegisterType((*ApiServeRequest)(nil), "ctrt.ApiServeRequest")
+	proto.RegisterType((*ApiUnserveRequest)(nil), "ctrt.ApiUnserveRequest")
+	proto.RegisterType((*ListRequest)(nil), "ctrt.ListRequest")
 	proto.RegisterType((*ListResponse)(nil), "ctrt.ListResponse")
 	proto.RegisterType((*QueryStateRequest)(nil), "ctrt.QueryStateRequest")
 	proto.RegisterType((*QueryStateResponse)(nil), "ctrt.QueryStateResponse")
@@ -540,58 +863,62 @@ func init() {
 func init() { proto.RegisterFile("pkg/api/ctrt/v0/api.proto", fileDescriptor_9444ff23689c22f9) }
 
 var fileDescriptor_9444ff23689c22f9 = []byte{
-	// 653 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0xcd, 0xda, 0x49, 0x80, 0x49, 0x5b, 0xd2, 0xa5, 0x14, 0x13, 0x24, 0x13, 0x8c, 0x90, 0x02,
-	0x52, 0x9d, 0x2a, 0x6d, 0xd5, 0xc2, 0x01, 0x54, 0xd2, 0x00, 0x55, 0xa1, 0x14, 0xa7, 0x70, 0xe0,
-	0x52, 0xb9, 0xc9, 0xd6, 0x5a, 0xd5, 0xd9, 0x0d, 0xde, 0x75, 0xd5, 0xdc, 0xf8, 0x1c, 0x24, 0x7e,
-	0x84, 0x23, 0x47, 0x0e, 0x1c, 0x68, 0xbe, 0x80, 0x23, 0x47, 0xb4, 0xb6, 0x93, 0xb8, 0x8d, 0xe2,
-	0xdb, 0xce, 0xcc, 0x9b, 0xe7, 0xb7, 0x3b, 0x6f, 0x0c, 0x77, 0xfb, 0xa7, 0x5e, 0xdd, 0xed, 0xd3,
-	0x7a, 0x47, 0x06, 0xb2, 0x7e, 0xb6, 0xaa, 0xce, 0x76, 0x3f, 0xe0, 0x92, 0xe3, 0xbc, 0x4a, 0x55,
-	0x96, 0x3c, 0xee, 0xf1, 0x28, 0x51, 0x57, 0xa7, 0xb8, 0x56, 0xb9, 0xe7, 0x71, 0xee, 0xf9, 0xa4,
-	0x1e, 0x45, 0xc7, 0xe1, 0x49, 0x9d, 0xf4, 0xfa, 0x72, 0x10, 0x17, 0x2d, 0x1f, 0x16, 0xdf, 0x70,
-	0x21, 0x9b, 0x9c, 0x9d, 0x50, 0x2f, 0x0c, 0x5c, 0x49, 0x39, 0xc3, 0x8f, 0x60, 0xa1, 0xe7, 0x9e,
-	0x1f, 0x75, 0x38, 0x93, 0x2e, 0x65, 0x24, 0x10, 0x06, 0xaa, 0xa2, 0x9a, 0xee, 0xcc, 0xf7, 0xdc,
-	0xf3, 0xe6, 0x38, 0x89, 0x57, 0x61, 0xe9, 0x12, 0xec, 0xa8, 0x47, 0x7a, 0x3c, 0x18, 0x18, 0x5a,
-	0x04, 0xc6, 0x69, 0xf0, 0xbb, 0xa8, 0x62, 0x99, 0x30, 0xf7, 0x96, 0x0a, 0xe9, 0x10, 0xd1, 0xe7,
-	0x4c, 0x10, 0xbc, 0x00, 0x1a, 0xed, 0x1a, 0xa8, 0xaa, 0xd7, 0x6e, 0x38, 0x1a, 0xed, 0x5a, 0x0f,
-	0x61, 0xf1, 0x43, 0x48, 0x82, 0x41, 0x5b, 0xba, 0x92, 0x38, 0xe4, 0x4b, 0x48, 0x84, 0x1c, 0x83,
-	0x50, 0x02, 0xfa, 0xae, 0x01, 0x4e, 0xa3, 0x12, 0xae, 0xfb, 0x50, 0xe2, 0x1d, 0x7a, 0x74, 0x46,
-	0x02, 0x41, 0x39, 0x4b, 0xf0, 0xc0, 0x3b, 0xf4, 0x53, 0x9c, 0x49, 0x78, 0xb4, 0x11, 0x0f, 0x5e,
-	0x81, 0xa2, 0x90, 0xae, 0x0c, 0x85, 0xa1, 0x57, 0x51, 0x6d, 0xa1, 0x71, 0xdb, 0x56, 0x8f, 0x68,
-	0x8f, 0x35, 0xb7, 0xa3, 0xa2, 0x93, 0x80, 0x70, 0x19, 0xf4, 0x3e, 0xed, 0x1a, 0xf9, 0x2a, 0xaa,
-	0x15, 0x1c, 0x75, 0xc4, 0xcb, 0x50, 0x3c, 0x0e, 0x59, 0xd7, 0x27, 0x46, 0x21, 0x22, 0x4d, 0x22,
-	0xbc, 0x07, 0x25, 0x97, 0x31, 0x2e, 0xa3, 0xc7, 0x14, 0x46, 0xb1, 0xaa, 0xd7, 0x4a, 0x8d, 0xc7,
-	0x31, 0xfb, 0xb4, 0x70, 0x7b, 0x7b, 0x82, 0x6d, 0x31, 0x19, 0x0c, 0x9c, 0x74, 0x77, 0xe5, 0x39,
-	0x94, 0xaf, 0x02, 0x94, 0x94, 0x53, 0x32, 0x48, 0xae, 0xa8, 0x8e, 0x78, 0x09, 0x0a, 0x67, 0xae,
-	0x1f, 0x92, 0xe4, 0x7a, 0x71, 0xf0, 0x4c, 0xdb, 0x42, 0xd6, 0x26, 0xcc, 0x37, 0x03, 0x32, 0xfb,
-	0x39, 0x53, 0xb7, 0xd0, 0xd2, 0xb7, 0x50, 0xb3, 0x6a, 0x4b, 0x37, 0x90, 0xb3, 0xc6, 0xb0, 0x01,
-	0xa5, 0x3d, 0xea, 0xfb, 0x19, 0xb4, 0x82, 0x7a, 0xcc, 0xf5, 0x23, 0xda, 0x82, 0x93, 0x44, 0x56,
-	0x03, 0xe6, 0x77, 0x88, 0x4f, 0x26, 0x7a, 0x1e, 0xc0, 0xdc, 0xc4, 0x41, 0x63, 0x8a, 0xd2, 0x38,
-	0xb7, 0xdb, 0x7d, 0xf2, 0x0a, 0x6e, 0x5e, 0x99, 0x0a, 0x9e, 0x83, 0xeb, 0x4d, 0xa7, 0xb5, 0x7d,
-	0xb8, 0xbb, 0xff, 0xba, 0x9c, 0xc3, 0x25, 0xb8, 0x16, 0x45, 0xad, 0x9d, 0x32, 0x52, 0x81, 0xf3,
-	0x71, 0x7f, 0x5f, 0x55, 0x34, 0x15, 0xb4, 0x0f, 0xdf, 0x1f, 0x1c, 0xb4, 0x76, 0xca, 0x7a, 0xe3,
-	0xb7, 0x0e, 0xe5, 0x31, 0x91, 0x13, 0x32, 0x49, 0x7b, 0x04, 0x3f, 0x85, 0xbc, 0xda, 0x00, 0x7c,
-	0x27, 0x1e, 0xd0, 0xd4, 0x36, 0x54, 0x96, 0xed, 0x78, 0x81, 0xec, 0xd1, 0x02, 0xd9, 0x2d, 0xb5,
-	0x40, 0x56, 0x0e, 0x6f, 0x41, 0xbe, 0x75, 0x4e, 0x25, 0x9e, 0x81, 0xc8, 0xe8, 0x5c, 0x87, 0xbc,
-	0x5a, 0x84, 0x99, 0x9d, 0x38, 0x16, 0x93, 0x5e, 0x16, 0x2b, 0x87, 0x5f, 0x00, 0x4c, 0xfc, 0x33,
-	0x12, 0x3c, 0xb5, 0x30, 0x19, 0x9f, 0xdd, 0x84, 0x62, 0x6c, 0x06, 0x7c, 0x2b, 0x31, 0x7b, 0xda,
-	0x1a, 0x19, 0x8d, 0x1b, 0x50, 0x88, 0xcc, 0x80, 0x13, 0x61, 0x69, 0x67, 0x64, 0xb4, 0xad, 0x41,
-	0x5e, 0x79, 0x04, 0x2f, 0xc6, 0x5d, 0x29, 0xbf, 0x64, 0x8b, 0x8c, 0x1d, 0x32, 0x12, 0x79, 0xc9,
-	0x2f, 0xb3, 0x1b, 0x5f, 0xae, 0xff, 0xba, 0x30, 0x73, 0x7f, 0x2f, 0x4c, 0xf4, 0xef, 0xc2, 0xcc,
-	0x7d, 0x1d, 0x9a, 0xe8, 0xdb, 0xd0, 0x44, 0x3f, 0x86, 0x26, 0xfa, 0x39, 0x34, 0xd1, 0x9f, 0xa1,
-	0x89, 0x3e, 0x63, 0xd7, 0x97, 0x2b, 0x5c, 0xa4, 0x7f, 0xa2, 0xc7, 0xc5, 0x88, 0x67, 0xed, 0x7f,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0x67, 0xa7, 0x8d, 0x2d, 0x5e, 0x05, 0x00, 0x00,
+	// 719 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0x4b, 0x6f, 0xd3, 0x4a,
+	0x14, 0xce, 0xe4, 0xd5, 0xf6, 0xb8, 0x8f, 0x74, 0x6e, 0x6f, 0xaf, 0x6f, 0x90, 0x4c, 0xb0, 0x84,
+	0x14, 0x90, 0x6a, 0x57, 0x2d, 0x08, 0x04, 0x12, 0x28, 0xb4, 0x01, 0x55, 0x85, 0x52, 0x9c, 0x16,
+	0x24, 0x24, 0x54, 0xb9, 0xc9, 0x90, 0x8e, 0x6a, 0x7b, 0x8c, 0x3d, 0x8e, 0x1a, 0x09, 0x09, 0xf8,
+	0x37, 0x48, 0x6c, 0xf9, 0x11, 0x2c, 0x59, 0xb2, 0x6c, 0xf3, 0x0b, 0x58, 0xb2, 0x44, 0xe3, 0x57,
+	0xdc, 0x56, 0xcd, 0xaa, 0xe9, 0x6e, 0xce, 0xfb, 0x1c, 0xcf, 0x77, 0xbe, 0x31, 0xfc, 0xef, 0x1e,
+	0x76, 0x75, 0xd3, 0xa5, 0x7a, 0x9b, 0x7b, 0x5c, 0xef, 0x2d, 0x8b, 0xb3, 0xe6, 0x7a, 0x8c, 0x33,
+	0x5c, 0x14, 0xaa, 0xea, 0x42, 0x97, 0x75, 0x59, 0xa8, 0xd0, 0xc5, 0x29, 0xb2, 0x55, 0xaf, 0x75,
+	0x19, 0xeb, 0x5a, 0x44, 0x0f, 0xa5, 0xfd, 0xe0, 0xbd, 0x4e, 0x6c, 0x97, 0xf7, 0x23, 0xa3, 0xfa,
+	0x1d, 0xc1, 0x5c, 0xc3, 0xa5, 0x2d, 0xe2, 0xf5, 0x88, 0x41, 0x3e, 0x04, 0xc4, 0xe7, 0xb8, 0x0a,
+	0x93, 0x07, 0xcc, 0xe7, 0x8e, 0x69, 0x13, 0x19, 0xd5, 0x50, 0x7d, 0xca, 0x48, 0x65, 0x8c, 0xa1,
+	0xe8, 0x32, 0x8f, 0xcb, 0xf9, 0x1a, 0xaa, 0x97, 0x8c, 0xf0, 0x8c, 0x65, 0x98, 0xe0, 0xd4, 0x26,
+	0x2c, 0xe0, 0x72, 0x21, 0x54, 0x27, 0x22, 0xbe, 0x09, 0xb3, 0xb6, 0x79, 0xb4, 0xd7, 0x66, 0x0e,
+	0x37, 0xa9, 0x43, 0x3c, 0x5f, 0x2e, 0xd6, 0x50, 0xbd, 0x60, 0xcc, 0xd8, 0xe6, 0xd1, 0x5a, 0xaa,
+	0xc4, 0xcb, 0xb0, 0x70, 0xca, 0x6d, 0xcf, 0x26, 0x36, 0xf3, 0xfa, 0x72, 0x29, 0x74, 0xc6, 0x59,
+	0xe7, 0x17, 0xa1, 0x45, 0x7d, 0x07, 0xf3, 0x0d, 0x97, 0xee, 0x3a, 0xfe, 0x58, 0xfa, 0x56, 0xdf,
+	0x80, 0xf4, 0x9c, 0xfa, 0xfc, 0xf2, 0x13, 0x1f, 0xc0, 0x74, 0x94, 0xd8, 0x77, 0x99, 0xe3, 0x93,
+	0x4b, 0xfc, 0xd4, 0xb3, 0x90, 0xa7, 0x1d, 0xb9, 0x58, 0x2b, 0xd4, 0xa7, 0x8c, 0x3c, 0xed, 0xa8,
+	0x36, 0xcc, 0xbf, 0x0a, 0x88, 0xd7, 0x6f, 0x71, 0x93, 0x8f, 0xe1, 0x66, 0x93, 0x72, 0x28, 0x2e,
+	0xf7, 0x2d, 0x0f, 0x38, 0x5b, 0x2f, 0x9e, 0xef, 0x3a, 0x48, 0xac, 0x4d, 0xf7, 0x7a, 0xc4, 0xf3,
+	0x29, 0x73, 0xe2, 0x9a, 0xc0, 0xda, 0xf4, 0x75, 0xa4, 0x89, 0xf3, 0xe4, 0x93, 0x3c, 0x78, 0x09,
+	0xca, 0x3e, 0x37, 0x79, 0xe0, 0x87, 0x05, 0x67, 0x57, 0xfe, 0xd5, 0x04, 0xb2, 0xb5, 0xf4, 0xfe,
+	0x5b, 0xa1, 0xd1, 0x88, 0x9d, 0x70, 0x05, 0x0a, 0x6e, 0xdc, 0x47, 0xc9, 0x10, 0x47, 0xbc, 0x08,
+	0xe5, 0xfd, 0xc0, 0xe9, 0x58, 0x24, 0x44, 0xcf, 0x94, 0x11, 0x4b, 0x78, 0x13, 0x24, 0xd3, 0x71,
+	0x18, 0x37, 0x39, 0x65, 0x8e, 0x2f, 0x97, 0x6b, 0x85, 0xba, 0xb4, 0x72, 0x2b, 0xca, 0x7e, 0xbe,
+	0x71, 0xad, 0x31, 0xf4, 0x6d, 0x3a, 0xdc, 0xeb, 0x1b, 0xd9, 0xe8, 0xea, 0x23, 0xa8, 0x9c, 0x75,
+	0x10, 0xad, 0x1c, 0x92, 0x7e, 0x3c, 0xa2, 0x38, 0xe2, 0x05, 0x28, 0xf5, 0x4c, 0x2b, 0x20, 0xf1,
+	0x78, 0x91, 0xf0, 0x20, 0x7f, 0x1f, 0xa9, 0x5f, 0x10, 0xcc, 0xac, 0x79, 0xe4, 0x2a, 0x6e, 0xe6,
+	0xa2, 0x0f, 0x22, 0xa0, 0xd8, 0xe2, 0xa6, 0xc7, 0xc7, 0x8f, 0x8d, 0x4f, 0x20, 0x6d, 0x52, 0xcb,
+	0xba, 0x92, 0x51, 0x7d, 0xda, 0x75, 0x4c, 0x2b, 0x1c, 0xb5, 0x64, 0xc4, 0x92, 0xfa, 0x11, 0x66,
+	0xd6, 0x89, 0x45, 0xc6, 0xf1, 0xb5, 0x6f, 0xc0, 0xf4, 0x90, 0xb6, 0xd2, 0x66, 0xa4, 0x54, 0xb7,
+	0xd1, 0xb9, 0xfd, 0x14, 0xe6, 0xce, 0xc0, 0x17, 0x4f, 0xc3, 0xe4, 0x9a, 0xd1, 0x6c, 0xec, 0x6c,
+	0x6c, 0x3d, 0xab, 0xe4, 0xb0, 0x04, 0x13, 0xa1, 0xd4, 0x5c, 0xaf, 0x20, 0x21, 0x18, 0xbb, 0x5b,
+	0x5b, 0xc2, 0x92, 0x17, 0x42, 0x6b, 0xe7, 0xe5, 0xf6, 0x76, 0x73, 0xbd, 0x52, 0x58, 0x39, 0x2e,
+	0x40, 0x25, 0x4d, 0x64, 0x04, 0x8e, 0x68, 0x01, 0x3f, 0x84, 0xc9, 0x84, 0xbe, 0x71, 0xbc, 0x2b,
+	0x67, 0xe8, 0xbc, 0xba, 0xa8, 0x45, 0x0f, 0x80, 0x96, 0x3c, 0x00, 0x5a, 0x53, 0x3c, 0x00, 0x6a,
+	0x0e, 0x3f, 0x06, 0x18, 0xb2, 0x28, 0xfe, 0x2f, 0x0d, 0x3f, 0xcd, 0xab, 0x23, 0x12, 0xe8, 0x50,
+	0x14, 0x74, 0x86, 0xe7, 0xa3, 0xd0, 0x0c, 0x67, 0x56, 0x71, 0x56, 0x15, 0x2d, 0x55, 0x54, 0x71,
+	0xb8, 0x6c, 0x49, 0xc5, 0x73, 0x3c, 0x35, 0xa2, 0xe2, 0x3d, 0x28, 0x47, 0x8b, 0x83, 0xff, 0x89,
+	0x99, 0x21, 0xbb, 0x46, 0x23, 0x02, 0xef, 0x42, 0x29, 0x84, 0x3b, 0x8e, 0x1b, 0xcb, 0x62, 0x7f,
+	0x44, 0xd8, 0x2a, 0x14, 0x05, 0x76, 0x93, 0x09, 0x33, 0x38, 0x1e, 0xdd, 0x64, 0x84, 0xb7, 0xa4,
+	0xc9, 0x53, 0xe8, 0xbb, 0x38, 0xf0, 0xc9, 0x9d, 0x5f, 0x27, 0x4a, 0xee, 0xf7, 0x89, 0x82, 0xfe,
+	0x9c, 0x28, 0xb9, 0xcf, 0x03, 0x05, 0x7d, 0x1d, 0x28, 0xe8, 0xc7, 0x40, 0x41, 0x3f, 0x07, 0x0a,
+	0x3a, 0x1e, 0x28, 0xe8, 0x2d, 0x36, 0x2d, 0xbe, 0xc4, 0xfc, 0xec, 0x6f, 0xc0, 0x7e, 0x39, 0xcc,
+	0xb3, 0xfa, 0x37, 0x00, 0x00, 0xff, 0xff, 0x3e, 0xcb, 0xd5, 0x88, 0x20, 0x08, 0x00, 0x00,
 }
 
-func (this *HostConfiguration) Equal(that interface{}) bool {
+func (this *ApiServeRequest) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*HostConfiguration)
+	that1, ok := that.(*ApiServeRequest)
 	if !ok {
-		that2, ok := that.(HostConfiguration)
+		that2, ok := that.(ApiServeRequest)
 		if ok {
 			that1 = &that2
 		} else {
@@ -603,10 +930,85 @@ func (this *HostConfiguration) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
+	if this.Hostname != that1.Hostname {
+		return false
+	}
+	if this.Port != that1.Port {
+		return false
+	}
+	if this.Timeout != that1.Timeout {
+		return false
+	}
 	if this.MaxContainers != that1.MaxContainers {
 		return false
 	}
 	if this.MaxContainerMemory != that1.MaxContainerMemory {
+		return false
+	}
+	if !bytes.Equal(this.XXX_unrecognized, that1.XXX_unrecognized) {
+		return false
+	}
+	return true
+}
+func (this *ApiUnserveRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ApiUnserveRequest)
+	if !ok {
+		that2, ok := that.(ApiUnserveRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Hostname != that1.Hostname {
+		return false
+	}
+	if this.Port != that1.Port {
+		return false
+	}
+	if this.Timeout != that1.Timeout {
+		return false
+	}
+	if !bytes.Equal(this.XXX_unrecognized, that1.XXX_unrecognized) {
+		return false
+	}
+	return true
+}
+func (this *ListRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ListRequest)
+	if !ok {
+		that2, ok := that.(ListRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Hostname != that1.Hostname {
+		return false
+	}
+	if this.Port != that1.Port {
+		return false
+	}
+	if this.Timeout != that1.Timeout {
 		return false
 	}
 	if !bytes.Equal(this.XXX_unrecognized, that1.XXX_unrecognized) {
@@ -631,6 +1033,15 @@ func (this *ListResponse) Equal(that interface{}) bool {
 	if that1 == nil {
 		return this == nil
 	} else if this == nil {
+		return false
+	}
+	if this.Hostname != that1.Hostname {
+		return false
+	}
+	if this.Port != that1.Port {
+		return false
+	}
+	if this.Timeout != that1.Timeout {
 		return false
 	}
 	if len(this.Id) != len(that1.Id) {
@@ -663,6 +1074,15 @@ func (this *QueryStateRequest) Equal(that interface{}) bool {
 	if that1 == nil {
 		return this == nil
 	} else if this == nil {
+		return false
+	}
+	if this.Hostname != that1.Hostname {
+		return false
+	}
+	if this.Port != that1.Port {
+		return false
+	}
+	if this.Timeout != that1.Timeout {
 		return false
 	}
 	if this.Id != that1.Id {
@@ -739,6 +1159,15 @@ func (this *CreateRequest) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
+	if this.Hostname != that1.Hostname {
+		return false
+	}
+	if this.Port != that1.Port {
+		return false
+	}
+	if this.Timeout != that1.Timeout {
+		return false
+	}
 	if this.Id != that1.Id {
 		return false
 	}
@@ -769,6 +1198,15 @@ func (this *StartRequest) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
+	if this.Hostname != that1.Hostname {
+		return false
+	}
+	if this.Port != that1.Port {
+		return false
+	}
+	if this.Timeout != that1.Timeout {
+		return false
+	}
 	if this.Id != that1.Id {
 		return false
 	}
@@ -794,6 +1232,15 @@ func (this *KillRequest) Equal(that interface{}) bool {
 	if that1 == nil {
 		return this == nil
 	} else if this == nil {
+		return false
+	}
+	if this.Hostname != that1.Hostname {
+		return false
+	}
+	if this.Port != that1.Port {
+		return false
+	}
+	if this.Timeout != that1.Timeout {
 		return false
 	}
 	if this.Id != that1.Id {
@@ -826,6 +1273,15 @@ func (this *DeleteRequest) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
+	if this.Hostname != that1.Hostname {
+		return false
+	}
+	if this.Port != that1.Port {
+		return false
+	}
+	if this.Timeout != that1.Timeout {
+		return false
+	}
 	if this.ContainerId != that1.ContainerId {
 		return false
 	}
@@ -834,14 +1290,47 @@ func (this *DeleteRequest) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *HostConfiguration) GoString() string {
+func (this *ApiServeRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 6)
-	s = append(s, "&v0.HostConfiguration{")
+	s := make([]string, 0, 9)
+	s = append(s, "&v0.ApiServeRequest{")
+	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
+	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
+	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
 	s = append(s, "MaxContainers: "+fmt.Sprintf("%#v", this.MaxContainers)+",\n")
 	s = append(s, "MaxContainerMemory: "+fmt.Sprintf("%#v", this.MaxContainerMemory)+",\n")
+	if this.XXX_unrecognized != nil {
+		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ApiUnserveRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&v0.ApiUnserveRequest{")
+	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
+	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
+	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
+	if this.XXX_unrecognized != nil {
+		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ListRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&v0.ListRequest{")
+	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
+	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
+	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
 	if this.XXX_unrecognized != nil {
 		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
 	}
@@ -852,8 +1341,11 @@ func (this *ListResponse) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 5)
+	s := make([]string, 0, 8)
 	s = append(s, "&v0.ListResponse{")
+	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
+	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
+	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
 	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	if this.XXX_unrecognized != nil {
 		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
@@ -865,8 +1357,11 @@ func (this *QueryStateRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 5)
+	s := make([]string, 0, 8)
 	s = append(s, "&v0.QueryStateRequest{")
+	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
+	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
+	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
 	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	if this.XXX_unrecognized != nil {
 		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
@@ -908,8 +1403,11 @@ func (this *CreateRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 6)
+	s := make([]string, 0, 9)
 	s = append(s, "&v0.CreateRequest{")
+	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
+	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
+	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
 	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	s = append(s, "Bundle: "+fmt.Sprintf("%#v", this.Bundle)+",\n")
 	if this.XXX_unrecognized != nil {
@@ -922,8 +1420,11 @@ func (this *StartRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 5)
+	s := make([]string, 0, 8)
 	s = append(s, "&v0.StartRequest{")
+	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
+	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
+	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
 	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	if this.XXX_unrecognized != nil {
 		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
@@ -935,8 +1436,11 @@ func (this *KillRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 6)
+	s := make([]string, 0, 9)
 	s = append(s, "&v0.KillRequest{")
+	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
+	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
+	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
 	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	s = append(s, "Signal: "+fmt.Sprintf("%#v", this.Signal)+",\n")
 	if this.XXX_unrecognized != nil {
@@ -949,8 +1453,11 @@ func (this *DeleteRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 5)
+	s := make([]string, 0, 8)
 	s = append(s, "&v0.DeleteRequest{")
+	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
+	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
+	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
 	s = append(s, "ContainerId: "+fmt.Sprintf("%#v", this.ContainerId)+",\n")
 	if this.XXX_unrecognized != nil {
 		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
@@ -979,12 +1486,12 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ContainerRuntimeClient interface {
-	// Host enables hosting of container runtimes according to the given configuration.
-	Host(ctx context.Context, in *HostConfiguration, opts ...grpc.CallOption) (*types.Empty, error)
-	// Exit stops all containers and exits hosting.
-	Exit(ctx context.Context, in *types.Empty, opts ...grpc.CallOption) (*types.Empty, error)
+	// ApiServe enables the container runtime api according to the given configuration.
+	ApiServe(ctx context.Context, in *ApiServeRequest, opts ...grpc.CallOption) (*types.Empty, error)
+	// ApiUnserve stops all containers and disables the container runtime api.
+	ApiUnserve(ctx context.Context, in *ApiUnserveRequest, opts ...grpc.CallOption) (*types.Empty, error)
 	// List gets all containers the runtime knows about.
-	List(ctx context.Context, in *types.Empty, opts ...grpc.CallOption) (*ListResponse, error)
+	List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
 	// QueryState gets the state of a specified container.
 	QueryState(ctx context.Context, in *QueryStateRequest, opts ...grpc.CallOption) (*types.Empty, error)
 	// Create creates a new container and begins preparing it to be started.
@@ -1005,25 +1512,25 @@ func NewContainerRuntimeClient(cc *grpc.ClientConn) ContainerRuntimeClient {
 	return &containerRuntimeClient{cc}
 }
 
-func (c *containerRuntimeClient) Host(ctx context.Context, in *HostConfiguration, opts ...grpc.CallOption) (*types.Empty, error) {
+func (c *containerRuntimeClient) ApiServe(ctx context.Context, in *ApiServeRequest, opts ...grpc.CallOption) (*types.Empty, error) {
 	out := new(types.Empty)
-	err := c.cc.Invoke(ctx, "/ctrt.ContainerRuntime/Host", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ctrt.ContainerRuntime/ApiServe", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *containerRuntimeClient) Exit(ctx context.Context, in *types.Empty, opts ...grpc.CallOption) (*types.Empty, error) {
+func (c *containerRuntimeClient) ApiUnserve(ctx context.Context, in *ApiUnserveRequest, opts ...grpc.CallOption) (*types.Empty, error) {
 	out := new(types.Empty)
-	err := c.cc.Invoke(ctx, "/ctrt.ContainerRuntime/Exit", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ctrt.ContainerRuntime/ApiUnserve", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *containerRuntimeClient) List(ctx context.Context, in *types.Empty, opts ...grpc.CallOption) (*ListResponse, error) {
+func (c *containerRuntimeClient) List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error) {
 	out := new(ListResponse)
 	err := c.cc.Invoke(ctx, "/ctrt.ContainerRuntime/List", in, out, opts...)
 	if err != nil {
@@ -1079,12 +1586,12 @@ func (c *containerRuntimeClient) Delete(ctx context.Context, in *DeleteRequest, 
 
 // ContainerRuntimeServer is the server API for ContainerRuntime service.
 type ContainerRuntimeServer interface {
-	// Host enables hosting of container runtimes according to the given configuration.
-	Host(context.Context, *HostConfiguration) (*types.Empty, error)
-	// Exit stops all containers and exits hosting.
-	Exit(context.Context, *types.Empty) (*types.Empty, error)
+	// ApiServe enables the container runtime api according to the given configuration.
+	ApiServe(context.Context, *ApiServeRequest) (*types.Empty, error)
+	// ApiUnserve stops all containers and disables the container runtime api.
+	ApiUnserve(context.Context, *ApiUnserveRequest) (*types.Empty, error)
 	// List gets all containers the runtime knows about.
-	List(context.Context, *types.Empty) (*ListResponse, error)
+	List(context.Context, *ListRequest) (*ListResponse, error)
 	// QueryState gets the state of a specified container.
 	QueryState(context.Context, *QueryStateRequest) (*types.Empty, error)
 	// Create creates a new container and begins preparing it to be started.
@@ -1101,13 +1608,13 @@ type ContainerRuntimeServer interface {
 type UnimplementedContainerRuntimeServer struct {
 }
 
-func (*UnimplementedContainerRuntimeServer) Host(ctx context.Context, req *HostConfiguration) (*types.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Host not implemented")
+func (*UnimplementedContainerRuntimeServer) ApiServe(ctx context.Context, req *ApiServeRequest) (*types.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiServe not implemented")
 }
-func (*UnimplementedContainerRuntimeServer) Exit(ctx context.Context, req *types.Empty) (*types.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Exit not implemented")
+func (*UnimplementedContainerRuntimeServer) ApiUnserve(ctx context.Context, req *ApiUnserveRequest) (*types.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApiUnserve not implemented")
 }
-func (*UnimplementedContainerRuntimeServer) List(ctx context.Context, req *types.Empty) (*ListResponse, error) {
+func (*UnimplementedContainerRuntimeServer) List(ctx context.Context, req *ListRequest) (*ListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
 }
 func (*UnimplementedContainerRuntimeServer) QueryState(ctx context.Context, req *QueryStateRequest) (*types.Empty, error) {
@@ -1130,44 +1637,44 @@ func RegisterContainerRuntimeServer(s *grpc.Server, srv ContainerRuntimeServer) 
 	s.RegisterService(&_ContainerRuntime_serviceDesc, srv)
 }
 
-func _ContainerRuntime_Host_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HostConfiguration)
+func _ContainerRuntime_ApiServe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiServeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ContainerRuntimeServer).Host(ctx, in)
+		return srv.(ContainerRuntimeServer).ApiServe(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ctrt.ContainerRuntime/Host",
+		FullMethod: "/ctrt.ContainerRuntime/ApiServe",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContainerRuntimeServer).Host(ctx, req.(*HostConfiguration))
+		return srv.(ContainerRuntimeServer).ApiServe(ctx, req.(*ApiServeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ContainerRuntime_Exit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(types.Empty)
+func _ContainerRuntime_ApiUnserve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiUnserveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ContainerRuntimeServer).Exit(ctx, in)
+		return srv.(ContainerRuntimeServer).ApiUnserve(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ctrt.ContainerRuntime/Exit",
+		FullMethod: "/ctrt.ContainerRuntime/ApiUnserve",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContainerRuntimeServer).Exit(ctx, req.(*types.Empty))
+		return srv.(ContainerRuntimeServer).ApiUnserve(ctx, req.(*ApiUnserveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ContainerRuntime_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(types.Empty)
+	in := new(ListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1179,7 +1686,7 @@ func _ContainerRuntime_List_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/ctrt.ContainerRuntime/List",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContainerRuntimeServer).List(ctx, req.(*types.Empty))
+		return srv.(ContainerRuntimeServer).List(ctx, req.(*ListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1279,12 +1786,12 @@ var _ContainerRuntime_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*ContainerRuntimeServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Host",
-			Handler:    _ContainerRuntime_Host_Handler,
+			MethodName: "ApiServe",
+			Handler:    _ContainerRuntime_ApiServe_Handler,
 		},
 		{
-			MethodName: "Exit",
-			Handler:    _ContainerRuntime_Exit_Handler,
+			MethodName: "ApiUnserve",
+			Handler:    _ContainerRuntime_ApiUnserve_Handler,
 		},
 		{
 			MethodName: "List",
@@ -1315,7 +1822,7 @@ var _ContainerRuntime_serviceDesc = grpc.ServiceDesc{
 	Metadata: "pkg/api/ctrt/v0/api.proto",
 }
 
-func (m *HostConfiguration) Marshal() (dAtA []byte, err error) {
+func (m *ApiServeRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1325,12 +1832,12 @@ func (m *HostConfiguration) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *HostConfiguration) MarshalTo(dAtA []byte) (int, error) {
+func (m *ApiServeRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *HostConfiguration) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ApiServeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1342,12 +1849,117 @@ func (m *HostConfiguration) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.MaxContainerMemory != 0 {
 		i = encodeVarintApi(dAtA, i, uint64(m.MaxContainerMemory))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x28
 	}
 	if m.MaxContainers != 0 {
 		i = encodeVarintApi(dAtA, i, uint64(m.MaxContainers))
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0x20
+	}
+	if m.Timeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Port != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Hostname) > 0 {
+		i -= len(m.Hostname)
+		copy(dAtA[i:], m.Hostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ApiUnserveRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ApiUnserveRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ApiUnserveRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Timeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Port != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Hostname) > 0 {
+		i -= len(m.Hostname)
+		copy(dAtA[i:], m.Hostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Timeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Port != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Hostname) > 0 {
+		i -= len(m.Hostname)
+		copy(dAtA[i:], m.Hostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -1382,8 +1994,25 @@ func (m *ListResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			copy(dAtA[i:], m.Id[iNdEx])
 			i = encodeVarintApi(dAtA, i, uint64(len(m.Id[iNdEx])))
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x22
 		}
+	}
+	if m.Timeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Port != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Hostname) > 0 {
+		i -= len(m.Hostname)
+		copy(dAtA[i:], m.Hostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -1416,6 +2045,23 @@ func (m *QueryStateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.Id)
 		copy(dAtA[i:], m.Id)
 		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Timeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Port != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Hostname) > 0 {
+		i -= len(m.Hostname)
+		copy(dAtA[i:], m.Hostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1528,12 +2174,29 @@ func (m *CreateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Bundle)
 		i = encodeVarintApi(dAtA, i, uint64(len(m.Bundle)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x2a
 	}
 	if len(m.Id) > 0 {
 		i -= len(m.Id)
 		copy(dAtA[i:], m.Id)
 		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Timeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Port != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Hostname) > 0 {
+		i -= len(m.Hostname)
+		copy(dAtA[i:], m.Hostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1569,6 +2232,23 @@ func (m *StartRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Id)
 		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
 		i--
+		dAtA[i] = 0x22
+	}
+	if m.Timeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Port != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Hostname) > 0 {
+		i -= len(m.Hostname)
+		copy(dAtA[i:], m.Hostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
+		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
@@ -1601,12 +2281,29 @@ func (m *KillRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.Signal != 0 {
 		i = encodeVarintApi(dAtA, i, uint64(m.Signal))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x28
 	}
 	if len(m.Id) > 0 {
 		i -= len(m.Id)
 		copy(dAtA[i:], m.Id)
 		i = encodeVarintApi(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Timeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Port != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Hostname) > 0 {
+		i -= len(m.Hostname)
+		copy(dAtA[i:], m.Hostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1642,6 +2339,23 @@ func (m *DeleteRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.ContainerId)
 		i = encodeVarintApi(dAtA, i, uint64(len(m.ContainerId)))
 		i--
+		dAtA[i] = 0x22
+	}
+	if m.Timeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Port != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Hostname) > 0 {
+		i -= len(m.Hostname)
+		copy(dAtA[i:], m.Hostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
+		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
@@ -1658,17 +2372,71 @@ func encodeVarintApi(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *HostConfiguration) Size() (n int) {
+func (m *ApiServeRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	l = len(m.Hostname)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.Port != 0 {
+		n += 1 + sovApi(uint64(m.Port))
+	}
+	if m.Timeout != 0 {
+		n += 1 + sovApi(uint64(m.Timeout))
+	}
 	if m.MaxContainers != 0 {
 		n += 1 + sovApi(uint64(m.MaxContainers))
 	}
 	if m.MaxContainerMemory != 0 {
 		n += 1 + sovApi(uint64(m.MaxContainerMemory))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ApiUnserveRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Hostname)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.Port != 0 {
+		n += 1 + sovApi(uint64(m.Port))
+	}
+	if m.Timeout != 0 {
+		n += 1 + sovApi(uint64(m.Timeout))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ListRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Hostname)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.Port != 0 {
+		n += 1 + sovApi(uint64(m.Port))
+	}
+	if m.Timeout != 0 {
+		n += 1 + sovApi(uint64(m.Timeout))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -1682,6 +2450,16 @@ func (m *ListResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Hostname)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.Port != 0 {
+		n += 1 + sovApi(uint64(m.Port))
+	}
+	if m.Timeout != 0 {
+		n += 1 + sovApi(uint64(m.Timeout))
+	}
 	if len(m.Id) > 0 {
 		for _, s := range m.Id {
 			l = len(s)
@@ -1700,6 +2478,16 @@ func (m *QueryStateRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Hostname)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.Port != 0 {
+		n += 1 + sovApi(uint64(m.Port))
+	}
+	if m.Timeout != 0 {
+		n += 1 + sovApi(uint64(m.Timeout))
+	}
 	l = len(m.Id)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
@@ -1754,6 +2542,16 @@ func (m *CreateRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Hostname)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.Port != 0 {
+		n += 1 + sovApi(uint64(m.Port))
+	}
+	if m.Timeout != 0 {
+		n += 1 + sovApi(uint64(m.Timeout))
+	}
 	l = len(m.Id)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
@@ -1774,6 +2572,16 @@ func (m *StartRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Hostname)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.Port != 0 {
+		n += 1 + sovApi(uint64(m.Port))
+	}
+	if m.Timeout != 0 {
+		n += 1 + sovApi(uint64(m.Timeout))
+	}
 	l = len(m.Id)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
@@ -1790,6 +2598,16 @@ func (m *KillRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Hostname)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.Port != 0 {
+		n += 1 + sovApi(uint64(m.Port))
+	}
+	if m.Timeout != 0 {
+		n += 1 + sovApi(uint64(m.Timeout))
+	}
 	l = len(m.Id)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
@@ -1809,6 +2627,16 @@ func (m *DeleteRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Hostname)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.Port != 0 {
+		n += 1 + sovApi(uint64(m.Port))
+	}
+	if m.Timeout != 0 {
+		n += 1 + sovApi(uint64(m.Timeout))
+	}
 	l = len(m.ContainerId)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
@@ -1825,13 +2653,42 @@ func sovApi(x uint64) (n int) {
 func sozApi(x uint64) (n int) {
 	return sovApi(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (this *HostConfiguration) String() string {
+func (this *ApiServeRequest) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&HostConfiguration{`,
+	s := strings.Join([]string{`&ApiServeRequest{`,
+		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
+		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
+		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
 		`MaxContainers:` + fmt.Sprintf("%v", this.MaxContainers) + `,`,
 		`MaxContainerMemory:` + fmt.Sprintf("%v", this.MaxContainerMemory) + `,`,
+		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ApiUnserveRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ApiUnserveRequest{`,
+		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
+		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
+		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
+		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ListRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ListRequest{`,
+		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
+		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
+		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
 	}, "")
@@ -1842,6 +2699,9 @@ func (this *ListResponse) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&ListResponse{`,
+		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
+		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
+		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
 		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
@@ -1853,6 +2713,9 @@ func (this *QueryStateRequest) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&QueryStateRequest{`,
+		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
+		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
+		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
 		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
@@ -1890,6 +2753,9 @@ func (this *CreateRequest) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&CreateRequest{`,
+		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
+		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
+		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
 		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`Bundle:` + fmt.Sprintf("%v", this.Bundle) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
@@ -1902,6 +2768,9 @@ func (this *StartRequest) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&StartRequest{`,
+		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
+		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
+		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
 		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
@@ -1913,6 +2782,9 @@ func (this *KillRequest) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&KillRequest{`,
+		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
+		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
+		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
 		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`Signal:` + fmt.Sprintf("%v", this.Signal) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
@@ -1925,6 +2797,9 @@ func (this *DeleteRequest) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&DeleteRequest{`,
+		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
+		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
+		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
 		`ContainerId:` + fmt.Sprintf("%v", this.ContainerId) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
@@ -1939,7 +2814,7 @@ func valueToStringApi(v interface{}) string {
 	pv := reflect.Indirect(rv).Interface()
 	return fmt.Sprintf("*%v", pv)
 }
-func (m *HostConfiguration) Unmarshal(dAtA []byte) error {
+func (m *ApiServeRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1962,13 +2837,83 @@ func (m *HostConfiguration) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: HostConfiguration: wiretype end group for non-group")
+			return fmt.Errorf("proto: ApiServeRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: HostConfiguration: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ApiServeRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hostname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+			}
+			m.Port = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Port |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+			}
+			m.Timeout = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timeout |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MaxContainers", wireType)
 			}
@@ -1987,7 +2932,7 @@ func (m *HostConfiguration) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 2:
+		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MaxContainerMemory", wireType)
 			}
@@ -2002,6 +2947,248 @@ func (m *HostConfiguration) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.MaxContainerMemory |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ApiUnserveRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ApiUnserveRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ApiUnserveRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hostname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+			}
+			m.Port = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Port |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+			}
+			m.Timeout = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timeout |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hostname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+			}
+			m.Port = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Port |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+			}
+			m.Timeout = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timeout |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2058,6 +3245,76 @@ func (m *ListResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hostname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+			}
+			m.Port = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Port |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+			}
+			m.Timeout = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timeout |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
@@ -2141,6 +3398,76 @@ func (m *QueryStateRequest) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hostname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+			}
+			m.Port = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Port |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+			}
+			m.Timeout = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timeout |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
@@ -2537,6 +3864,76 @@ func (m *CreateRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hostname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+			}
+			m.Port = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Port |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+			}
+			m.Timeout = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timeout |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
 			var stringLen uint64
@@ -2567,7 +3964,7 @@ func (m *CreateRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Id = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Bundle", wireType)
 			}
@@ -2652,6 +4049,76 @@ func (m *StartRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hostname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+			}
+			m.Port = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Port |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+			}
+			m.Timeout = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timeout |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
 			var stringLen uint64
@@ -2735,6 +4202,76 @@ func (m *KillRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hostname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+			}
+			m.Port = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Port |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+			}
+			m.Timeout = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timeout |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
 			var stringLen uint64
@@ -2765,7 +4302,7 @@ func (m *KillRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Id = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signal", wireType)
 			}
@@ -2836,6 +4373,76 @@ func (m *DeleteRequest) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hostname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+			}
+			m.Port = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Port |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+			}
+			m.Timeout = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Timeout |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ContainerId", wireType)
 			}

@@ -1,0 +1,6 @@
+kind: api.ctrt.ApiUnserveRequest
+version: v0
+def:
+  hostname: localhost
+  port: 8888
+  timeout: 10

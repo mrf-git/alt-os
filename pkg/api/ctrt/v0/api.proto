@@ -17,15 +17,15 @@ option (gogoproto.sizer_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 
 // ContainerRuntime is the service advertised by ctrt.
-// After a successful call to Host the runtime can begin
+// After a successful call to Serve the runtime can begin
 // operating containers using the other service methods.
 service ContainerRuntime {
-	// Host enables hosting of container runtimes according to the given configuration.
-	rpc Host(HostConfiguration) returns (google.protobuf.Empty) {}
-	// Exit stops all containers and exits hosting.
-	rpc Exit(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+	// ApiServe enables the container runtime api according to the given configuration.
+	rpc ApiServe(ApiServeRequest) returns (google.protobuf.Empty) {}
+	// ApiUnserve stops all containers and disables the container runtime api.
+	rpc ApiUnserve(ApiUnserveRequest) returns (google.protobuf.Empty) {}
 	// List gets all containers the runtime knows about.
-	rpc List(google.protobuf.Empty) returns (ListResponse) {}
+	rpc List(ListRequest) returns (ListResponse) {}
 	// QueryState gets the state of a specified container.
 	rpc QueryState(QueryStateRequest) returns (google.protobuf.Empty) {}
 	// Create creates a new container and begins preparing it to be started.
@@ -38,24 +38,62 @@ service ContainerRuntime {
 	rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {}
 }
 
-// HostConfiguration specifies the parameters to a ContainerRuntime.Host call.
-message HostConfiguration {
+// ApiServeRequest specifies the parameters to a ContainerRuntime.Serve call.
+message ApiServeRequest {
+	// The hostname to listen on.
+	string hostname = 1;
+	// The port to listen on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
 	// The maximum number of containers to allow.
-	int64 max_containers = 1;
+	int64 max_containers = 4;
 	// The maximum amount of memory to allow a single container to consume.
-	int64 max_container_memory = 2;
+	int64 max_container_memory = 5;
+}
+
+// ApiUnserveRequest specifies the parameters to a ContainerRuntime.Unserve call.
+message ApiUnserveRequest {
+	// The hostname of the listening server to operate on.
+	string hostname = 1;
+	// The port of the listening server to operate on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
+}
+
+// ListRequest specifies the parameters to a ContainerRuntime.List call.
+message ListRequest {
+	// The hostname of the listening server to operate on.
+	string hostname = 1;
+	// The port of the listening server to operate on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
 }
 
 // ListResponse returns the result of a ContainerRuntime.List call.
 message ListResponse {
+	// The hostname of the listening server to operate on.
+	string hostname = 1;
+	// The port of the listening server to operate on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
 	// The unique id of the container.
-	repeated string id = 1;
+	repeated string id = 4;
 }
 
 // QueryStateRequest specifies the parameters to a ContainerRuntime.QueryState call.
 message QueryStateRequest {
+	// The hostname of the listening server to operate on.
+	string hostname = 1;
+	// The port of the listening server to operate on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
 	// The unique id of the container.
-	string id = 1;
+	string id = 4;
 }
 
 // QueryStateResponse returns the result of a ContainerRuntime.QueryState call.
@@ -76,30 +114,54 @@ message QueryStateResponse {
 
 // CreateRequest specifies the parameters to a ContainerRuntime.Create call.
 message CreateRequest {
+	// The hostname of the listening server to operate on.
+	string hostname = 1;
+	// The port of the listening server to operate on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
 	// The unique id of the container.
-	string id = 1;
+	string id = 4;
 	// The container's bundle directory.
-	string bundle = 2;
+	string bundle = 5;
 }
 
 // StartRequest specifies the parameters to a ContainerRuntime.Start call.
 message StartRequest {
+	// The hostname of the listening server to operate on.
+	string hostname = 1;
+	// The port of the listening server to operate on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
 	// The unique id of the container.
-	string id = 1;
+	string id = 4;
 }
 
 // KillRequest specifies the parameters to a ContainerRuntime.Kill call.
 message KillRequest {
+	// The hostname of the listening server to operate on.
+	string hostname = 1;
+	// The port of the listening server to operate on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
 	// The unique id of the container.
-	string id = 1;
+	string id = 4;
 	// The kill signal to send.
-	int32 signal = 2;
+	int32 signal = 5;
 }
 
 // DeleteRequest specifies the parameters to a ContainerRuntime.Delete call.
 message DeleteRequest {
+	// The hostname of the listening server to operate on.
+	string hostname = 1;
+	// The port of the listening server to operate on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
 	// The unique id of the container.
-	string container_id = 1;
+	string container_id = 4;
 }
 
 // ContainerStatus represents the runtime state of a container.

@@ -1,5 +1,0 @@
-kind: api.ctrt.HostConfiguration
-version: v0
-def:
-  maxContainers: 5
-  maxContainerMemory: 10000

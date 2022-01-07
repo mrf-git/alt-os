@@ -2,10 +2,9 @@ package main
 
 import (
 	"alt-os/api"
+	api_ctrt_v0 "alt-os/api/ctrt/v0"
 	"alt-os/exe"
-	"flag"
-	"fmt"
-	"os"
+	"regexp"
 )
 
 const _USAGE = `ctrt
@@ -22,36 +21,25 @@ more objects in yaml format to apply to a runtime.
 // CtrtContext holds context information for ctrt.
 type CtrtContext struct {
 	*exe.ExeContext
-	Messages []*api.ApiProtoMessage
 }
 
 // main is the entry point.
 func main() {
-	// Parse command line.
-	var infile, format string
-	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "%s\n", _USAGE)
-		fmt.Fprintf(os.Stderr, "Usage:\n")
-		flag.PrintDefaults()
+	allowedKindRe := regexp.MustCompile(`api.ctrt.[[:word:]]`)
+	allowedVersionRe := regexp.MustCompile(`v0`)
+	ctxt := &CtrtContext{}
+	kindImplMap := map[string]interface{}{
+		"api.ctrt.ContainerRuntime/v0": NewContainerRuntimeServerImpl(ctxt),
 	}
-	flag.StringVar(&infile, "i", "", "The input object(s) file to use for container runtime changes")
-	flag.StringVar(&format, "f", "", "Input file format (yaml,json), inferred from extension if not specified")
-	flag.Parse()
-
-	if infile == "" {
-		flag.Usage()
-		os.Exit(1)
+	respHandlerMap := map[string]func(interface{}) error{
+		"api.ctrt.ContainerRuntime/v0.List": func(resp interface{}) error {
+			return handleRespList(resp.(*api_ctrt_v0.ListResponse))
+		},
 	}
-
-	// Read input file and initialize context.
-	ctxt := &CtrtContext{ExeContext: &exe.ExeContext{}}
-	if messages, err := api.UnmarshalApiProtoMessages(infile, format); err != nil {
-		exe.Fatal("unmarshaling proto messages", err, ctxt.ExeContext)
-	} else {
-		ctxt.Messages = messages
+	ctxt.ExeContext = exe.InitContext(_USAGE, allowedKindRe, allowedVersionRe,
+		kindImplMap, respHandlerMap)
+	if err := api.ServiceMessages(ctxt.ApiServiceContext); err != nil {
+		exe.Fatal("servicing messages", err, ctxt.ExeContext)
 	}
-
-	handleApiMessages(ctxt)
-
 	exe.Success(ctxt.ExeContext)
 }

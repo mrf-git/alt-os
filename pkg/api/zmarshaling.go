@@ -5,6 +5,7 @@ import (
 	api_api_v0 "alt-os/api/api/v0"
 	api_ctrt_v0 "alt-os/api/ctrt/v0"
 	"errors"
+
 	"github.com/gogo/protobuf/proto"
 )
 
@@ -24,8 +25,12 @@ func unmarshalKind(kind, version string, value []byte) (proto.Message, error) {
 		return doUnmarshal(&api_api_v0.ApiMessage{})
 	case "api.api.ApiMessageList/v0":
 		return doUnmarshal(&api_api_v0.ApiMessageList{})
-	case "api.ctrt.HostConfiguration/v0":
-		return doUnmarshal(&api_ctrt_v0.HostConfiguration{})
+	case "api.ctrt.ApiServeRequest/v0":
+		return doUnmarshal(&api_ctrt_v0.ApiServeRequest{})
+	case "api.ctrt.ApiUnserveRequest/v0":
+		return doUnmarshal(&api_ctrt_v0.ApiUnserveRequest{})
+	case "api.ctrt.ListRequest/v0":
+		return doUnmarshal(&api_ctrt_v0.ListRequest{})
 	case "api.ctrt.ListResponse/v0":
 		return doUnmarshal(&api_ctrt_v0.ListResponse{})
 	case "api.ctrt.QueryStateRequest/v0":
@@ -59,8 +64,12 @@ func marshalKind(msg proto.Message) (kind, version string, bytes []byte, err err
 		return doMarshal("api.api.ApiMessage", "v0", msg)
 	case *api_api_v0.ApiMessageList:
 		return doMarshal("api.api.ApiMessageList", "v0", msg)
-	case *api_ctrt_v0.HostConfiguration:
-		return doMarshal("api.ctrt.HostConfiguration", "v0", msg)
+	case *api_ctrt_v0.ApiServeRequest:
+		return doMarshal("api.ctrt.ApiServeRequest", "v0", msg)
+	case *api_ctrt_v0.ApiUnserveRequest:
+		return doMarshal("api.ctrt.ApiUnserveRequest", "v0", msg)
+	case *api_ctrt_v0.ListRequest:
+		return doMarshal("api.ctrt.ListRequest", "v0", msg)
 	case *api_ctrt_v0.ListResponse:
 		return doMarshal("api.ctrt.ListResponse", "v0", msg)
 	case *api_ctrt_v0.QueryStateRequest:
