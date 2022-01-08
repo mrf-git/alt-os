@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 )
 
-const _USAGE = `codegen
+const EXE_USAGE = `codegen
 -------
 Installs any necessary module dependencies and runs code
 generation on the source tree.
@@ -26,7 +26,7 @@ func main() {
 	// Parse command line.
 	var pb bool
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "%s\n", _USAGE)
+		fmt.Fprintf(os.Stderr, "%s\n", EXE_USAGE)
 		fmt.Fprintf(os.Stderr, "Usage:\n")
 		flag.PrintDefaults()
 	}

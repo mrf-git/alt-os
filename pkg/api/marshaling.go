@@ -58,7 +58,7 @@ func UnmarshalApiProtoMessages(filename, format string) ([]*ApiProtoMessage, err
 	// Unmarshal each individual specific kind of message.
 	var apiMessages []*ApiProtoMessage
 	for _, msg := range msgList.Messages {
-		if msg.Kind != "api."+msg.Def.TypeUrl {
+		if msg.Kind != msg.Def.TypeUrl {
 			return nil, errors.New("kind/type mismatch")
 		}
 		if protoMsg, err := unmarshalKind(msg.Kind, msg.Version, msg.Def.Value); err != nil {
@@ -110,7 +110,7 @@ func MarshalApiProtoMessages(messages []*ApiProtoMessage, filename, format strin
 			Kind:    kind,
 			Version: version,
 			Def: &types.Any{
-				TypeUrl: strings.TrimPrefix(kind, "api."),
+				TypeUrl: kind,
 				Value:   bytes,
 			},
 		}
@@ -149,7 +149,7 @@ func openYamlAsJson(filename string) (io.ReadCloser, error) {
 			} else if err != nil {
 				return nil, err
 			}
-			protoType := strings.TrimPrefix(yamlMap["kind"].(string), "api.")
+			protoType := yamlMap["kind"].(string)
 			defMap := yamlMap["def"].(map[string]interface{})
 			defMap["@type"] = protoType
 			jsonMap["messages"] = append(jsonMap["messages"], yamlMap)

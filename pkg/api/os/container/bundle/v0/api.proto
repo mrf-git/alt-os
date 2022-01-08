@@ -1,0 +1,64 @@
+// To regenerate api.pb.go run `codegen -p`.
+syntax = "proto3";
+
+package os.container.bundle;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "alt-os/api/os/container/bundle/v0";
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.stringer_all) =  true;
+option (gogoproto.populate_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+
+// ContainerBundleService is a service for managing container
+// bundles that are to be consumed by the container runtime service.
+// After a successful call to ApiServe the bundle service can begin
+// creating and managing bundles.
+service ContainerBundleService {
+	// ApiServe enables the container bundle service api according to the given configuration.
+	rpc ApiServe(ApiServeRequest) returns (google.protobuf.Empty) {}
+	// ApiUnserve disables the container bundle service api.
+	rpc ApiUnserve(ApiUnserveRequest) returns (google.protobuf.Empty) {}
+	// Create generates a new bundle in a subdirectory of the bundle service root directory.
+	rpc Create(CreateRequest) returns (google.protobuf.Empty) {}
+}
+
+// ApiServeRequest specifies the parameters to a ContainerBundleService.Serve call.
+message ApiServeRequest {
+	// The hostname to listen on.
+	string hostname = 1;
+	// The port to listen on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
+	// The path to the root directory of bundles.
+	string root_dir = 4;
+}
+
+// ApiUnserveRequest specifies the parameters to a ContainerBundleService.Unserve call.
+message ApiUnserveRequest {
+	// The hostname of the listening server to operate on.
+	string hostname = 1;
+	// The port of the listening server to operate on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
+}
+
+// CreateRequest specifies the parameters to a ContainerBundleService.Create call.
+message CreateRequest {
+	// The hostname of the listening server to operate on.
+	string hostname = 1;
+	// The port of the listening server to operate on.
+	int32 port = 2;
+	// The number of seconds to timeout the request.
+	int32 timeout = 3;
+	// The name of the subdirectory of the bundle within the bundle service root directory.
+	string bundle_dir = 4;
+}

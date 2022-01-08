@@ -2,7 +2,8 @@
 package api
 
 import (
-	api_ctrt_v0 "alt-os/api/ctrt/v0"
+	api_os_container_bundle_v0 "alt-os/api/os/container/bundle/v0"
+	api_os_container_runtime_v0 "alt-os/api/os/container/runtime/v0"
 	"errors"
 	"fmt"
 )
@@ -13,40 +14,56 @@ func serviceMessageKinds(ctxt *ApiServiceContext) error {
 		switch msg := apiMsg.Def.(type) {
 		default:
 			return errors.New("invalid message kind: " + apiMsg.Kind)
-		case *api_ctrt_v0.ApiServeRequest:
-			if err := newServer("api.ctrt.ContainerRuntime", "v0", msg, ctxt); err != nil {
+		case *api_os_container_bundle_v0.ApiServeRequest:
+			if err := newServer("os.container.bundle.ContainerBundleService", "v0", msg, ctxt); err != nil {
 				return err
-			} else if err := req_ContainerRuntime_v0_ApiServe(msg, ctxt); err != nil {
+			} else if err := req_api_os_container_bundle_v0_ContainerBundleService_v0_ApiServe(msg, ctxt); err != nil {
 				return err
 			}
-		case *api_ctrt_v0.ApiUnserveRequest:
-			if err := req_ContainerRuntime_v0_ApiUnserve(msg, ctxt); err != nil {
+		case *api_os_container_bundle_v0.ApiUnserveRequest:
+			if err := req_api_os_container_bundle_v0_ContainerBundleService_v0_ApiUnserve(msg, ctxt); err != nil {
 				return err
 			} else if err := stopServer(fmt.Sprintf("%s:%d", msg.GetHostname(), msg.GetPort()), ctxt); err != nil {
 				return err
 			}
-		case *api_ctrt_v0.ListRequest:
-			if err := req_ContainerRuntime_v0_List(msg, ctxt); err != nil {
+		case *api_os_container_bundle_v0.CreateRequest:
+			if err := req_api_os_container_bundle_v0_ContainerBundleService_v0_Create(msg, ctxt); err != nil {
 				return err
 			}
-		case *api_ctrt_v0.QueryStateRequest:
-			if err := req_ContainerRuntime_v0_QueryState(msg, ctxt); err != nil {
+		case *api_os_container_runtime_v0.ApiServeRequest:
+			if err := newServer("os.container.runtime.ContainerRuntimeService", "v0", msg, ctxt); err != nil {
+				return err
+			} else if err := req_api_os_container_runtime_v0_ContainerRuntimeService_v0_ApiServe(msg, ctxt); err != nil {
 				return err
 			}
-		case *api_ctrt_v0.CreateRequest:
-			if err := req_ContainerRuntime_v0_Create(msg, ctxt); err != nil {
+		case *api_os_container_runtime_v0.ApiUnserveRequest:
+			if err := req_api_os_container_runtime_v0_ContainerRuntimeService_v0_ApiUnserve(msg, ctxt); err != nil {
+				return err
+			} else if err := stopServer(fmt.Sprintf("%s:%d", msg.GetHostname(), msg.GetPort()), ctxt); err != nil {
 				return err
 			}
-		case *api_ctrt_v0.StartRequest:
-			if err := req_ContainerRuntime_v0_Start(msg, ctxt); err != nil {
+		case *api_os_container_runtime_v0.ListRequest:
+			if err := req_api_os_container_runtime_v0_ContainerRuntimeService_v0_List(msg, ctxt); err != nil {
 				return err
 			}
-		case *api_ctrt_v0.KillRequest:
-			if err := req_ContainerRuntime_v0_Kill(msg, ctxt); err != nil {
+		case *api_os_container_runtime_v0.QueryStateRequest:
+			if err := req_api_os_container_runtime_v0_ContainerRuntimeService_v0_QueryState(msg, ctxt); err != nil {
 				return err
 			}
-		case *api_ctrt_v0.DeleteRequest:
-			if err := req_ContainerRuntime_v0_Delete(msg, ctxt); err != nil {
+		case *api_os_container_runtime_v0.CreateRequest:
+			if err := req_api_os_container_runtime_v0_ContainerRuntimeService_v0_Create(msg, ctxt); err != nil {
+				return err
+			}
+		case *api_os_container_runtime_v0.StartRequest:
+			if err := req_api_os_container_runtime_v0_ContainerRuntimeService_v0_Start(msg, ctxt); err != nil {
+				return err
+			}
+		case *api_os_container_runtime_v0.KillRequest:
+			if err := req_api_os_container_runtime_v0_ContainerRuntimeService_v0_Kill(msg, ctxt); err != nil {
+				return err
+			}
+		case *api_os_container_runtime_v0.DeleteRequest:
+			if err := req_api_os_container_runtime_v0_ContainerRuntimeService_v0_Delete(msg, ctxt); err != nil {
 				return err
 			}
 		}
@@ -65,8 +82,11 @@ func makeClientKind(addr string, ctxt *ApiServiceContext) error {
 	switch ctxt.AddrKindVerMap[addr] {
 	default:
 		return errors.New("invalid client kindVer: " + ctxt.AddrKindVerMap[addr])
-	case "api.ctrt.ContainerRuntime/v0":
-		ctxt.AddrClientMap[addr] = api_ctrt_v0.NewContainerRuntimeClient(ctxt.AddrGrpcConnMap[addr])
+
+	case "os.container.bundle.ContainerBundleService/v0":
+		ctxt.AddrClientMap[addr] = api_os_container_bundle_v0.NewContainerBundleServiceClient(ctxt.AddrGrpcConnMap[addr])
+	case "os.container.runtime.ContainerRuntimeService/v0":
+		ctxt.AddrClientMap[addr] = api_os_container_runtime_v0.NewContainerRuntimeServiceClient(ctxt.AddrGrpcConnMap[addr])
 	}
 	if ctxt.AddrClientMap[addr] == nil {
 		return errors.New("failed to make client " + ctxt.AddrKindVerMap[addr] + " for " + addr)
@@ -79,9 +99,14 @@ func makeServerKind(addr string, ctxt *ApiServiceContext) error {
 	switch ctxt.AddrKindVerMap[addr] {
 	default:
 		return errors.New("invalid impl kindVer: " + ctxt.AddrKindVerMap[addr])
-	case "api.ctrt.ContainerRuntime/v0":
-		srv := ctxt.KindImplMap[ctxt.AddrKindVerMap[addr]].(api_ctrt_v0.ContainerRuntimeServer)
-		api_ctrt_v0.RegisterContainerRuntimeServer(ctxt.AddrGrpcServerMap[addr], srv)
+
+	case "os.container.bundle.ContainerBundleService/v0":
+		srv := ctxt.KindImplMap[ctxt.AddrKindVerMap[addr]].(api_os_container_bundle_v0.ContainerBundleServiceServer)
+		api_os_container_bundle_v0.RegisterContainerBundleServiceServer(ctxt.AddrGrpcServerMap[addr], srv)
+		ctxt.AddrServerMap[addr] = srv
+	case "os.container.runtime.ContainerRuntimeService/v0":
+		srv := ctxt.KindImplMap[ctxt.AddrKindVerMap[addr]].(api_os_container_runtime_v0.ContainerRuntimeServiceServer)
+		api_os_container_runtime_v0.RegisterContainerRuntimeServiceServer(ctxt.AddrGrpcServerMap[addr], srv)
 		ctxt.AddrServerMap[addr] = srv
 	}
 	return nil
@@ -89,18 +114,18 @@ func makeServerKind(addr string, ctxt *ApiServiceContext) error {
 
 // Specific kinds follow grpc request calls follow. Functions called by serviceMessageKinds.
 
-func req_ContainerRuntime_v0_ApiServe(req *api_ctrt_v0.ApiServeRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("api.ctrt.ContainerRuntime", "v0", req, ctxt); err != nil {
+func req_api_os_container_bundle_v0_ContainerBundleService_v0_ApiServe(req *api_os_container_bundle_v0.ApiServeRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.bundle.ContainerBundleService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_ctrt_v0.ContainerRuntimeClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_bundle_v0.ContainerBundleServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.ApiServe(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["api.ctrt.ContainerRuntime/v0.ApiServe"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.container.bundle.ContainerBundleService/v0.ApiServe"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -109,18 +134,18 @@ func req_ContainerRuntime_v0_ApiServe(req *api_ctrt_v0.ApiServeRequest, ctxt *Ap
 	return nil
 }
 
-func req_ContainerRuntime_v0_ApiUnserve(req *api_ctrt_v0.ApiUnserveRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("api.ctrt.ContainerRuntime", "v0", req, ctxt); err != nil {
+func req_api_os_container_bundle_v0_ContainerBundleService_v0_ApiUnserve(req *api_os_container_bundle_v0.ApiUnserveRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.bundle.ContainerBundleService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_ctrt_v0.ContainerRuntimeClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_bundle_v0.ContainerBundleServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.ApiUnserve(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["api.ctrt.ContainerRuntime/v0.ApiUnserve"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.container.bundle.ContainerBundleService/v0.ApiUnserve"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -129,58 +154,18 @@ func req_ContainerRuntime_v0_ApiUnserve(req *api_ctrt_v0.ApiUnserveRequest, ctxt
 	return nil
 }
 
-func req_ContainerRuntime_v0_List(req *api_ctrt_v0.ListRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("api.ctrt.ContainerRuntime", "v0", req, ctxt); err != nil {
+func req_api_os_container_bundle_v0_ContainerBundleService_v0_Create(req *api_os_container_bundle_v0.CreateRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.bundle.ContainerBundleService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_ctrt_v0.ContainerRuntimeClient)
-		if !ok {
-			return errors.New("no client for " + addr)
-		}
-		if resp, err := client.List(grpcContext, req); err != nil {
-			return err
-		} else if handler := ctxt.RespHandlerMap["api.ctrt.ContainerRuntime/v0.List"]; handler == nil {
-			return nil
-		} else if err := handler(resp); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func req_ContainerRuntime_v0_QueryState(req *api_ctrt_v0.QueryStateRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("api.ctrt.ContainerRuntime", "v0", req, ctxt); err != nil {
-		return err
-	} else {
-		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_ctrt_v0.ContainerRuntimeClient)
-		if !ok {
-			return errors.New("no client for " + addr)
-		}
-		if resp, err := client.QueryState(grpcContext, req); err != nil {
-			return err
-		} else if handler := ctxt.RespHandlerMap["api.ctrt.ContainerRuntime/v0.QueryState"]; handler == nil {
-			return nil
-		} else if err := handler(resp); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func req_ContainerRuntime_v0_Create(req *api_ctrt_v0.CreateRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("api.ctrt.ContainerRuntime", "v0", req, ctxt); err != nil {
-		return err
-	} else {
-		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_ctrt_v0.ContainerRuntimeClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_bundle_v0.ContainerBundleServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.Create(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["api.ctrt.ContainerRuntime/v0.Create"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.container.bundle.ContainerBundleService/v0.Create"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -189,18 +174,118 @@ func req_ContainerRuntime_v0_Create(req *api_ctrt_v0.CreateRequest, ctxt *ApiSer
 	return nil
 }
 
-func req_ContainerRuntime_v0_Start(req *api_ctrt_v0.StartRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("api.ctrt.ContainerRuntime", "v0", req, ctxt); err != nil {
+func req_api_os_container_runtime_v0_ContainerRuntimeService_v0_ApiServe(req *api_os_container_runtime_v0.ApiServeRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.runtime.ContainerRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_ctrt_v0.ContainerRuntimeClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_runtime_v0.ContainerRuntimeServiceClient)
+		if !ok {
+			return errors.New("no client for " + addr)
+		}
+		if resp, err := client.ApiServe(grpcContext, req); err != nil {
+			return err
+		} else if handler := ctxt.RespHandlerMap["os.container.runtime.ContainerRuntimeService/v0.ApiServe"]; handler == nil {
+			return nil
+		} else if err := handler(resp); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func req_api_os_container_runtime_v0_ContainerRuntimeService_v0_ApiUnserve(req *api_os_container_runtime_v0.ApiUnserveRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.runtime.ContainerRuntimeService", "v0", req, ctxt); err != nil {
+		return err
+	} else {
+		defer grpcCancel()
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_runtime_v0.ContainerRuntimeServiceClient)
+		if !ok {
+			return errors.New("no client for " + addr)
+		}
+		if resp, err := client.ApiUnserve(grpcContext, req); err != nil {
+			return err
+		} else if handler := ctxt.RespHandlerMap["os.container.runtime.ContainerRuntimeService/v0.ApiUnserve"]; handler == nil {
+			return nil
+		} else if err := handler(resp); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func req_api_os_container_runtime_v0_ContainerRuntimeService_v0_List(req *api_os_container_runtime_v0.ListRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.runtime.ContainerRuntimeService", "v0", req, ctxt); err != nil {
+		return err
+	} else {
+		defer grpcCancel()
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_runtime_v0.ContainerRuntimeServiceClient)
+		if !ok {
+			return errors.New("no client for " + addr)
+		}
+		if resp, err := client.List(grpcContext, req); err != nil {
+			return err
+		} else if handler := ctxt.RespHandlerMap["os.container.runtime.ContainerRuntimeService/v0.List"]; handler == nil {
+			return nil
+		} else if err := handler(resp); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func req_api_os_container_runtime_v0_ContainerRuntimeService_v0_QueryState(req *api_os_container_runtime_v0.QueryStateRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.runtime.ContainerRuntimeService", "v0", req, ctxt); err != nil {
+		return err
+	} else {
+		defer grpcCancel()
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_runtime_v0.ContainerRuntimeServiceClient)
+		if !ok {
+			return errors.New("no client for " + addr)
+		}
+		if resp, err := client.QueryState(grpcContext, req); err != nil {
+			return err
+		} else if handler := ctxt.RespHandlerMap["os.container.runtime.ContainerRuntimeService/v0.QueryState"]; handler == nil {
+			return nil
+		} else if err := handler(resp); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func req_api_os_container_runtime_v0_ContainerRuntimeService_v0_Create(req *api_os_container_runtime_v0.CreateRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.runtime.ContainerRuntimeService", "v0", req, ctxt); err != nil {
+		return err
+	} else {
+		defer grpcCancel()
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_runtime_v0.ContainerRuntimeServiceClient)
+		if !ok {
+			return errors.New("no client for " + addr)
+		}
+		if resp, err := client.Create(grpcContext, req); err != nil {
+			return err
+		} else if handler := ctxt.RespHandlerMap["os.container.runtime.ContainerRuntimeService/v0.Create"]; handler == nil {
+			return nil
+		} else if err := handler(resp); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func req_api_os_container_runtime_v0_ContainerRuntimeService_v0_Start(req *api_os_container_runtime_v0.StartRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.runtime.ContainerRuntimeService", "v0", req, ctxt); err != nil {
+		return err
+	} else {
+		defer grpcCancel()
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_runtime_v0.ContainerRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.Start(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["api.ctrt.ContainerRuntime/v0.Start"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.container.runtime.ContainerRuntimeService/v0.Start"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -209,18 +294,18 @@ func req_ContainerRuntime_v0_Start(req *api_ctrt_v0.StartRequest, ctxt *ApiServi
 	return nil
 }
 
-func req_ContainerRuntime_v0_Kill(req *api_ctrt_v0.KillRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("api.ctrt.ContainerRuntime", "v0", req, ctxt); err != nil {
+func req_api_os_container_runtime_v0_ContainerRuntimeService_v0_Kill(req *api_os_container_runtime_v0.KillRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.runtime.ContainerRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_ctrt_v0.ContainerRuntimeClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_runtime_v0.ContainerRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.Kill(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["api.ctrt.ContainerRuntime/v0.Kill"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.container.runtime.ContainerRuntimeService/v0.Kill"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -229,18 +314,18 @@ func req_ContainerRuntime_v0_Kill(req *api_ctrt_v0.KillRequest, ctxt *ApiService
 	return nil
 }
 
-func req_ContainerRuntime_v0_Delete(req *api_ctrt_v0.DeleteRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("api.ctrt.ContainerRuntime", "v0", req, ctxt); err != nil {
+func req_api_os_container_runtime_v0_ContainerRuntimeService_v0_Delete(req *api_os_container_runtime_v0.DeleteRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.container.runtime.ContainerRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_ctrt_v0.ContainerRuntimeClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_container_runtime_v0.ContainerRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.Delete(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["api.ctrt.ContainerRuntime/v0.Delete"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.container.runtime.ContainerRuntimeService/v0.Delete"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err

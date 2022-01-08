@@ -1,12 +1,12 @@
 package main
 
 import (
-	api_ctrt_v0 "alt-os/api/ctrt/v0"
+	api_os_container_runtime_v0 "alt-os/api/os/container/runtime/v0"
 	"fmt"
 )
 
 // handleRespList prints the List response.
-func handleRespList(resp *api_ctrt_v0.ListResponse) error {
+func handleRespList(resp *api_os_container_runtime_v0.ListResponse) error {
 
 	fmt.Println("got list response")
 

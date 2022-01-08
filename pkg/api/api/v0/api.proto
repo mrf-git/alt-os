@@ -5,7 +5,8 @@ package api;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
-import "ctrt/v0/api.proto";
+import "os/container/runtime/v0/api.proto";
+import "os/container/bundle/v0/api.proto";
 
 option go_package = "alt-os/api/api/v0";
 option (gogoproto.gostring_all) = true;

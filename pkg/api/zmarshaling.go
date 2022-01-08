@@ -3,7 +3,8 @@ package api
 
 import (
 	api_api_v0 "alt-os/api/api/v0"
-	api_ctrt_v0 "alt-os/api/ctrt/v0"
+	api_os_container_bundle_v0 "alt-os/api/os/container/bundle/v0"
+	api_os_container_runtime_v0 "alt-os/api/os/container/runtime/v0"
 	"errors"
 
 	"github.com/gogo/protobuf/proto"
@@ -21,30 +22,51 @@ func unmarshalKind(kind, version string, value []byte) (proto.Message, error) {
 	switch kindVersion {
 	default:
 		return nil, errors.New("unrecognized message kind/version: " + kindVersion)
-	case "api.api.ApiMessage/v0":
+
+	case "api.ApiMessage/v0":
 		return doUnmarshal(&api_api_v0.ApiMessage{})
-	case "api.api.ApiMessageList/v0":
+
+	case "api.ApiMessageList/v0":
 		return doUnmarshal(&api_api_v0.ApiMessageList{})
-	case "api.ctrt.ApiServeRequest/v0":
-		return doUnmarshal(&api_ctrt_v0.ApiServeRequest{})
-	case "api.ctrt.ApiUnserveRequest/v0":
-		return doUnmarshal(&api_ctrt_v0.ApiUnserveRequest{})
-	case "api.ctrt.ListRequest/v0":
-		return doUnmarshal(&api_ctrt_v0.ListRequest{})
-	case "api.ctrt.ListResponse/v0":
-		return doUnmarshal(&api_ctrt_v0.ListResponse{})
-	case "api.ctrt.QueryStateRequest/v0":
-		return doUnmarshal(&api_ctrt_v0.QueryStateRequest{})
-	case "api.ctrt.QueryStateResponse/v0":
-		return doUnmarshal(&api_ctrt_v0.QueryStateResponse{})
-	case "api.ctrt.CreateRequest/v0":
-		return doUnmarshal(&api_ctrt_v0.CreateRequest{})
-	case "api.ctrt.StartRequest/v0":
-		return doUnmarshal(&api_ctrt_v0.StartRequest{})
-	case "api.ctrt.KillRequest/v0":
-		return doUnmarshal(&api_ctrt_v0.KillRequest{})
-	case "api.ctrt.DeleteRequest/v0":
-		return doUnmarshal(&api_ctrt_v0.DeleteRequest{})
+
+	case "os.container.bundle.ApiServeRequest/v0":
+		return doUnmarshal(&api_os_container_bundle_v0.ApiServeRequest{})
+
+	case "os.container.bundle.ApiUnserveRequest/v0":
+		return doUnmarshal(&api_os_container_bundle_v0.ApiUnserveRequest{})
+
+	case "os.container.bundle.CreateRequest/v0":
+		return doUnmarshal(&api_os_container_bundle_v0.CreateRequest{})
+
+	case "os.container.runtime.ApiServeRequest/v0":
+		return doUnmarshal(&api_os_container_runtime_v0.ApiServeRequest{})
+
+	case "os.container.runtime.ApiUnserveRequest/v0":
+		return doUnmarshal(&api_os_container_runtime_v0.ApiUnserveRequest{})
+
+	case "os.container.runtime.ListRequest/v0":
+		return doUnmarshal(&api_os_container_runtime_v0.ListRequest{})
+
+	case "os.container.runtime.ListResponse/v0":
+		return doUnmarshal(&api_os_container_runtime_v0.ListResponse{})
+
+	case "os.container.runtime.QueryStateRequest/v0":
+		return doUnmarshal(&api_os_container_runtime_v0.QueryStateRequest{})
+
+	case "os.container.runtime.QueryStateResponse/v0":
+		return doUnmarshal(&api_os_container_runtime_v0.QueryStateResponse{})
+
+	case "os.container.runtime.CreateRequest/v0":
+		return doUnmarshal(&api_os_container_runtime_v0.CreateRequest{})
+
+	case "os.container.runtime.StartRequest/v0":
+		return doUnmarshal(&api_os_container_runtime_v0.StartRequest{})
+
+	case "os.container.runtime.KillRequest/v0":
+		return doUnmarshal(&api_os_container_runtime_v0.KillRequest{})
+
+	case "os.container.runtime.DeleteRequest/v0":
+		return doUnmarshal(&api_os_container_runtime_v0.DeleteRequest{})
 	}
 }
 
@@ -60,29 +82,50 @@ func marshalKind(msg proto.Message) (kind, version string, bytes []byte, err err
 	switch msg.(type) {
 	default:
 		return "", "", nil, errors.New("unrecognized message type")
+
 	case *api_api_v0.ApiMessage:
-		return doMarshal("api.api.ApiMessage", "v0", msg)
+		return doMarshal("api.ApiMessage", "v0", msg)
+
 	case *api_api_v0.ApiMessageList:
-		return doMarshal("api.api.ApiMessageList", "v0", msg)
-	case *api_ctrt_v0.ApiServeRequest:
-		return doMarshal("api.ctrt.ApiServeRequest", "v0", msg)
-	case *api_ctrt_v0.ApiUnserveRequest:
-		return doMarshal("api.ctrt.ApiUnserveRequest", "v0", msg)
-	case *api_ctrt_v0.ListRequest:
-		return doMarshal("api.ctrt.ListRequest", "v0", msg)
-	case *api_ctrt_v0.ListResponse:
-		return doMarshal("api.ctrt.ListResponse", "v0", msg)
-	case *api_ctrt_v0.QueryStateRequest:
-		return doMarshal("api.ctrt.QueryStateRequest", "v0", msg)
-	case *api_ctrt_v0.QueryStateResponse:
-		return doMarshal("api.ctrt.QueryStateResponse", "v0", msg)
-	case *api_ctrt_v0.CreateRequest:
-		return doMarshal("api.ctrt.CreateRequest", "v0", msg)
-	case *api_ctrt_v0.StartRequest:
-		return doMarshal("api.ctrt.StartRequest", "v0", msg)
-	case *api_ctrt_v0.KillRequest:
-		return doMarshal("api.ctrt.KillRequest", "v0", msg)
-	case *api_ctrt_v0.DeleteRequest:
-		return doMarshal("api.ctrt.DeleteRequest", "v0", msg)
+		return doMarshal("api.ApiMessageList", "v0", msg)
+
+	case *api_os_container_bundle_v0.ApiServeRequest:
+		return doMarshal("os.container.bundle.ApiServeRequest", "v0", msg)
+
+	case *api_os_container_bundle_v0.ApiUnserveRequest:
+		return doMarshal("os.container.bundle.ApiUnserveRequest", "v0", msg)
+
+	case *api_os_container_bundle_v0.CreateRequest:
+		return doMarshal("os.container.bundle.CreateRequest", "v0", msg)
+
+	case *api_os_container_runtime_v0.ApiServeRequest:
+		return doMarshal("os.container.runtime.ApiServeRequest", "v0", msg)
+
+	case *api_os_container_runtime_v0.ApiUnserveRequest:
+		return doMarshal("os.container.runtime.ApiUnserveRequest", "v0", msg)
+
+	case *api_os_container_runtime_v0.ListRequest:
+		return doMarshal("os.container.runtime.ListRequest", "v0", msg)
+
+	case *api_os_container_runtime_v0.ListResponse:
+		return doMarshal("os.container.runtime.ListResponse", "v0", msg)
+
+	case *api_os_container_runtime_v0.QueryStateRequest:
+		return doMarshal("os.container.runtime.QueryStateRequest", "v0", msg)
+
+	case *api_os_container_runtime_v0.QueryStateResponse:
+		return doMarshal("os.container.runtime.QueryStateResponse", "v0", msg)
+
+	case *api_os_container_runtime_v0.CreateRequest:
+		return doMarshal("os.container.runtime.CreateRequest", "v0", msg)
+
+	case *api_os_container_runtime_v0.StartRequest:
+		return doMarshal("os.container.runtime.StartRequest", "v0", msg)
+
+	case *api_os_container_runtime_v0.KillRequest:
+		return doMarshal("os.container.runtime.KillRequest", "v0", msg)
+
+	case *api_os_container_runtime_v0.DeleteRequest:
+		return doMarshal("os.container.runtime.DeleteRequest", "v0", msg)
 	}
 }

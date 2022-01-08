@@ -1,0 +1,6 @@
+kind: os.container.runtime.ApiUnserveRequest
+version: v0
+def:
+  hostname: localhost
+  port: 8889
+  timeout: 10

@@ -1,12 +1,12 @@
 // To regenerate api.pb.go run `codegen -p`.
 syntax = "proto3";
 
-package ctrt;
+package os.container.runtime;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = "alt-os/api/ctrt/v0";
+option go_package = "alt-os/api/os/container/runtime/v0";
 option (gogoproto.gostring_all) = true;
 option (gogoproto.equal_all) = true;
 option (gogoproto.goproto_stringer_all) = false;
@@ -16,13 +16,13 @@ option (gogoproto.marshaler_all) = true;
 option (gogoproto.sizer_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 
-// ContainerRuntime is the service advertised by ctrt.
-// After a successful call to Serve the runtime can begin
+// ContainerRuntimeService is a service for managing container runtimes.
+// After a successful call to ApiServe the runtime service can begin
 // operating containers using the other service methods.
-service ContainerRuntime {
-	// ApiServe enables the container runtime api according to the given configuration.
+service ContainerRuntimeService {
+	// ApiServe enables the container runtime service api according to the given configuration.
 	rpc ApiServe(ApiServeRequest) returns (google.protobuf.Empty) {}
-	// ApiUnserve stops all containers and disables the container runtime api.
+	// ApiUnserve stops all containers and disables the container runtime service api.
 	rpc ApiUnserve(ApiUnserveRequest) returns (google.protobuf.Empty) {}
 	// List gets all containers the runtime knows about.
 	rpc List(ListRequest) returns (ListResponse) {}
@@ -38,7 +38,7 @@ service ContainerRuntime {
 	rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {}
 }
 
-// ApiServeRequest specifies the parameters to a ContainerRuntime.Serve call.
+// ApiServeRequest specifies the parameters to a ContainerRuntimeService.Serve call.
 message ApiServeRequest {
 	// The hostname to listen on.
 	string hostname = 1;
@@ -52,7 +52,7 @@ message ApiServeRequest {
 	int64 max_container_memory = 5;
 }
 
-// ApiUnserveRequest specifies the parameters to a ContainerRuntime.Unserve call.
+// ApiUnserveRequest specifies the parameters to a ContainerRuntimeService.Unserve call.
 message ApiUnserveRequest {
 	// The hostname of the listening server to operate on.
 	string hostname = 1;
@@ -62,7 +62,7 @@ message ApiUnserveRequest {
 	int32 timeout = 3;
 }
 
-// ListRequest specifies the parameters to a ContainerRuntime.List call.
+// ListRequest specifies the parameters to a ContainerRuntimeService.List call.
 message ListRequest {
 	// The hostname of the listening server to operate on.
 	string hostname = 1;
@@ -72,7 +72,7 @@ message ListRequest {
 	int32 timeout = 3;
 }
 
-// ListResponse returns the result of a ContainerRuntime.List call.
+// ListResponse returns the result of a ContainerRuntimeService.List call.
 message ListResponse {
 	// The hostname of the listening server to operate on.
 	string hostname = 1;
@@ -84,7 +84,7 @@ message ListResponse {
 	repeated string id = 4;
 }
 
-// QueryStateRequest specifies the parameters to a ContainerRuntime.QueryState call.
+// QueryStateRequest specifies the parameters to a ContainerRuntimeService.QueryState call.
 message QueryStateRequest {
 	// The hostname of the listening server to operate on.
 	string hostname = 1;
@@ -96,23 +96,17 @@ message QueryStateRequest {
 	string id = 4;
 }
 
-// QueryStateResponse returns the result of a ContainerRuntime.QueryState call.
+// QueryStateResponse returns the result of a ContainerRuntimeService.QueryState call.
 message QueryStateResponse {
-	// The unique id of the container.
-	string oci_version = 1;
-	// The unique id of the container.
-	string id = 2;
-	// The runtime status of the container.
-	ContainerStatus status = 3;
-	// The ID of the container process as seen by the host.
-	int32 pid = 4;
-	// The container's bundle directory.
-	string bundle = 5;
-	// The annotations associated with the container.
-	map<string, string> annotations = 6;
+	// The request used to create the container's runtime.
+	CreateRequest create_request = 1;
+	// The container's runtime bundle directory.
+	string bundle_dir = 2;
+	// The JSON-encoded string containing OCI-specified container runtime state.
+	string oci_json = 3;
 }
 
-// CreateRequest specifies the parameters to a ContainerRuntime.Create call.
+// CreateRequest specifies the parameters to a ContainerRuntimeService.Create call.
 message CreateRequest {
 	// The hostname of the listening server to operate on.
 	string hostname = 1;
@@ -126,7 +120,7 @@ message CreateRequest {
 	string bundle = 5;
 }
 
-// StartRequest specifies the parameters to a ContainerRuntime.Start call.
+// StartRequest specifies the parameters to a ContainerRuntimeService.Start call.
 message StartRequest {
 	// The hostname of the listening server to operate on.
 	string hostname = 1;
@@ -138,7 +132,7 @@ message StartRequest {
 	string id = 4;
 }
 
-// KillRequest specifies the parameters to a ContainerRuntime.Kill call.
+// KillRequest specifies the parameters to a ContainerRuntimeService.Kill call.
 message KillRequest {
 	// The hostname of the listening server to operate on.
 	string hostname = 1;
@@ -152,7 +146,7 @@ message KillRequest {
 	int32 signal = 5;
 }
 
-// DeleteRequest specifies the parameters to a ContainerRuntime.Delete call.
+// DeleteRequest specifies the parameters to a ContainerRuntimeService.Delete call.
 message DeleteRequest {
 	// The hostname of the listening server to operate on.
 	string hostname = 1;

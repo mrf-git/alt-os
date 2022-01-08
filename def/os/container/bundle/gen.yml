@@ -1,23 +1,24 @@
-kind: api.ctrt.ApiServeRequest
+kind: os.container.bundle.ApiServeRequest
 version: v0
 def:
   hostname: localhost
   port: 8888
   timeout: 10
-  maxContainers: 5
-  maxContainerMemory: 10000
+  rootDir: ./workspace/os/container/bundle
 ---
-kind: api.ctrt.ListRequest
+kind: os.container.bundle.CreateRequest
 version: v0
 def:
   hostname: localhost
   port: 8888
   timeout: 10
+  bundleDir: alt-os
 ---
-kind: api.ctrt.ApiUnserveRequest
+kind: os.container.bundle.ApiUnserveRequest
 version: v0
 def:
   hostname: localhost
   port: 8888
   timeout: 10
+
 
