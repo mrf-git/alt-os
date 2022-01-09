@@ -158,7 +158,7 @@ func protoServiceAutogenReqMsgKindCase(kind, version, method, serviceName, goImp
 	str += fmt.Sprintf(format, goImportName, serviceName, version, method)
 	if method == "ApiUnserve" {
 		// Stop the grpc server and remove it from the context after the unserve request.
-		str += ` else if err := stopServer(fmt.Sprintf("%s:%d", msg.GetHostname(), msg.GetPort()), ctxt); err != nil {
+		str += ` else if err := stopServer(fmt.Sprintf("%s:%d", msg.GetApiHostname(), msg.GetApiPort()), ctxt); err != nil {
 			return err
 		}`
 	}

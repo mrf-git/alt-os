@@ -4,6 +4,9 @@
 package v0
 
 import (
+	v02 "alt-os/api/os/container/machine/v0"
+	v01 "alt-os/api/os/container/process/v0"
+	v0 "alt-os/api/os/container/volume/v0"
 	bytes "bytes"
 	context "context"
 	fmt "fmt"
@@ -33,12 +36,12 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // ApiServeRequest specifies the parameters to a ContainerBundleService.Serve call.
 type ApiServeRequest struct {
-	// The hostname to listen on.
-	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
-	// The port to listen on.
-	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
-	// The number of seconds to timeout the request.
-	Timeout int32 `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
+	// The hostname for the API server to listen on.
+	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
+	// The port for the API server to listen on.
+	ApiPort uint32 `protobuf:"varint,2,opt,name=api_port,json=apiPort,proto3" json:"api_port,omitempty"`
+	// The number of seconds to timeout the API request.
+	ApiTimeout uint32 `protobuf:"varint,3,opt,name=api_timeout,json=apiTimeout,proto3" json:"api_timeout,omitempty"`
 	// The path to the root directory of bundles.
 	RootDir              string   `protobuf:"bytes,4,opt,name=root_dir,json=rootDir,proto3" json:"root_dir,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -78,23 +81,23 @@ func (m *ApiServeRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ApiServeRequest proto.InternalMessageInfo
 
-func (m *ApiServeRequest) GetHostname() string {
+func (m *ApiServeRequest) GetApiHostname() string {
 	if m != nil {
-		return m.Hostname
+		return m.ApiHostname
 	}
 	return ""
 }
 
-func (m *ApiServeRequest) GetPort() int32 {
+func (m *ApiServeRequest) GetApiPort() uint32 {
 	if m != nil {
-		return m.Port
+		return m.ApiPort
 	}
 	return 0
 }
 
-func (m *ApiServeRequest) GetTimeout() int32 {
+func (m *ApiServeRequest) GetApiTimeout() uint32 {
 	if m != nil {
-		return m.Timeout
+		return m.ApiTimeout
 	}
 	return 0
 }
@@ -108,12 +111,12 @@ func (m *ApiServeRequest) GetRootDir() string {
 
 // ApiUnserveRequest specifies the parameters to a ContainerBundleService.Unserve call.
 type ApiUnserveRequest struct {
-	// The hostname of the listening server to operate on.
-	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
-	// The port of the listening server to operate on.
-	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
-	// The number of seconds to timeout the request.
-	Timeout              int32    `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
+	// The hostname of the listening API server to operate on.
+	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
+	// The port of the listening API server to operate on.
+	ApiPort uint32 `protobuf:"varint,2,opt,name=api_port,json=apiPort,proto3" json:"api_port,omitempty"`
+	// The number of seconds to timeout the API request.
+	ApiTimeout           uint32   `protobuf:"varint,3,opt,name=api_timeout,json=apiTimeout,proto3" json:"api_timeout,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -151,40 +154,43 @@ func (m *ApiUnserveRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ApiUnserveRequest proto.InternalMessageInfo
 
-func (m *ApiUnserveRequest) GetHostname() string {
+func (m *ApiUnserveRequest) GetApiHostname() string {
 	if m != nil {
-		return m.Hostname
+		return m.ApiHostname
 	}
 	return ""
 }
 
-func (m *ApiUnserveRequest) GetPort() int32 {
+func (m *ApiUnserveRequest) GetApiPort() uint32 {
 	if m != nil {
-		return m.Port
+		return m.ApiPort
 	}
 	return 0
 }
 
-func (m *ApiUnserveRequest) GetTimeout() int32 {
+func (m *ApiUnserveRequest) GetApiTimeout() uint32 {
 	if m != nil {
-		return m.Timeout
+		return m.ApiTimeout
 	}
 	return 0
 }
 
 // CreateRequest specifies the parameters to a ContainerBundleService.Create call.
 type CreateRequest struct {
-	// The hostname of the listening server to operate on.
-	Hostname string `protobuf:"bytes,1,opt,name=hostname,proto3" json:"hostname,omitempty"`
-	// The port of the listening server to operate on.
-	Port int32 `protobuf:"varint,2,opt,name=port,proto3" json:"port,omitempty"`
-	// The number of seconds to timeout the request.
-	Timeout int32 `protobuf:"varint,3,opt,name=timeout,proto3" json:"timeout,omitempty"`
-	// The name of the subdirectory of the bundle within the bundle service root directory.
-	BundleDir            string   `protobuf:"bytes,4,opt,name=bundle_dir,json=bundleDir,proto3" json:"bundle_dir,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	// The hostname of the listening API server to operate on.
+	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
+	// The port of the listening API server to operate on.
+	ApiPort uint32 `protobuf:"varint,2,opt,name=api_port,json=apiPort,proto3" json:"api_port,omitempty"`
+	// The number of seconds to timeout the API request.
+	ApiTimeout uint32 `protobuf:"varint,3,opt,name=api_timeout,json=apiTimeout,proto3" json:"api_timeout,omitempty"`
+	// The path to a file containing a serialized Bundles defining the bundle to create.
+	// Not allowed if bundles is set.
+	BundlesFile string `protobuf:"bytes,4,opt,name=bundles_file,json=bundlesFile,proto3" json:"bundles_file,omitempty"`
+	// Objects defining the bundles to create. Not allowed if bundles_file is set.
+	Bundles              []*Bundle `protobuf:"bytes,5,rep,name=bundles,proto3" json:"bundles,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
 }
 
 func (m *CreateRequest) Reset()      { *m = CreateRequest{} }
@@ -219,30 +225,133 @@ func (m *CreateRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_CreateRequest proto.InternalMessageInfo
 
-func (m *CreateRequest) GetHostname() string {
+func (m *CreateRequest) GetApiHostname() string {
+	if m != nil {
+		return m.ApiHostname
+	}
+	return ""
+}
+
+func (m *CreateRequest) GetApiPort() uint32 {
+	if m != nil {
+		return m.ApiPort
+	}
+	return 0
+}
+
+func (m *CreateRequest) GetApiTimeout() uint32 {
+	if m != nil {
+		return m.ApiTimeout
+	}
+	return 0
+}
+
+func (m *CreateRequest) GetBundlesFile() string {
+	if m != nil {
+		return m.BundlesFile
+	}
+	return ""
+}
+
+func (m *CreateRequest) GetBundles() []*Bundle {
+	if m != nil {
+		return m.Bundles
+	}
+	return nil
+}
+
+// Bundle defines a container bundle.
+type Bundle struct {
+	// The name of the subdirectory of the bundle within the service's bundle root directory.
+	BundleDir string `protobuf:"bytes,1,opt,name=bundle_dir,json=bundleDir,proto3" json:"bundle_dir,omitempty"`
+	// The hostname of the container as seen from within it.
+	Hostname string `protobuf:"bytes,2,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	// Volumes to mount for the container.
+	VolumeMounts []*v0.ContainerVolume `protobuf:"bytes,3,rep,name=volume_mounts,json=volumeMounts,proto3" json:"volume_mounts,omitempty"`
+	// The container process definition.
+	Process *v01.ContainerProcess `protobuf:"bytes,4,opt,name=process,proto3" json:"process,omitempty"`
+	// Settings object for a virtual machine that can host the container.
+	// Not allowed if virtual_machine_file is also specified.
+	VirtualMachine *v02.ContainerMachine `protobuf:"bytes,5,opt,name=virtual_machine,json=virtualMachine,proto3" json:"virtual_machine,omitempty"`
+	// File storing a serialized settings object for a virtual machine
+	// that can host the container. Not allowed if virtual_machine is
+	// also specified.
+	VirtualMachineFile   string   `protobuf:"bytes,6,opt,name=virtual_machine_file,json=virtualMachineFile,proto3" json:"virtual_machine_file,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Bundle) Reset()      { *m = Bundle{} }
+func (*Bundle) ProtoMessage() {}
+func (*Bundle) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b3aef20909530261, []int{3}
+}
+func (m *Bundle) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Bundle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Bundle.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Bundle) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Bundle.Merge(m, src)
+}
+func (m *Bundle) XXX_Size() int {
+	return m.Size()
+}
+func (m *Bundle) XXX_DiscardUnknown() {
+	xxx_messageInfo_Bundle.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Bundle proto.InternalMessageInfo
+
+func (m *Bundle) GetBundleDir() string {
+	if m != nil {
+		return m.BundleDir
+	}
+	return ""
+}
+
+func (m *Bundle) GetHostname() string {
 	if m != nil {
 		return m.Hostname
 	}
 	return ""
 }
 
-func (m *CreateRequest) GetPort() int32 {
+func (m *Bundle) GetVolumeMounts() []*v0.ContainerVolume {
 	if m != nil {
-		return m.Port
+		return m.VolumeMounts
 	}
-	return 0
+	return nil
 }
 
-func (m *CreateRequest) GetTimeout() int32 {
+func (m *Bundle) GetProcess() *v01.ContainerProcess {
 	if m != nil {
-		return m.Timeout
+		return m.Process
 	}
-	return 0
+	return nil
 }
 
-func (m *CreateRequest) GetBundleDir() string {
+func (m *Bundle) GetVirtualMachine() *v02.ContainerMachine {
 	if m != nil {
-		return m.BundleDir
+		return m.VirtualMachine
+	}
+	return nil
+}
+
+func (m *Bundle) GetVirtualMachineFile() string {
+	if m != nil {
+		return m.VirtualMachineFile
 	}
 	return ""
 }
@@ -251,6 +360,7 @@ func init() {
 	proto.RegisterType((*ApiServeRequest)(nil), "os.container.bundle.ApiServeRequest")
 	proto.RegisterType((*ApiUnserveRequest)(nil), "os.container.bundle.ApiUnserveRequest")
 	proto.RegisterType((*CreateRequest)(nil), "os.container.bundle.CreateRequest")
+	proto.RegisterType((*Bundle)(nil), "os.container.bundle.Bundle")
 }
 
 func init() {
@@ -258,30 +368,43 @@ func init() {
 }
 
 var fileDescriptor_b3aef20909530261 = []byte{
-	// 367 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x92, 0xbf, 0x4e, 0xe3, 0x40,
-	0x10, 0xc6, 0xb3, 0x77, 0xb9, 0xfc, 0x19, 0xe9, 0x74, 0xba, 0xbd, 0x53, 0x64, 0x8c, 0x58, 0x05,
-	0x0b, 0xa1, 0x34, 0xec, 0x22, 0x78, 0x82, 0xfc, 0x81, 0x82, 0x82, 0x22, 0x88, 0x06, 0x09, 0x21,
-	0x27, 0x59, 0xcc, 0x8a, 0xc4, 0x63, 0xd6, 0xeb, 0x08, 0x3a, 0x1e, 0x87, 0x47, 0xa1, 0xa4, 0xa4,
-	0x24, 0x7e, 0x02, 0x4a, 0x0a, 0x0a, 0x64, 0x5b, 0x0e, 0x04, 0x25, 0xe9, 0xd2, 0xcd, 0x37, 0x33,
-	0xfa, 0x56, 0xf3, 0xfb, 0x16, 0x1a, 0xc1, 0xb5, 0x27, 0xdc, 0x40, 0x09, 0x0c, 0x45, 0x1f, 0x7d,
-	0xe3, 0x2a, 0x5f, 0x6a, 0xd1, 0x8b, 0xfc, 0xc1, 0x50, 0x8a, 0xf1, 0x6e, 0x32, 0xe2, 0x81, 0x46,
-	0x83, 0xf4, 0x1f, 0x86, 0x7c, 0xba, 0xc1, 0xb3, 0x0d, 0xfb, 0xbf, 0x87, 0x1e, 0xa6, 0x73, 0x91,
-	0x54, 0xd9, 0xaa, 0xbd, 0xee, 0x21, 0x7a, 0x43, 0x29, 0x52, 0xd5, 0x8b, 0x2e, 0x85, 0x1c, 0x05,
-	0xe6, 0x2e, 0x1b, 0x3a, 0x63, 0xf8, 0xd3, 0x0c, 0xd4, 0x89, 0xd4, 0x63, 0xd9, 0x95, 0x37, 0x91,
-	0x0c, 0x0d, 0xb5, 0xa1, 0x72, 0x85, 0xa1, 0xf1, 0xdd, 0x91, 0xb4, 0x48, 0x9d, 0x34, 0xaa, 0xdd,
-	0xa9, 0xa6, 0x14, 0x8a, 0x01, 0x6a, 0x63, 0xfd, 0xa8, 0x93, 0xc6, 0xaf, 0x6e, 0x5a, 0x53, 0x0b,
-	0xca, 0x46, 0x8d, 0x24, 0x46, 0xc6, 0xfa, 0x99, 0xb6, 0x73, 0x49, 0xd7, 0xa0, 0xa2, 0x11, 0xcd,
-	0xc5, 0x40, 0x69, 0xab, 0x98, 0x3a, 0x95, 0x13, 0xdd, 0x51, 0xda, 0x39, 0x87, 0xbf, 0xcd, 0x40,
-	0x9d, 0xfa, 0xe1, 0x4a, 0x5e, 0x76, 0x6e, 0xe1, 0x77, 0x5b, 0x4b, 0xd7, 0xac, 0xe0, 0xa8, 0x0d,
-	0x80, 0x0c, 0xf7, 0x97, 0xb3, 0xaa, 0x59, 0xa7, 0xa3, 0xf4, 0xde, 0x3b, 0x81, 0x5a, 0x3b, 0x0f,
-	0xa6, 0x95, 0xb6, 0x13, 0xba, 0xaa, 0x2f, 0xe9, 0x11, 0x54, 0x72, 0xd6, 0x74, 0x8b, 0xcf, 0x09,
-	0x90, 0x7f, 0x8b, 0xc2, 0xae, 0xf1, 0x2c, 0x3b, 0x9e, 0x67, 0xc7, 0x0f, 0x92, 0xec, 0x9c, 0x02,
-	0x3d, 0x06, 0xf8, 0xe4, 0x47, 0xb7, 0x17, 0xb9, 0xcd, 0x02, 0x5e, 0xe2, 0x77, 0x08, 0xa5, 0x0c,
-	0x18, 0x75, 0xe6, 0x7a, 0xcd, 0xd0, 0x5c, 0xec, 0xd3, 0x6a, 0x3f, 0x4f, 0x58, 0xe1, 0x75, 0xc2,
-	0xc8, 0xdb, 0x84, 0x15, 0xee, 0x63, 0x46, 0x1e, 0x62, 0x46, 0x1e, 0x63, 0x46, 0x9e, 0x62, 0x46,
-	0x5e, 0x62, 0x46, 0xce, 0x36, 0xdd, 0xa1, 0xd9, 0xc1, 0x70, 0xc9, 0x37, 0xef, 0x95, 0x52, 0xdb,
-	0xfd, 0x8f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xea, 0x5d, 0xca, 0x86, 0x0f, 0x03, 0x00, 0x00,
+	// 566 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0xcd, 0x26, 0x34, 0x49, 0x27, 0x09, 0x15, 0x4b, 0x55, 0x99, 0x54, 0x98, 0xc4, 0xaa, 0xaa,
+	0x5c, 0xb0, 0xab, 0x20, 0xee, 0xb4, 0x29, 0x15, 0x20, 0x15, 0x2a, 0xf3, 0x71, 0xe0, 0x62, 0x39,
+	0xe9, 0x36, 0x5d, 0x61, 0x7b, 0x97, 0xf5, 0x3a, 0x12, 0x37, 0xee, 0xfc, 0x11, 0x7e, 0x4a, 0x8f,
+	0x48, 0x5c, 0x38, 0x92, 0xfc, 0x02, 0x8e, 0x1c, 0x38, 0x20, 0xef, 0x6e, 0x12, 0xb9, 0x4a, 0x73,
+	0xec, 0x29, 0x99, 0x37, 0x6f, 0xde, 0xee, 0xcc, 0xbe, 0x31, 0xf4, 0xf8, 0xa7, 0xb1, 0x17, 0x72,
+	0xea, 0xb1, 0xd4, 0x1b, 0xb1, 0x44, 0x86, 0x34, 0x21, 0xc2, 0x1b, 0x66, 0xc9, 0x79, 0x44, 0xbc,
+	0xc9, 0x41, 0x9e, 0x72, 0xb9, 0x60, 0x92, 0xe1, 0xfb, 0x2c, 0x75, 0x17, 0x0c, 0x57, 0x33, 0xda,
+	0xdb, 0x63, 0x36, 0x66, 0x2a, 0xef, 0xe5, 0xff, 0x34, 0xb5, 0xbd, 0x3b, 0x66, 0x6c, 0x1c, 0x11,
+	0x4f, 0x45, 0xc3, 0xec, 0xc2, 0x23, 0x31, 0x97, 0x5f, 0x4c, 0xb2, 0x53, 0x38, 0x69, 0xc2, 0xa2,
+	0x2c, 0x2e, 0x9e, 0xd4, 0xee, 0x16, 0x18, 0x5c, 0xb0, 0x11, 0x49, 0xd3, 0x75, 0x94, 0x38, 0x1c,
+	0x5d, 0xd2, 0xa4, 0xa8, 0xe2, 0x7c, 0x43, 0xb0, 0x75, 0xc8, 0xe9, 0x5b, 0x22, 0x26, 0xc4, 0x27,
+	0x9f, 0x33, 0x92, 0x4a, 0xdc, 0x85, 0x66, 0xc8, 0x69, 0x70, 0xc9, 0x52, 0x99, 0x84, 0x31, 0xb1,
+	0x50, 0x07, 0xf5, 0x36, 0xfd, 0x46, 0xc8, 0xe9, 0x0b, 0x03, 0xe1, 0x07, 0x50, 0xcf, 0x29, 0x9c,
+	0x09, 0x69, 0x95, 0x3b, 0xa8, 0xd7, 0xf2, 0x6b, 0x21, 0xa7, 0x67, 0x4c, 0x48, 0xfc, 0x08, 0x72,
+	0x66, 0x20, 0x69, 0x4c, 0x58, 0x26, 0xad, 0x8a, 0xca, 0x42, 0xc8, 0xe9, 0x3b, 0x8d, 0xe4, 0xb5,
+	0x82, 0x31, 0x19, 0x9c, 0x53, 0x61, 0xdd, 0x51, 0xd2, 0xb5, 0x3c, 0x3e, 0xa6, 0xc2, 0x11, 0x70,
+	0xef, 0x90, 0xd3, 0xf7, 0x49, 0x7a, 0x7b, 0xd7, 0x71, 0xae, 0x10, 0xb4, 0x06, 0x82, 0x84, 0xf2,
+	0xb6, 0xfa, 0xef, 0x42, 0x53, 0xfb, 0x22, 0x0d, 0x2e, 0x68, 0x44, 0xcc, 0x0c, 0x1a, 0x06, 0x3b,
+	0xa1, 0x11, 0xc1, 0x4f, 0xa1, 0x66, 0x42, 0x6b, 0xa3, 0x53, 0xe9, 0x35, 0xfa, 0xbb, 0xee, 0x0a,
+	0x5f, 0xb9, 0x47, 0xea, 0xc7, 0x9f, 0x73, 0x9d, 0x9f, 0x65, 0xa8, 0x6a, 0x0c, 0x3f, 0x04, 0xd0,
+	0xa8, 0x1a, 0xb3, 0xee, 0x60, 0x53, 0x23, 0xc7, 0x54, 0xe0, 0x36, 0xd4, 0x17, 0xed, 0x95, 0x55,
+	0x72, 0x11, 0xe3, 0x97, 0xd0, 0xd2, 0x7e, 0x0b, 0x62, 0x96, 0x25, 0x32, 0xb5, 0x2a, 0xea, 0x0a,
+	0x7b, 0xc5, 0x2b, 0x68, 0x8a, 0x3b, 0x98, 0x03, 0x1f, 0x54, 0xec, 0x37, 0x35, 0x7e, 0xaa, 0x2a,
+	0xf1, 0x33, 0xa8, 0x19, 0x63, 0xaa, 0x2e, 0x1b, 0xfd, 0xfd, 0xa2, 0x88, 0x49, 0x2e, 0x55, 0xce,
+	0x34, 0xe0, 0xcf, 0xcb, 0xf0, 0x1b, 0xd8, 0x9a, 0x50, 0x21, 0xb3, 0x30, 0x0a, 0x8c, 0x7f, 0xad,
+	0x8d, 0x55, 0x4a, 0x26, 0xb9, 0x54, 0x3a, 0xd5, 0x80, 0x7f, 0xd7, 0x94, 0x9b, 0x18, 0x1f, 0xc0,
+	0xf6, 0x35, 0x41, 0xfd, 0x0a, 0x55, 0x35, 0x05, 0x5c, 0x64, 0xe7, 0x8f, 0xd1, 0xff, 0x87, 0x60,
+	0x67, 0x21, 0xab, 0xc7, 0x9b, 0xaf, 0x0b, 0x1d, 0x11, 0xfc, 0x0a, 0xea, 0xf3, 0xe5, 0xc1, 0x7b,
+	0x2b, 0x9f, 0xe8, 0xda, 0x6e, 0xb5, 0x77, 0x5c, 0xbd, 0xf5, 0xee, 0x7c, 0xeb, 0xdd, 0xe7, 0xf9,
+	0xd6, 0x3b, 0x25, 0xfc, 0x1a, 0x60, 0xe9, 0x7d, 0xbc, 0x7f, 0x93, 0x5a, 0x71, 0x39, 0xd6, 0xe8,
+	0x9d, 0x40, 0x55, 0xdb, 0x1a, 0x3b, 0x2b, 0xb5, 0x0a, 0x9e, 0xbf, 0x59, 0xe7, 0x68, 0xf0, 0x6b,
+	0x6a, 0x97, 0xfe, 0x4c, 0x6d, 0xf4, 0x77, 0x6a, 0x97, 0xbe, 0xce, 0x6c, 0xf4, 0x7d, 0x66, 0xa3,
+	0xab, 0x99, 0x8d, 0x7e, 0xcc, 0x6c, 0xf4, 0x7b, 0x66, 0xa3, 0x8f, 0xdd, 0x30, 0x92, 0x8f, 0x59,
+	0xba, 0xe6, 0x03, 0x39, 0xac, 0x2a, 0xd9, 0x27, 0xff, 0x03, 0x00, 0x00, 0xff, 0xff, 0x7f, 0x73,
+	0x43, 0xbc, 0x49, 0x05, 0x00, 0x00,
 }
 
 func (this *ApiServeRequest) Equal(that interface{}) bool {
@@ -303,13 +426,13 @@ func (this *ApiServeRequest) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.Hostname != that1.Hostname {
+	if this.ApiHostname != that1.ApiHostname {
 		return false
 	}
-	if this.Port != that1.Port {
+	if this.ApiPort != that1.ApiPort {
 		return false
 	}
-	if this.Timeout != that1.Timeout {
+	if this.ApiTimeout != that1.ApiTimeout {
 		return false
 	}
 	if this.RootDir != that1.RootDir {
@@ -339,13 +462,13 @@ func (this *ApiUnserveRequest) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.Hostname != that1.Hostname {
+	if this.ApiHostname != that1.ApiHostname {
 		return false
 	}
-	if this.Port != that1.Port {
+	if this.ApiPort != that1.ApiPort {
 		return false
 	}
-	if this.Timeout != that1.Timeout {
+	if this.ApiTimeout != that1.ApiTimeout {
 		return false
 	}
 	if !bytes.Equal(this.XXX_unrecognized, that1.XXX_unrecognized) {
@@ -372,16 +495,71 @@ func (this *CreateRequest) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.Hostname != that1.Hostname {
+	if this.ApiHostname != that1.ApiHostname {
 		return false
 	}
-	if this.Port != that1.Port {
+	if this.ApiPort != that1.ApiPort {
 		return false
 	}
-	if this.Timeout != that1.Timeout {
+	if this.ApiTimeout != that1.ApiTimeout {
+		return false
+	}
+	if this.BundlesFile != that1.BundlesFile {
+		return false
+	}
+	if len(this.Bundles) != len(that1.Bundles) {
+		return false
+	}
+	for i := range this.Bundles {
+		if !this.Bundles[i].Equal(that1.Bundles[i]) {
+			return false
+		}
+	}
+	if !bytes.Equal(this.XXX_unrecognized, that1.XXX_unrecognized) {
+		return false
+	}
+	return true
+}
+func (this *Bundle) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Bundle)
+	if !ok {
+		that2, ok := that.(Bundle)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
 		return false
 	}
 	if this.BundleDir != that1.BundleDir {
+		return false
+	}
+	if this.Hostname != that1.Hostname {
+		return false
+	}
+	if len(this.VolumeMounts) != len(that1.VolumeMounts) {
+		return false
+	}
+	for i := range this.VolumeMounts {
+		if !this.VolumeMounts[i].Equal(that1.VolumeMounts[i]) {
+			return false
+		}
+	}
+	if !this.Process.Equal(that1.Process) {
+		return false
+	}
+	if !this.VirtualMachine.Equal(that1.VirtualMachine) {
+		return false
+	}
+	if this.VirtualMachineFile != that1.VirtualMachineFile {
 		return false
 	}
 	if !bytes.Equal(this.XXX_unrecognized, that1.XXX_unrecognized) {
@@ -395,9 +573,9 @@ func (this *ApiServeRequest) GoString() string {
 	}
 	s := make([]string, 0, 8)
 	s = append(s, "&v0.ApiServeRequest{")
-	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
-	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
-	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
+	s = append(s, "ApiHostname: "+fmt.Sprintf("%#v", this.ApiHostname)+",\n")
+	s = append(s, "ApiPort: "+fmt.Sprintf("%#v", this.ApiPort)+",\n")
+	s = append(s, "ApiTimeout: "+fmt.Sprintf("%#v", this.ApiTimeout)+",\n")
 	s = append(s, "RootDir: "+fmt.Sprintf("%#v", this.RootDir)+",\n")
 	if this.XXX_unrecognized != nil {
 		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
@@ -411,9 +589,9 @@ func (this *ApiUnserveRequest) GoString() string {
 	}
 	s := make([]string, 0, 7)
 	s = append(s, "&v0.ApiUnserveRequest{")
-	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
-	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
-	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
+	s = append(s, "ApiHostname: "+fmt.Sprintf("%#v", this.ApiHostname)+",\n")
+	s = append(s, "ApiPort: "+fmt.Sprintf("%#v", this.ApiPort)+",\n")
+	s = append(s, "ApiTimeout: "+fmt.Sprintf("%#v", this.ApiTimeout)+",\n")
 	if this.XXX_unrecognized != nil {
 		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
 	}
@@ -424,12 +602,39 @@ func (this *CreateRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 8)
+	s := make([]string, 0, 9)
 	s = append(s, "&v0.CreateRequest{")
-	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
-	s = append(s, "Port: "+fmt.Sprintf("%#v", this.Port)+",\n")
-	s = append(s, "Timeout: "+fmt.Sprintf("%#v", this.Timeout)+",\n")
+	s = append(s, "ApiHostname: "+fmt.Sprintf("%#v", this.ApiHostname)+",\n")
+	s = append(s, "ApiPort: "+fmt.Sprintf("%#v", this.ApiPort)+",\n")
+	s = append(s, "ApiTimeout: "+fmt.Sprintf("%#v", this.ApiTimeout)+",\n")
+	s = append(s, "BundlesFile: "+fmt.Sprintf("%#v", this.BundlesFile)+",\n")
+	if this.Bundles != nil {
+		s = append(s, "Bundles: "+fmt.Sprintf("%#v", this.Bundles)+",\n")
+	}
+	if this.XXX_unrecognized != nil {
+		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Bundle) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 10)
+	s = append(s, "&v0.Bundle{")
 	s = append(s, "BundleDir: "+fmt.Sprintf("%#v", this.BundleDir)+",\n")
+	s = append(s, "Hostname: "+fmt.Sprintf("%#v", this.Hostname)+",\n")
+	if this.VolumeMounts != nil {
+		s = append(s, "VolumeMounts: "+fmt.Sprintf("%#v", this.VolumeMounts)+",\n")
+	}
+	if this.Process != nil {
+		s = append(s, "Process: "+fmt.Sprintf("%#v", this.Process)+",\n")
+	}
+	if this.VirtualMachine != nil {
+		s = append(s, "VirtualMachine: "+fmt.Sprintf("%#v", this.VirtualMachine)+",\n")
+	}
+	s = append(s, "VirtualMachineFile: "+fmt.Sprintf("%#v", this.VirtualMachineFile)+",\n")
 	if this.XXX_unrecognized != nil {
 		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
 	}
@@ -634,20 +839,20 @@ func (m *ApiServeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if m.Timeout != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+	if m.ApiTimeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.ApiTimeout))
 		i--
 		dAtA[i] = 0x18
 	}
-	if m.Port != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+	if m.ApiPort != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.ApiPort))
 		i--
 		dAtA[i] = 0x10
 	}
-	if len(m.Hostname) > 0 {
-		i -= len(m.Hostname)
-		copy(dAtA[i:], m.Hostname)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
+	if len(m.ApiHostname) > 0 {
+		i -= len(m.ApiHostname)
+		copy(dAtA[i:], m.ApiHostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.ApiHostname)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -678,20 +883,20 @@ func (m *ApiUnserveRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if m.Timeout != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+	if m.ApiTimeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.ApiTimeout))
 		i--
 		dAtA[i] = 0x18
 	}
-	if m.Port != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+	if m.ApiPort != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.ApiPort))
 		i--
 		dAtA[i] = 0x10
 	}
-	if len(m.Hostname) > 0 {
-		i -= len(m.Hostname)
-		copy(dAtA[i:], m.Hostname)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
+	if len(m.ApiHostname) > 0 {
+		i -= len(m.ApiHostname)
+		copy(dAtA[i:], m.ApiHostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.ApiHostname)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -722,27 +927,127 @@ func (m *CreateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if len(m.BundleDir) > 0 {
-		i -= len(m.BundleDir)
-		copy(dAtA[i:], m.BundleDir)
-		i = encodeVarintApi(dAtA, i, uint64(len(m.BundleDir)))
+	if len(m.Bundles) > 0 {
+		for iNdEx := len(m.Bundles) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Bundles[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintApi(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.BundlesFile) > 0 {
+		i -= len(m.BundlesFile)
+		copy(dAtA[i:], m.BundlesFile)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.BundlesFile)))
 		i--
 		dAtA[i] = 0x22
 	}
-	if m.Timeout != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Timeout))
+	if m.ApiTimeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.ApiTimeout))
 		i--
 		dAtA[i] = 0x18
 	}
-	if m.Port != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Port))
+	if m.ApiPort != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.ApiPort))
 		i--
 		dAtA[i] = 0x10
+	}
+	if len(m.ApiHostname) > 0 {
+		i -= len(m.ApiHostname)
+		copy(dAtA[i:], m.ApiHostname)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.ApiHostname)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Bundle) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Bundle) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Bundle) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.VirtualMachineFile) > 0 {
+		i -= len(m.VirtualMachineFile)
+		copy(dAtA[i:], m.VirtualMachineFile)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.VirtualMachineFile)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.VirtualMachine != nil {
+		{
+			size, err := m.VirtualMachine.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintApi(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.Process != nil {
+		{
+			size, err := m.Process.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintApi(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.VolumeMounts) > 0 {
+		for iNdEx := len(m.VolumeMounts) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.VolumeMounts[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintApi(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
 	}
 	if len(m.Hostname) > 0 {
 		i -= len(m.Hostname)
 		copy(dAtA[i:], m.Hostname)
 		i = encodeVarintApi(dAtA, i, uint64(len(m.Hostname)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.BundleDir) > 0 {
+		i -= len(m.BundleDir)
+		copy(dAtA[i:], m.BundleDir)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.BundleDir)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -766,15 +1071,15 @@ func (m *ApiServeRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Hostname)
+	l = len(m.ApiHostname)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
-	if m.Port != 0 {
-		n += 1 + sovApi(uint64(m.Port))
+	if m.ApiPort != 0 {
+		n += 1 + sovApi(uint64(m.ApiPort))
 	}
-	if m.Timeout != 0 {
-		n += 1 + sovApi(uint64(m.Timeout))
+	if m.ApiTimeout != 0 {
+		n += 1 + sovApi(uint64(m.ApiTimeout))
 	}
 	l = len(m.RootDir)
 	if l > 0 {
@@ -792,15 +1097,15 @@ func (m *ApiUnserveRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Hostname)
+	l = len(m.ApiHostname)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
-	if m.Port != 0 {
-		n += 1 + sovApi(uint64(m.Port))
+	if m.ApiPort != 0 {
+		n += 1 + sovApi(uint64(m.ApiPort))
 	}
-	if m.Timeout != 0 {
-		n += 1 + sovApi(uint64(m.Timeout))
+	if m.ApiTimeout != 0 {
+		n += 1 + sovApi(uint64(m.ApiTimeout))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -814,17 +1119,61 @@ func (m *CreateRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.ApiHostname)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if m.ApiPort != 0 {
+		n += 1 + sovApi(uint64(m.ApiPort))
+	}
+	if m.ApiTimeout != 0 {
+		n += 1 + sovApi(uint64(m.ApiTimeout))
+	}
+	l = len(m.BundlesFile)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	if len(m.Bundles) > 0 {
+		for _, e := range m.Bundles {
+			l = e.Size()
+			n += 1 + l + sovApi(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *Bundle) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.BundleDir)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
 	l = len(m.Hostname)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
-	if m.Port != 0 {
-		n += 1 + sovApi(uint64(m.Port))
+	if len(m.VolumeMounts) > 0 {
+		for _, e := range m.VolumeMounts {
+			l = e.Size()
+			n += 1 + l + sovApi(uint64(l))
+		}
 	}
-	if m.Timeout != 0 {
-		n += 1 + sovApi(uint64(m.Timeout))
+	if m.Process != nil {
+		l = m.Process.Size()
+		n += 1 + l + sovApi(uint64(l))
 	}
-	l = len(m.BundleDir)
+	if m.VirtualMachine != nil {
+		l = m.VirtualMachine.Size()
+		n += 1 + l + sovApi(uint64(l))
+	}
+	l = len(m.VirtualMachineFile)
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
@@ -845,9 +1194,9 @@ func (this *ApiServeRequest) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&ApiServeRequest{`,
-		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
-		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
-		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
+		`ApiHostname:` + fmt.Sprintf("%v", this.ApiHostname) + `,`,
+		`ApiPort:` + fmt.Sprintf("%v", this.ApiPort) + `,`,
+		`ApiTimeout:` + fmt.Sprintf("%v", this.ApiTimeout) + `,`,
 		`RootDir:` + fmt.Sprintf("%v", this.RootDir) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
@@ -859,9 +1208,9 @@ func (this *ApiUnserveRequest) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&ApiUnserveRequest{`,
-		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
-		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
-		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
+		`ApiHostname:` + fmt.Sprintf("%v", this.ApiHostname) + `,`,
+		`ApiPort:` + fmt.Sprintf("%v", this.ApiPort) + `,`,
+		`ApiTimeout:` + fmt.Sprintf("%v", this.ApiTimeout) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
 	}, "")
@@ -871,11 +1220,38 @@ func (this *CreateRequest) String() string {
 	if this == nil {
 		return "nil"
 	}
+	repeatedStringForBundles := "[]*Bundle{"
+	for _, f := range this.Bundles {
+		repeatedStringForBundles += strings.Replace(f.String(), "Bundle", "Bundle", 1) + ","
+	}
+	repeatedStringForBundles += "}"
 	s := strings.Join([]string{`&CreateRequest{`,
-		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
-		`Port:` + fmt.Sprintf("%v", this.Port) + `,`,
-		`Timeout:` + fmt.Sprintf("%v", this.Timeout) + `,`,
+		`ApiHostname:` + fmt.Sprintf("%v", this.ApiHostname) + `,`,
+		`ApiPort:` + fmt.Sprintf("%v", this.ApiPort) + `,`,
+		`ApiTimeout:` + fmt.Sprintf("%v", this.ApiTimeout) + `,`,
+		`BundlesFile:` + fmt.Sprintf("%v", this.BundlesFile) + `,`,
+		`Bundles:` + repeatedStringForBundles + `,`,
+		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Bundle) String() string {
+	if this == nil {
+		return "nil"
+	}
+	repeatedStringForVolumeMounts := "[]*ContainerVolume{"
+	for _, f := range this.VolumeMounts {
+		repeatedStringForVolumeMounts += strings.Replace(fmt.Sprintf("%v", f), "ContainerVolume", "v0.ContainerVolume", 1) + ","
+	}
+	repeatedStringForVolumeMounts += "}"
+	s := strings.Join([]string{`&Bundle{`,
 		`BundleDir:` + fmt.Sprintf("%v", this.BundleDir) + `,`,
+		`Hostname:` + fmt.Sprintf("%v", this.Hostname) + `,`,
+		`VolumeMounts:` + repeatedStringForVolumeMounts + `,`,
+		`Process:` + strings.Replace(fmt.Sprintf("%v", this.Process), "ContainerProcess", "v01.ContainerProcess", 1) + `,`,
+		`VirtualMachine:` + strings.Replace(fmt.Sprintf("%v", this.VirtualMachine), "ContainerMachine", "v02.ContainerMachine", 1) + `,`,
+		`VirtualMachineFile:` + fmt.Sprintf("%v", this.VirtualMachineFile) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
 	}, "")
@@ -920,7 +1296,7 @@ func (m *ApiServeRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiHostname", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -948,13 +1324,13 @@ func (m *ApiServeRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Hostname = string(dAtA[iNdEx:postIndex])
+			m.ApiHostname = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiPort", wireType)
 			}
-			m.Port = 0
+			m.ApiPort = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowApi
@@ -964,16 +1340,16 @@ func (m *ApiServeRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Port |= int32(b&0x7F) << shift
+				m.ApiPort |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiTimeout", wireType)
 			}
-			m.Timeout = 0
+			m.ApiTimeout = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowApi
@@ -983,7 +1359,7 @@ func (m *ApiServeRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Timeout |= int32(b&0x7F) << shift
+				m.ApiTimeout |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1073,7 +1449,7 @@ func (m *ApiUnserveRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiHostname", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1101,13 +1477,13 @@ func (m *ApiUnserveRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Hostname = string(dAtA[iNdEx:postIndex])
+			m.ApiHostname = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiPort", wireType)
 			}
-			m.Port = 0
+			m.ApiPort = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowApi
@@ -1117,16 +1493,16 @@ func (m *ApiUnserveRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Port |= int32(b&0x7F) << shift
+				m.ApiPort |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiTimeout", wireType)
 			}
-			m.Timeout = 0
+			m.ApiTimeout = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowApi
@@ -1136,7 +1512,7 @@ func (m *ApiUnserveRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Timeout |= int32(b&0x7F) << shift
+				m.ApiTimeout |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1194,7 +1570,7 @@ func (m *CreateRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiHostname", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1222,13 +1598,13 @@ func (m *CreateRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Hostname = string(dAtA[iNdEx:postIndex])
+			m.ApiHostname = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Port", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiPort", wireType)
 			}
-			m.Port = 0
+			m.ApiPort = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowApi
@@ -1238,16 +1614,16 @@ func (m *CreateRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Port |= int32(b&0x7F) << shift
+				m.ApiPort |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Timeout", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiTimeout", wireType)
 			}
-			m.Timeout = 0
+			m.ApiTimeout = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowApi
@@ -1257,12 +1633,129 @@ func (m *CreateRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Timeout |= int32(b&0x7F) << shift
+				m.ApiTimeout |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BundlesFile", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BundlesFile = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bundles", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Bundles = append(m.Bundles, &Bundle{})
+			if err := m.Bundles[len(m.Bundles)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Bundle) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Bundle: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Bundle: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BundleDir", wireType)
 			}
@@ -1293,6 +1786,176 @@ func (m *CreateRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.BundleDir = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hostname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hostname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VolumeMounts", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VolumeMounts = append(m.VolumeMounts, &v0.ContainerVolume{})
+			if err := m.VolumeMounts[len(m.VolumeMounts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Process", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Process == nil {
+				m.Process = &v01.ContainerProcess{}
+			}
+			if err := m.Process.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VirtualMachine", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.VirtualMachine == nil {
+				m.VirtualMachine = &v02.ContainerMachine{}
+			}
+			if err := m.VirtualMachine.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VirtualMachineFile", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VirtualMachineFile = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

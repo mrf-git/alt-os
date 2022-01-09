@@ -1,0 +1,29 @@
+// To regenerate api.pb.go run `codegen -p`.
+syntax = "proto3";
+
+package os.container.volume;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "alt-os/api/os/container/volume/v0";
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.stringer_all) =  true;
+option (gogoproto.populate_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+
+// ContainerVolume defines a volume to be mounted in a container runtime.
+message ContainerVolume {
+	// Absolute destination within the container.
+	string destination = 1;
+	// The source path for the volume.
+	string source = 2;
+	// The filesystem type.
+	string type = 3;
+	// Options for mounting the source at the destination.
+	repeated string options = 4;
+}

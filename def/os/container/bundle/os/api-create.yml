@@ -1,0 +1,31 @@
+# Start the bundle service API server.
+kind: os.container.bundle.ApiServeRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8888
+  apiTimeout: 10
+  rootDir: ./workspace/os/container/bundle
+
+---
+
+# Send the API server the configuration for creating the OS bundle.
+kind: os.container.bundle.CreateRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8888
+  apiTimeout: 10
+  bundlesFile: ./def/os/container/bundle/os/bundle-def.yml
+
+---
+
+# Stop the bundle service API server.
+kind: os.container.bundle.ApiUnserveRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8888
+  apiTimeout: 10
+
+

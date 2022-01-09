@@ -1,0 +1,69 @@
+# Definition of the container bundle for the OS itself.
+kind: os.container.bundle.Bundle
+version: v0
+def:
+  bundleDir: alt-os
+  hostname: os
+  volumeMounts:
+    - destination: /mnt/shared
+      source: ./workspace/shared
+  # virtualMachineFile: ./def/os/container/bundle/os/vm-def.yml
+  process:
+    cwd: /
+    user:
+      uid: 0
+      gid: 0
+    env:
+      - name: LANG
+        value: C.UTF-8
+      - name: USER
+        value: root
+    capabilities:
+      permitted: &allCaps
+        - CAP_BLOCK_SUSPEND
+        - CAP_IPC_LOCK
+        - CAP_NET_ADMIN
+        - CAP_PERFMON
+        - CAP_SYS_ADMIN
+        - CAP_SYS_BOOT
+        - CAP_SYS_RAWIO
+        - CAP_SYS_TIME
+      effective: *allCaps
+      bounding: *allCaps
+      inheritable: *allCaps
+      ambient:  # noCaps
+    rlimits:
+      - type: RLIMIT_CPU
+        softUnlimited: true
+        hardUnlimited: true
+      - type: RLIMIT_RTTIME
+        softUnlimited: true
+        hardUnlimited: true
+      - type: RLIMIT_AS
+        softUnlimited: true
+        hardUnlimited: true
+      - type: RLIMIT_MEMLOCK
+        softUnlimited: true
+        hardUnlimited: true
+      - type: RLIMIT_NOFILE
+        softUnlimited: true
+        hardUnlimited: true
+      - type: RLIMIT_NPROC
+        softUnlimited: true
+        hardUnlimited: true
+      - type: RLIMIT_STACK
+        softValue: 0xFFFFFFFF
+        hardUnlimited: true
+      - type: RLIMIT_DATA
+        softValue: 0xFFFFFFFFFFFFF000
+        hardUnlimited: true
+      - type: RLIMIT_MSGQUEUE
+        softValue: 0xFFFFFFFF
+        hardUnlimited: true
+      - type: RLIMIT_FSIZE
+        softValue: 0xFFFFFFFF
+        hardValue: 0xFFFFFFFFFFFFF000
+      - type: RLIMIT_SIGPENDING
+        softValue: 2048
+        hardValue: 4096
+

@@ -40,12 +40,12 @@ service ContainerRuntimeService {
 
 // ApiServeRequest specifies the parameters to a ContainerRuntimeService.Serve call.
 message ApiServeRequest {
-	// The hostname to listen on.
-	string hostname = 1;
-	// The port to listen on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname for the API server to listen on.
+	string api_hostname = 1;
+	// The port for the API server to listen on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 	// The maximum number of containers to allow.
 	int64 max_containers = 4;
 	// The maximum amount of memory to allow a single container to consume.
@@ -54,44 +54,44 @@ message ApiServeRequest {
 
 // ApiUnserveRequest specifies the parameters to a ContainerRuntimeService.Unserve call.
 message ApiUnserveRequest {
-	// The hostname of the listening server to operate on.
-	string hostname = 1;
-	// The port of the listening server to operate on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 }
 
 // ListRequest specifies the parameters to a ContainerRuntimeService.List call.
 message ListRequest {
-	// The hostname of the listening server to operate on.
-	string hostname = 1;
-	// The port of the listening server to operate on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 }
 
 // ListResponse returns the result of a ContainerRuntimeService.List call.
 message ListResponse {
-	// The hostname of the listening server to operate on.
-	string hostname = 1;
-	// The port of the listening server to operate on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 	// The unique id of the container.
 	repeated string id = 4;
 }
 
 // QueryStateRequest specifies the parameters to a ContainerRuntimeService.QueryState call.
 message QueryStateRequest {
-	// The hostname of the listening server to operate on.
-	string hostname = 1;
-	// The port of the listening server to operate on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 	// The unique id of the container.
 	string id = 4;
 }
@@ -108,12 +108,12 @@ message QueryStateResponse {
 
 // CreateRequest specifies the parameters to a ContainerRuntimeService.Create call.
 message CreateRequest {
-	// The hostname of the listening server to operate on.
-	string hostname = 1;
-	// The port of the listening server to operate on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 	// The unique id of the container.
 	string id = 4;
 	// The container's bundle directory.
@@ -122,24 +122,24 @@ message CreateRequest {
 
 // StartRequest specifies the parameters to a ContainerRuntimeService.Start call.
 message StartRequest {
-	// The hostname of the listening server to operate on.
-	string hostname = 1;
-	// The port of the listening server to operate on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 	// The unique id of the container.
 	string id = 4;
 }
 
 // KillRequest specifies the parameters to a ContainerRuntimeService.Kill call.
 message KillRequest {
-	// The hostname of the listening server to operate on.
-	string hostname = 1;
-	// The port of the listening server to operate on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 	// The unique id of the container.
 	string id = 4;
 	// The kill signal to send.
@@ -148,12 +148,12 @@ message KillRequest {
 
 // DeleteRequest specifies the parameters to a ContainerRuntimeService.Delete call.
 message DeleteRequest {
-	// The hostname of the listening server to operate on.
-	string hostname = 1;
-	// The port of the listening server to operate on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 	// The unique id of the container.
 	string container_id = 4;
 }

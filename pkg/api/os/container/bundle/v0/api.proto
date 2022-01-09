@@ -5,6 +5,9 @@ package os.container.bundle;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/empty.proto";
+import "os/container/volume/v0/api.proto";
+import "os/container/process/v0/api.proto";
+import "os/container/machine/v0/api.proto";
 
 option go_package = "alt-os/api/os/container/bundle/v0";
 option (gogoproto.gostring_all) = true;
@@ -31,34 +34,56 @@ service ContainerBundleService {
 
 // ApiServeRequest specifies the parameters to a ContainerBundleService.Serve call.
 message ApiServeRequest {
-	// The hostname to listen on.
-	string hostname = 1;
-	// The port to listen on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname for the API server to listen on.
+	string api_hostname = 1;
+	// The port for the API server to listen on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 	// The path to the root directory of bundles.
 	string root_dir = 4;
 }
 
 // ApiUnserveRequest specifies the parameters to a ContainerBundleService.Unserve call.
 message ApiUnserveRequest {
-	// The hostname of the listening server to operate on.
-	string hostname = 1;
-	// The port of the listening server to operate on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
 }
 
 // CreateRequest specifies the parameters to a ContainerBundleService.Create call.
 message CreateRequest {
-	// The hostname of the listening server to operate on.
-	string hostname = 1;
-	// The port of the listening server to operate on.
-	int32 port = 2;
-	// The number of seconds to timeout the request.
-	int32 timeout = 3;
-	// The name of the subdirectory of the bundle within the bundle service root directory.
-	string bundle_dir = 4;
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
+	// The path to a file containing a serialized Bundles defining the bundle to create.
+	// Not allowed if bundles is set.
+	string bundles_file = 4;
+	// Objects defining the bundles to create. Not allowed if bundles_file is set.
+	repeated Bundle bundles = 5;
+}
+
+// Bundle defines a container bundle.
+message Bundle {
+	// The name of the subdirectory of the bundle within the service's bundle root directory.
+	string bundle_dir = 1;
+	// The hostname of the container as seen from within it.
+	string hostname = 2;
+	// Volumes to mount for the container.
+	repeated os.container.volume.ContainerVolume volume_mounts = 3;
+	// The container process definition.
+	os.container.process.ContainerProcess process = 4;
+	// Settings object for a virtual machine that can host the container.
+	// Not allowed if virtual_machine_file is also specified.
+	os.container.machine.ContainerMachine virtual_machine = 5;
+	// File storing a serialized settings object for a virtual machine
+	// that can host the container. Not allowed if virtual_machine is
+	// also specified.
+	string virtual_machine_file = 6;
 }

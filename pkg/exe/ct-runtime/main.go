@@ -7,18 +7,16 @@ import (
 	"regexp"
 )
 
-const EXE_USAGE = `ctrt
-----
-Container runtime.
+const EXE_USAGE = `ct-runtime
+----------
+Container runtime service executable.
+
 Operates a container runtime in accordance with the OCI runtime specification:
 https://github.com/opencontainers/runtime-spec/blob/v1.0.2/runtime.md
-
-The program expects a mandatory input file containing one or more api
-requests to apply to a runtime.
 `
 
-// CtrtContext holds context information for ctrt.
-type CtrtContext struct {
+// CtRuntimeContext holds context information for ct-runtime.
+type CtRuntimeContext struct {
 	*exe.ExeContext
 }
 
@@ -26,7 +24,7 @@ type CtrtContext struct {
 func main() {
 	allowedKindRe := regexp.MustCompile(`os.container.runtime.[[:word:]]`)
 	allowedVersionRe := regexp.MustCompile(`v0`)
-	ctxt := &CtrtContext{}
+	ctxt := &CtRuntimeContext{}
 	kindImplMap := map[string]interface{}{
 		"os.container.runtime.ContainerRuntimeService/v0": newContainerRuntimeServiceServerImpl(ctxt),
 	}

@@ -1,0 +1,143 @@
+// To regenerate api.pb.go run `codegen -p`.
+syntax = "proto3";
+
+package os.container.machine;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "alt-os/api/os/container/machine/v0";
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.stringer_all) =  true;
+option (gogoproto.populate_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+
+// ContainerMachine defines settings for a machine hosting OS containers.
+message ContainerMachine {
+	// Total memory of the machine in bytes.
+	uint64 memory = 1;
+	// Number of processors available.
+	uint64 processors = 2;
+	// The type of virtualization to use.
+	VirtualizationType virtualization = 3;
+	// Whether the hardware clock is UTC time.
+	bool clock_utc = 4;
+	// Primary pointing device type.
+	PointingDeviceType pointing_device = 5;
+	// Video settings for the machine.
+	Video video = 6;
+	// Audio settings for the machine.
+	Audio audio = 7;
+	// Storage devices attached to the machine.
+	repeated StorageDevice storage = 8;
+	// Network devices attached to the machine.
+	repeated NetworkDevice network = 9;
+	// Serial devices attached to the machine.
+	repeated SerialDevice serial = 10;
+}
+
+// Video defines machine video settings.
+message Video {
+	// Total video memory in bytes.
+	uint64 memory = 1;
+	// Number of displays attached to the machine.
+	uint64 displays = 2;
+}
+
+// Audio defines machine audio settings.
+message Audio {
+	// Whether audio output is enabled.
+	bool enable_output = 1;
+	// Whether audio input is enabled.
+	bool enable_input = 2;
+}
+
+// StorageDevice defines a storage device attached to the machine.
+message StorageDevice {
+	// The type of storage controller.
+	StorageControllerType controller = 1;
+	// The type of device.
+	StorageDeviceType type = 2;
+	// Size of the storage in bytes.
+	uint64 size = 3;
+	// Whether this storage device is dynamically resizable.
+	bool dynamic = 4;
+}
+
+// NetworkDevice defines a network device attached to the machine.
+message NetworkDevice {
+	// The attachment type for the network.
+	NetworkAttachmentType type = 1;
+	// Whether to use virtio for virtualization. If false, this
+	// represents a real network device or a PCNET device under VM.
+	bool virtio = 2;
+	// The mac address of the device.
+	string mac = 3;
+}
+
+// SerialDevice defines a 16550A-compatible UART serial device attached to the machine.
+message SerialDevice {
+	// The serial I/O port.
+	uint32 port = 1;
+	// The interrupt number to use.
+	uint32 irq = 2;
+}
+
+// VirtualizationType represents the type of virtualization for a
+// machine to use.
+enum VirtualizationType {
+	// No virtualization.
+	VIRTUALIZATION_NONE = 0;
+	// Use paravirtualization.
+	VIRTUALIZATION_PARA = 1;
+	// Use full virtualization.
+	VIRTUALIZATION_FULL = 2;
+}
+
+// PointingDeviceType represents a type of pointing device.
+enum PointingDeviceType {
+	// No pointing device.
+	POINTING_NONE = 0;
+	// A mouse device.
+	POINTING_MOUSE = 1;
+	// A touch device.
+	POINTING_TOUCH = 2;
+}
+
+// StorageControllerType represents a type of storage controller.
+enum StorageControllerType {
+	// Represents a null StorageControllerType.
+	STORAGE_CONTROLLER_NONE = 0;
+	// AHCI/SATA storage controller.
+	STORAGE_CONTROLLER_SATA = 1;
+	// USB storage controller.
+	STORAGE_CONTROLLER_USB = 2;
+}
+
+// StorageDeviceType represents a type of storage device.
+enum StorageDeviceType {
+	// Represents a null StorageDeviceType.
+	STORAGE_DEVICE_NONE = 0;
+	// A solid-state storage device.
+	STORAGE_DEVICE_SSD = 1;
+	// A magnetic hard disk device.
+	STORAGE_DEVICE_HDD = 2;
+	// An optical disk device.
+	STORAGE_DEVICE_OPTICAL = 3;
+}
+
+// NetworkAttachmentType represents a type of attachment for a network adapter.
+enum NetworkAttachmentType {
+	// The machine is directly attached to the network.
+	NET_ATTACHMENT_DIRECT = 0;
+	// The network is bridged to a VM host network.
+	NET_ATTACHMENT_BRIDGED = 1;
+	// The network is internal to the machine but allows outbound connections to a
+	// VM host network using network address translation.
+	NET_ATTACHMENT_NAT_NETWORK = 2;
+}
+

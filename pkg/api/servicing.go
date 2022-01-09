@@ -14,9 +14,9 @@ import (
 
 // ApiServiceMessage interface represents the common values of all service messages.
 type ApiServiceMessage interface {
-	GetHostname() string
-	GetPort() int32
-	GetTimeout() int32
+	GetApiHostname() string
+	GetApiPort() uint32
+	GetApiTimeout() uint32
 }
 
 // ApiServiceContext holds runtime context information for OS API services.
@@ -63,21 +63,21 @@ func ServiceMessages(ctxt *ApiServiceContext) error {
 func makeClientGrpcContextForMsg(kind, version string, msg ApiServiceMessage,
 	ctxt *ApiServiceContext) (string, context.Context, context.CancelFunc, error) {
 
-	addr := fmt.Sprintf("%s:%d", msg.GetHostname(), msg.GetPort())
+	addr := fmt.Sprintf("%s:%d", msg.GetApiHostname(), msg.GetApiPort())
 	if _, ok := ctxt.AddrClientMap[addr]; !ok {
 		if err := newClient(kind, version, addr, ctxt); err != nil {
 			return "", nil, nil, err
 		}
 	}
 	grpcContext, grpcCancel := context.WithTimeout(context.Background(),
-		time.Duration(msg.GetTimeout())*time.Second)
+		time.Duration(msg.GetApiTimeout())*time.Second)
 	return addr, grpcContext, grpcCancel, nil
 }
 
 // newServer creates a new gRPC server and stores it in the
 // context map with listening address as the key to the map.
 func newServer(kind, version string, msg ApiServiceMessage, ctxt *ApiServiceContext) error {
-	addr := fmt.Sprintf("%s:%d", msg.GetHostname(), msg.GetPort())
+	addr := fmt.Sprintf("%s:%d", msg.GetApiHostname(), msg.GetApiPort())
 	chStop := make(chan bool, 1)
 	if _, ok := ctxt.AddrServerMap[addr]; ok {
 		return errors.New("already exists: " + addr)

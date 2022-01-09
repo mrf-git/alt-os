@@ -6,17 +6,16 @@ import (
 	"regexp"
 )
 
-const EXE_USAGE = `bundlegen
+const EXE_USAGE = `ct-bundle
 ---------
-Creates a container bundle in accordance with the OCI bundle specification:
-https://github.com/opencontainers/runtime-spec/blob/v1.0.2/bundle.md
+Container bundle service executable.
 
-The program expects a mandatory input file containing one or more api
-requests defining bundles to create.
+Manages container bundles in accordance with the OCI bundle specification:
+https://github.com/opencontainers/runtime-spec/blob/v1.0.2/bundle.md.
 `
 
-// BundlegenContext holds context information for bundlegen.
-type BundlegenContext struct {
+// CtBundleContext holds context information for ct-bundle.
+type CtBundleContext struct {
 	*exe.ExeContext
 	rootDir string
 }
@@ -25,7 +24,7 @@ type BundlegenContext struct {
 func main() {
 	allowedKindRe := regexp.MustCompile(`os.container.bundle.[[:word:]]`)
 	allowedVersionRe := regexp.MustCompile(`v0`)
-	ctxt := &BundlegenContext{}
+	ctxt := &CtBundleContext{}
 	kindImplMap := map[string]interface{}{
 		"os.container.bundle.ContainerBundleService/v0": newContainerBundleServiceServerImpl(ctxt),
 	}

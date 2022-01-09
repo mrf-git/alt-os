@@ -23,7 +23,7 @@ func serviceMessageKinds(ctxt *ApiServiceContext) error {
 		case *api_os_container_bundle_v0.ApiUnserveRequest:
 			if err := req_api_os_container_bundle_v0_ContainerBundleService_v0_ApiUnserve(msg, ctxt); err != nil {
 				return err
-			} else if err := stopServer(fmt.Sprintf("%s:%d", msg.GetHostname(), msg.GetPort()), ctxt); err != nil {
+			} else if err := stopServer(fmt.Sprintf("%s:%d", msg.GetApiHostname(), msg.GetApiPort()), ctxt); err != nil {
 				return err
 			}
 		case *api_os_container_bundle_v0.CreateRequest:
@@ -39,7 +39,7 @@ func serviceMessageKinds(ctxt *ApiServiceContext) error {
 		case *api_os_container_runtime_v0.ApiUnserveRequest:
 			if err := req_api_os_container_runtime_v0_ContainerRuntimeService_v0_ApiUnserve(msg, ctxt); err != nil {
 				return err
-			} else if err := stopServer(fmt.Sprintf("%s:%d", msg.GetHostname(), msg.GetPort()), ctxt); err != nil {
+			} else if err := stopServer(fmt.Sprintf("%s:%d", msg.GetApiHostname(), msg.GetApiPort()), ctxt); err != nil {
 				return err
 			}
 		case *api_os_container_runtime_v0.ListRequest:

@@ -8,7 +8,7 @@
                 "build",
                 "-o",
                 "${workspaceFolder}/workspace/tools/codegen",
-                "./tools/codegen"
+                "${workspaceFolder}/tools/codegen"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -17,22 +17,7 @@
             "command": "go"
         },
         {
-            "label": "Build Exe: ctrt",
-            "type": "process",
-            "args": [
-                "build",
-                "-o",
-                "${workspaceFolder}/workspace/exe/ctrt",
-                "alt-os/exe/ctrt"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": "build",
-            "command": "go"
-        },
-        {
-            "label": "Generate Api Protos",
+            "label": "Run Tool: codegen -p (generate protos)",
             "type": "process",
             "args": [
                 "-p"
@@ -45,17 +30,61 @@
             "problemMatcher": []
         },
         {
-            "label": "ContainerRuntime",
+            "label": "Build Exe: ct-runtime",
             "type": "process",
             "args": [
-                "-i",
-                "def/ctrt/conf.yml"
+                "build",
+                "-o",
+                "${workspaceFolder}/workspace/exe/ct-runtime",
+                "alt-os/exe/ct-runtime"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "group": "build",
-            "command": "${workspaceFolder}/workspace/exe/ctrt",
+            "command": "go"
+        },
+        {
+            "label": "Run Exe: ct-runtime (os)",
+            "type": "process",
+            "args": [
+                "-i",
+                "${workspaceFolder}/def/os/container/runtime/os/api-run.yml"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/exe/ct-runtime",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Exe: ct-bundle",
+            "type": "process",
+            "args": [
+                "build",
+                "-o",
+                "${workspaceFolder}/workspace/exe/ct-bundle",
+                "alt-os/exe/ct-bundle"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "go"
+        },
+        {
+            "label": "Run Exe: ct-bundle (os)",
+            "type": "process",
+            "args": [
+                "-i",
+                "${workspaceFolder}/def/os/container/bundle/os/api-create.yml"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/exe/ct-bundle",
             "problemMatcher": []
         }
     ]

@@ -8,8 +8,8 @@ import (
 	"github.com/gogo/protobuf/types"
 )
 
-// newContainerRuntimeServiceServerImpl returns a new server-impl for ctrt.
-func newContainerRuntimeServiceServerImpl(ctxt *CtrtContext) *ContainerRuntimeServiceServerImpl {
+// newContainerRuntimeServiceServerImpl returns a new server-impl for ct-runtime.
+func newContainerRuntimeServiceServerImpl(ctxt *CtRuntimeContext) *ContainerRuntimeServiceServerImpl {
 	return &ContainerRuntimeServiceServerImpl{
 		ctxt: ctxt,
 	}
@@ -17,7 +17,7 @@ func newContainerRuntimeServiceServerImpl(ctxt *CtrtContext) *ContainerRuntimeSe
 
 type ContainerRuntimeServiceServerImpl struct {
 	api_os_container_runtime_v0.UnimplementedContainerRuntimeServiceServer
-	ctxt *CtrtContext
+	ctxt *CtRuntimeContext
 }
 
 func (server *ContainerRuntimeServiceServerImpl) ApiServe(ctx context.Context,
@@ -34,7 +34,7 @@ func (server *ContainerRuntimeServiceServerImpl) ApiUnserve(ctx context.Context,
 
 	fmt.Println("unserving")
 	// TODO stop and delete all containers
-	addr := fmt.Sprintf("%s:%d", in.Hostname, in.Port)
+	addr := fmt.Sprintf("%s:%d", in.ApiHostname, in.ApiPort)
 	server.ctxt.AddrStopSignalMap[addr]()
 
 	return &types.Empty{}, nil

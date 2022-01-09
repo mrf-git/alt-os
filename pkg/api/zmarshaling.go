@@ -4,7 +4,10 @@ package api
 import (
 	api_api_v0 "alt-os/api/api/v0"
 	api_os_container_bundle_v0 "alt-os/api/os/container/bundle/v0"
+	api_os_container_machine_v0 "alt-os/api/os/container/machine/v0"
+	api_os_container_process_v0 "alt-os/api/os/container/process/v0"
 	api_os_container_runtime_v0 "alt-os/api/os/container/runtime/v0"
+	api_os_container_volume_v0 "alt-os/api/os/container/volume/v0"
 	"errors"
 
 	"github.com/gogo/protobuf/proto"
@@ -38,6 +41,45 @@ func unmarshalKind(kind, version string, value []byte) (proto.Message, error) {
 	case "os.container.bundle.CreateRequest/v0":
 		return doUnmarshal(&api_os_container_bundle_v0.CreateRequest{})
 
+	case "os.container.bundle.Bundle/v0":
+		return doUnmarshal(&api_os_container_bundle_v0.Bundle{})
+
+	case "os.container.machine.ContainerMachine/v0":
+		return doUnmarshal(&api_os_container_machine_v0.ContainerMachine{})
+
+	case "os.container.machine.Video/v0":
+		return doUnmarshal(&api_os_container_machine_v0.Video{})
+
+	case "os.container.machine.Audio/v0":
+		return doUnmarshal(&api_os_container_machine_v0.Audio{})
+
+	case "os.container.machine.StorageDevice/v0":
+		return doUnmarshal(&api_os_container_machine_v0.StorageDevice{})
+
+	case "os.container.machine.NetworkDevice/v0":
+		return doUnmarshal(&api_os_container_machine_v0.NetworkDevice{})
+
+	case "os.container.machine.SerialDevice/v0":
+		return doUnmarshal(&api_os_container_machine_v0.SerialDevice{})
+
+	case "os.container.process.ContainerProcess/v0":
+		return doUnmarshal(&api_os_container_process_v0.ContainerProcess{})
+
+	case "os.container.process.Terminal/v0":
+		return doUnmarshal(&api_os_container_process_v0.Terminal{})
+
+	case "os.container.process.EnvironmentVariable/v0":
+		return doUnmarshal(&api_os_container_process_v0.EnvironmentVariable{})
+
+	case "os.container.process.ResourceLimit/v0":
+		return doUnmarshal(&api_os_container_process_v0.ResourceLimit{})
+
+	case "os.container.process.Capabilities/v0":
+		return doUnmarshal(&api_os_container_process_v0.Capabilities{})
+
+	case "os.container.process.User/v0":
+		return doUnmarshal(&api_os_container_process_v0.User{})
+
 	case "os.container.runtime.ApiServeRequest/v0":
 		return doUnmarshal(&api_os_container_runtime_v0.ApiServeRequest{})
 
@@ -67,6 +109,9 @@ func unmarshalKind(kind, version string, value []byte) (proto.Message, error) {
 
 	case "os.container.runtime.DeleteRequest/v0":
 		return doUnmarshal(&api_os_container_runtime_v0.DeleteRequest{})
+
+	case "os.container.volume.ContainerVolume/v0":
+		return doUnmarshal(&api_os_container_volume_v0.ContainerVolume{})
 	}
 }
 
@@ -98,6 +143,45 @@ func marshalKind(msg proto.Message) (kind, version string, bytes []byte, err err
 	case *api_os_container_bundle_v0.CreateRequest:
 		return doMarshal("os.container.bundle.CreateRequest", "v0", msg)
 
+	case *api_os_container_bundle_v0.Bundle:
+		return doMarshal("os.container.bundle.Bundle", "v0", msg)
+
+	case *api_os_container_machine_v0.ContainerMachine:
+		return doMarshal("os.container.machine.ContainerMachine", "v0", msg)
+
+	case *api_os_container_machine_v0.Video:
+		return doMarshal("os.container.machine.Video", "v0", msg)
+
+	case *api_os_container_machine_v0.Audio:
+		return doMarshal("os.container.machine.Audio", "v0", msg)
+
+	case *api_os_container_machine_v0.StorageDevice:
+		return doMarshal("os.container.machine.StorageDevice", "v0", msg)
+
+	case *api_os_container_machine_v0.NetworkDevice:
+		return doMarshal("os.container.machine.NetworkDevice", "v0", msg)
+
+	case *api_os_container_machine_v0.SerialDevice:
+		return doMarshal("os.container.machine.SerialDevice", "v0", msg)
+
+	case *api_os_container_process_v0.ContainerProcess:
+		return doMarshal("os.container.process.ContainerProcess", "v0", msg)
+
+	case *api_os_container_process_v0.Terminal:
+		return doMarshal("os.container.process.Terminal", "v0", msg)
+
+	case *api_os_container_process_v0.EnvironmentVariable:
+		return doMarshal("os.container.process.EnvironmentVariable", "v0", msg)
+
+	case *api_os_container_process_v0.ResourceLimit:
+		return doMarshal("os.container.process.ResourceLimit", "v0", msg)
+
+	case *api_os_container_process_v0.Capabilities:
+		return doMarshal("os.container.process.Capabilities", "v0", msg)
+
+	case *api_os_container_process_v0.User:
+		return doMarshal("os.container.process.User", "v0", msg)
+
 	case *api_os_container_runtime_v0.ApiServeRequest:
 		return doMarshal("os.container.runtime.ApiServeRequest", "v0", msg)
 
@@ -127,5 +211,8 @@ func marshalKind(msg proto.Message) (kind, version string, bytes []byte, err err
 
 	case *api_os_container_runtime_v0.DeleteRequest:
 		return doMarshal("os.container.runtime.DeleteRequest", "v0", msg)
+
+	case *api_os_container_volume_v0.ContainerVolume:
+		return doMarshal("os.container.volume.ContainerVolume", "v0", msg)
 	}
 }

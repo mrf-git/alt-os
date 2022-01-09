@@ -1,0 +1,144 @@
+// To regenerate api.pb.go run `codegen -p`.
+syntax = "proto3";
+
+package os.container.process;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "alt-os/api/os/container/process/v0";
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.stringer_all) =  true;
+option (gogoproto.populate_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+
+// ContainerProcess defines the container process.
+message ContainerProcess {
+	// Terminal options for the process.
+	Terminal terminal = 1;
+	// The absolute path in the container of the working directory for the process.
+	string cwd = 2;
+	// The environment variables to define for the process.
+	repeated EnvironmentVariable env = 3;
+	// Arguments for executing the process.
+	repeated string args = 4;
+	// The resource limits for the process. Any undefined limit types will default to hard and
+	// soft values of 0, effectively disabling the resource.
+	repeated ResourceLimit rlimits = 5;
+	// The capability set of the container process.
+	Capabilities capabilities = 6;
+	// The user for the container process to run as.
+	User user = 7;
+}
+
+// Terminal defines terminal options for a process.
+message Terminal {
+	// Whether to attach a terminal with command-line I/O.
+	bool enable = 1;
+	// The height of the console if a terminal is enabled.
+	uint32 height = 2;
+	// The width of the console if a terminal is enabled.
+	uint32 width = 3;
+}
+
+// EnvironmentVariable defines an environment variable for a process.
+message EnvironmentVariable {
+	// The name of the variable.
+	string name = 1;
+	// The string value of the variable.
+	string value = 2;
+}
+
+// ResourceLimit defines a limit for a process resource.
+message ResourceLimit {
+	// The type of the resource to limit.
+	ResourceLimitType type = 1;
+	// The soft limit value enforced by the container runtime.
+	uint64 soft_value = 2;
+	// Whether the soft limit is unlimited. If true any limit value is ignored.
+	bool soft_unlimited = 3;
+	// The hard limit value that will not be exceeded by the runtime.
+	uint64 hard_value = 4;
+	// Whether the hard limit is unlimited. If true any limit value is ignored.
+	bool hard_unlimited = 5;
+}
+
+// Capabilities represents the capability set of a process thread.
+message Capabilities {
+	// Limiting superset for effective capabilities.
+	repeated Capability permitted = 1;
+	// Used to perform permission checks for the process thread.
+	repeated Capability effective = 2;
+	// Capabilities allowed to be inherited by child process threads.
+	repeated Capability inheritable = 3;
+	// Capabilities allowed to be gained from parent process threads.
+	repeated Capability bounding = 4;
+	// Capabilities always preserved across child processes.
+	repeated Capability ambient = 5;
+}
+
+// User represents the user for the container process.
+message User {
+	// User ID in the container namespace.
+	uint32 uid = 1;
+	// Group ID in the container namespace.
+	uint32 gid = 2;
+	// umask of the user.
+	uint32 umask = 3;
+	// Additional group IDs in the container namespace to be added to the process.
+	repeated uint32 additional_gids = 4;
+}
+
+// ResourceLimitType represents a type of resource limit available for processes.
+enum ResourceLimitType {
+	// Represents a null resource limit type.
+	RLIMIT_NONE = 0;
+	// Size of the process's virtual address space.
+	RLIMIT_AS = 1;
+	// Number of seconds that the process is allowed to run on the cpu.
+	RLIMIT_CPU = 2;
+	// Size of the data segment in memory. Specified in bytes and rounded down to system page size.
+	RLIMIT_DATA = 3;
+	// Size of files the process may create.
+	RLIMIT_FSIZE = 4;
+	// Size of memory that can be locked by a process. Specified in bytes and rounded down to system page size.
+	RLIMIT_MEMLOCK = 5;
+	// Number of bytes allowed in process message queues.
+	RLIMIT_MSGQUEUE = 6;
+	// Number of files the process simultaneously have open.
+	RLIMIT_NOFILE = 7;
+	// Number of process threads a process may simultaneously be running, including itself and all child processes.
+	RLIMIT_NPROC = 8;
+	// Amount of time in microseconds a real-time-scheduled process can run without blocking.
+	RLIMIT_RTTIME = 9;
+	// Number of signals that can be queued for the process.
+	RLIMIT_SIGPENDING = 10;
+	// Size in bytes of the process stack.
+	RLIMIT_STACK = 11;
+}
+
+// Capability represents an individual privileged capability of a process thread.
+enum Capability {
+	// Represents a null process capability.
+	CAP_NONE = 0;
+	// Block system suspend.
+	CAP_BLOCK_SUSPEND = 1;
+	// Lock memory and allocate huge pages.
+	CAP_IPC_LOCK = 2;
+	// Perform network administration.
+	CAP_NET_ADMIN = 3;
+	// Use performance monitoring features.
+	CAP_PERFMON = 4;
+	// Load/unload low-level system components and use low-level system features.
+	CAP_SYS_ADMIN = 5;
+	// System boot and reboot.
+	CAP_SYS_BOOT = 6;
+	// Access I/O port operations, device MSRs, and device-specific I/O features.
+	CAP_SYS_RAWIO = 7;
+	// Modify the system and clocks.
+	CAP_SYS_TIME = 8;
+}
