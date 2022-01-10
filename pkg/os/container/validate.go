@@ -2,8 +2,8 @@ package container
 
 import (
 	api_os_container_bundle_v0 "alt-os/api/os/container/bundle/v0"
-	api_os_container_machine_v0 "alt-os/api/os/container/machine/v0"
 	api_os_container_process_v0 "alt-os/api/os/container/process/v0"
+	"alt-os/os/machine"
 	"errors"
 )
 
@@ -61,28 +61,10 @@ func ValidateBundle(def *api_os_container_bundle_v0.Bundle) error {
 		if def.VirtualMachineFile != "" {
 			return errors.New("multiple virtual machine definition fields")
 		}
-		if err := ValidateContainerMachine(def.VirtualMachine); err != nil {
+		if err := machine.ValidateVirtualMachine(def.VirtualMachine); err != nil {
 			return nil
 		}
 	}
 
-	return nil
-}
-
-// ValidateContainerMachine verifies that all values of the ContainerMachine
-// are valid.
-func ValidateContainerMachine(def *api_os_container_machine_v0.ContainerMachine) error {
-	makeError := func(msg string) error {
-		return errors.New(msg + " for validating os.container.machine.ContainerMachine")
-	}
-	if def == nil {
-		return makeError("missing ContainerMachine")
-	}
-	if def.Processors == 0 {
-		return makeError("bad `ContainerMachine.processors`")
-	}
-	if def.Memory == 0 {
-		return makeError("bad `ContainerMachine.memory`")
-	}
 	return nil
 }

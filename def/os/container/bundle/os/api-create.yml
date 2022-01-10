@@ -3,7 +3,7 @@ kind: os.container.bundle.ApiServeRequest
 version: v0
 def:
   apiHostname: localhost
-  apiPort: 8888
+  apiPort: 8890
   apiTimeout: 10
   rootDir: ./workspace/os/container/bundle
 
@@ -14,7 +14,7 @@ kind: os.container.bundle.CreateRequest
 version: v0
 def:
   apiHostname: localhost
-  apiPort: 8888
+  apiPort: 8890
   apiTimeout: 10
   bundlesFile: ./def/os/container/bundle/os/bundle-def.yml
 
@@ -25,7 +25,7 @@ kind: os.container.bundle.ApiUnserveRequest
 version: v0
 def:
   apiHostname: localhost
-  apiPort: 8888
+  apiPort: 8890
   apiTimeout: 10
 
 

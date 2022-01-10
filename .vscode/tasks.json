@@ -30,13 +30,13 @@
             "problemMatcher": []
         },
         {
-            "label": "Build Exe: ct-runtime",
+            "label": "Build Exe: vmm-image",
             "type": "process",
             "args": [
                 "build",
                 "-o",
-                "${workspaceFolder}/workspace/exe/ct-runtime",
-                "alt-os/exe/ct-runtime"
+                "${workspaceFolder}/workspace/exe/vmm-image",
+                "alt-os/exe/vmm-image"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -45,17 +45,46 @@
             "command": "go"
         },
         {
-            "label": "Run Exe: ct-runtime (os)",
+            "label": "Run Exe: vmm-image (os)",
             "type": "process",
             "args": [
                 "-i",
-                "${workspaceFolder}/def/os/container/runtime/os/api-run.yml"
+                "${workspaceFolder}/def/os/machine/image/os/api-create.yml"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "group": "build",
-            "command": "${workspaceFolder}/workspace/exe/ct-runtime",
+            "command": "${workspaceFolder}/workspace/exe/vmm-image",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Exe: vmm-runtime",
+            "type": "process",
+            "args": [
+                "build",
+                "-o",
+                "${workspaceFolder}/workspace/exe/vmm-runtime",
+                "alt-os/exe/vmm-runtime"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "go"
+        },
+        {
+            "label": "Run Exe: vmm-runtime (os)",
+            "type": "process",
+            "args": [
+                "-i",
+                "${workspaceFolder}/def/os/machine/runtime/os/api-run.yml"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/exe/vmm-runtime",
             "problemMatcher": []
         },
         {
@@ -85,6 +114,35 @@
             },
             "group": "build",
             "command": "${workspaceFolder}/workspace/exe/ct-bundle",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Exe: ct-runtime",
+            "type": "process",
+            "args": [
+                "build",
+                "-o",
+                "${workspaceFolder}/workspace/exe/ct-runtime",
+                "alt-os/exe/ct-runtime"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "go"
+        },
+        {
+            "label": "Run Exe: ct-runtime (os)",
+            "type": "process",
+            "args": [
+                "-i",
+                "${workspaceFolder}/def/os/container/runtime/os/api-run.yml"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/exe/ct-runtime",
             "problemMatcher": []
         }
     ]

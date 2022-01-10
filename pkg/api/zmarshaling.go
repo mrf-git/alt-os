@@ -4,10 +4,11 @@ package api
 import (
 	api_api_v0 "alt-os/api/api/v0"
 	api_os_container_bundle_v0 "alt-os/api/os/container/bundle/v0"
-	api_os_container_machine_v0 "alt-os/api/os/container/machine/v0"
 	api_os_container_process_v0 "alt-os/api/os/container/process/v0"
 	api_os_container_runtime_v0 "alt-os/api/os/container/runtime/v0"
 	api_os_container_volume_v0 "alt-os/api/os/container/volume/v0"
+	api_os_machine_image_v0 "alt-os/api/os/machine/image/v0"
+	api_os_machine_runtime_v0 "alt-os/api/os/machine/runtime/v0"
 	"errors"
 
 	"github.com/gogo/protobuf/proto"
@@ -43,24 +44,6 @@ func unmarshalKind(kind, version string, value []byte) (proto.Message, error) {
 
 	case "os.container.bundle.Bundle/v0":
 		return doUnmarshal(&api_os_container_bundle_v0.Bundle{})
-
-	case "os.container.machine.ContainerMachine/v0":
-		return doUnmarshal(&api_os_container_machine_v0.ContainerMachine{})
-
-	case "os.container.machine.Video/v0":
-		return doUnmarshal(&api_os_container_machine_v0.Video{})
-
-	case "os.container.machine.Audio/v0":
-		return doUnmarshal(&api_os_container_machine_v0.Audio{})
-
-	case "os.container.machine.StorageDevice/v0":
-		return doUnmarshal(&api_os_container_machine_v0.StorageDevice{})
-
-	case "os.container.machine.NetworkDevice/v0":
-		return doUnmarshal(&api_os_container_machine_v0.NetworkDevice{})
-
-	case "os.container.machine.SerialDevice/v0":
-		return doUnmarshal(&api_os_container_machine_v0.SerialDevice{})
 
 	case "os.container.process.ContainerProcess/v0":
 		return doUnmarshal(&api_os_container_process_v0.ContainerProcess{})
@@ -112,6 +95,63 @@ func unmarshalKind(kind, version string, value []byte) (proto.Message, error) {
 
 	case "os.container.volume.ContainerVolume/v0":
 		return doUnmarshal(&api_os_container_volume_v0.ContainerVolume{})
+
+	case "os.machine.image.ApiServeRequest/v0":
+		return doUnmarshal(&api_os_machine_image_v0.ApiServeRequest{})
+
+	case "os.machine.image.ApiUnserveRequest/v0":
+		return doUnmarshal(&api_os_machine_image_v0.ApiUnserveRequest{})
+
+	case "os.machine.image.CreateRequest/v0":
+		return doUnmarshal(&api_os_machine_image_v0.CreateRequest{})
+
+	case "os.machine.image.VirtualMachine/v0":
+		return doUnmarshal(&api_os_machine_image_v0.VirtualMachine{})
+
+	case "os.machine.image.Video/v0":
+		return doUnmarshal(&api_os_machine_image_v0.Video{})
+
+	case "os.machine.image.Audio/v0":
+		return doUnmarshal(&api_os_machine_image_v0.Audio{})
+
+	case "os.machine.image.StorageDevice/v0":
+		return doUnmarshal(&api_os_machine_image_v0.StorageDevice{})
+
+	case "os.machine.image.NetworkDevice/v0":
+		return doUnmarshal(&api_os_machine_image_v0.NetworkDevice{})
+
+	case "os.machine.image.SerialDevice/v0":
+		return doUnmarshal(&api_os_machine_image_v0.SerialDevice{})
+
+	case "os.machine.runtime.ApiServeRequest/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.ApiServeRequest{})
+
+	case "os.machine.runtime.ApiUnserveRequest/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.ApiUnserveRequest{})
+
+	case "os.machine.runtime.ListRequest/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.ListRequest{})
+
+	case "os.machine.runtime.ListResponse/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.ListResponse{})
+
+	case "os.machine.runtime.QueryStateRequest/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.QueryStateRequest{})
+
+	case "os.machine.runtime.QueryStateResponse/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.QueryStateResponse{})
+
+	case "os.machine.runtime.CreateRequest/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.CreateRequest{})
+
+	case "os.machine.runtime.StartRequest/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.StartRequest{})
+
+	case "os.machine.runtime.KillRequest/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.KillRequest{})
+
+	case "os.machine.runtime.DeleteRequest/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.DeleteRequest{})
 	}
 }
 
@@ -145,24 +185,6 @@ func marshalKind(msg proto.Message) (kind, version string, bytes []byte, err err
 
 	case *api_os_container_bundle_v0.Bundle:
 		return doMarshal("os.container.bundle.Bundle", "v0", msg)
-
-	case *api_os_container_machine_v0.ContainerMachine:
-		return doMarshal("os.container.machine.ContainerMachine", "v0", msg)
-
-	case *api_os_container_machine_v0.Video:
-		return doMarshal("os.container.machine.Video", "v0", msg)
-
-	case *api_os_container_machine_v0.Audio:
-		return doMarshal("os.container.machine.Audio", "v0", msg)
-
-	case *api_os_container_machine_v0.StorageDevice:
-		return doMarshal("os.container.machine.StorageDevice", "v0", msg)
-
-	case *api_os_container_machine_v0.NetworkDevice:
-		return doMarshal("os.container.machine.NetworkDevice", "v0", msg)
-
-	case *api_os_container_machine_v0.SerialDevice:
-		return doMarshal("os.container.machine.SerialDevice", "v0", msg)
 
 	case *api_os_container_process_v0.ContainerProcess:
 		return doMarshal("os.container.process.ContainerProcess", "v0", msg)
@@ -214,5 +236,62 @@ func marshalKind(msg proto.Message) (kind, version string, bytes []byte, err err
 
 	case *api_os_container_volume_v0.ContainerVolume:
 		return doMarshal("os.container.volume.ContainerVolume", "v0", msg)
+
+	case *api_os_machine_image_v0.ApiServeRequest:
+		return doMarshal("os.machine.image.ApiServeRequest", "v0", msg)
+
+	case *api_os_machine_image_v0.ApiUnserveRequest:
+		return doMarshal("os.machine.image.ApiUnserveRequest", "v0", msg)
+
+	case *api_os_machine_image_v0.CreateRequest:
+		return doMarshal("os.machine.image.CreateRequest", "v0", msg)
+
+	case *api_os_machine_image_v0.VirtualMachine:
+		return doMarshal("os.machine.image.VirtualMachine", "v0", msg)
+
+	case *api_os_machine_image_v0.Video:
+		return doMarshal("os.machine.image.Video", "v0", msg)
+
+	case *api_os_machine_image_v0.Audio:
+		return doMarshal("os.machine.image.Audio", "v0", msg)
+
+	case *api_os_machine_image_v0.StorageDevice:
+		return doMarshal("os.machine.image.StorageDevice", "v0", msg)
+
+	case *api_os_machine_image_v0.NetworkDevice:
+		return doMarshal("os.machine.image.NetworkDevice", "v0", msg)
+
+	case *api_os_machine_image_v0.SerialDevice:
+		return doMarshal("os.machine.image.SerialDevice", "v0", msg)
+
+	case *api_os_machine_runtime_v0.ApiServeRequest:
+		return doMarshal("os.machine.runtime.ApiServeRequest", "v0", msg)
+
+	case *api_os_machine_runtime_v0.ApiUnserveRequest:
+		return doMarshal("os.machine.runtime.ApiUnserveRequest", "v0", msg)
+
+	case *api_os_machine_runtime_v0.ListRequest:
+		return doMarshal("os.machine.runtime.ListRequest", "v0", msg)
+
+	case *api_os_machine_runtime_v0.ListResponse:
+		return doMarshal("os.machine.runtime.ListResponse", "v0", msg)
+
+	case *api_os_machine_runtime_v0.QueryStateRequest:
+		return doMarshal("os.machine.runtime.QueryStateRequest", "v0", msg)
+
+	case *api_os_machine_runtime_v0.QueryStateResponse:
+		return doMarshal("os.machine.runtime.QueryStateResponse", "v0", msg)
+
+	case *api_os_machine_runtime_v0.CreateRequest:
+		return doMarshal("os.machine.runtime.CreateRequest", "v0", msg)
+
+	case *api_os_machine_runtime_v0.StartRequest:
+		return doMarshal("os.machine.runtime.StartRequest", "v0", msg)
+
+	case *api_os_machine_runtime_v0.KillRequest:
+		return doMarshal("os.machine.runtime.KillRequest", "v0", msg)
+
+	case *api_os_machine_runtime_v0.DeleteRequest:
+		return doMarshal("os.machine.runtime.DeleteRequest", "v0", msg)
 	}
 }

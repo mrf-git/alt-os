@@ -1,0 +1,31 @@
+# Start the virtual machine image service API server.
+kind: os.machine.image.ApiServeRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8888
+  apiTimeout: 10
+  rootDir: ./workspace/os/machine/image
+
+---
+
+# Send the API server the configuration for creating the virtual machine image.
+kind: os.machine.image.CreateRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8888
+  apiTimeout: 10
+  virtualMachinesFile: ./def/os/machine/image/os/image-def.yml
+
+---
+
+# Stop the virtual machine image service API server.
+kind: os.machine.image.ApiUnserveRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8888
+  apiTimeout: 10
+
+

@@ -7,7 +7,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/empty.proto";
 import "os/container/volume/v0/api.proto";
 import "os/container/process/v0/api.proto";
-import "os/container/machine/v0/api.proto";
+import "os/machine/image/v0/api.proto";
 
 option go_package = "alt-os/api/os/container/bundle/v0";
 option (gogoproto.gostring_all) = true;
@@ -32,7 +32,7 @@ service ContainerBundleService {
 	rpc Create(CreateRequest) returns (google.protobuf.Empty) {}
 }
 
-// ApiServeRequest specifies the parameters to a ContainerBundleService.Serve call.
+// ApiServeRequest specifies a ContainerBundleService.Serve call.
 message ApiServeRequest {
 	// The hostname for the API server to listen on.
 	string api_hostname = 1;
@@ -44,7 +44,7 @@ message ApiServeRequest {
 	string root_dir = 4;
 }
 
-// ApiUnserveRequest specifies the parameters to a ContainerBundleService.Unserve call.
+// ApiUnserveRequest specifies a ContainerBundleService.Unserve call.
 message ApiUnserveRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -54,7 +54,7 @@ message ApiUnserveRequest {
 	uint32 api_timeout = 3;
 }
 
-// CreateRequest specifies the parameters to a ContainerBundleService.Create call.
+// CreateRequest specifies a ContainerBundleService.Create call.
 message CreateRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -62,7 +62,7 @@ message CreateRequest {
 	uint32 api_port = 2;
 	// The number of seconds to timeout the API request.
 	uint32 api_timeout = 3;
-	// The path to a file containing a serialized Bundles defining the bundle to create.
+	// The path to a file containing serialized Bundles defining the bundle to create.
 	// Not allowed if bundles is set.
 	string bundles_file = 4;
 	// Objects defining the bundles to create. Not allowed if bundles_file is set.
@@ -81,7 +81,7 @@ message Bundle {
 	os.container.process.ContainerProcess process = 4;
 	// Settings object for a virtual machine that can host the container.
 	// Not allowed if virtual_machine_file is also specified.
-	os.container.machine.ContainerMachine virtual_machine = 5;
+	os.machine.image.VirtualMachine virtual_machine = 5;
 	// File storing a serialized settings object for a virtual machine
 	// that can host the container. Not allowed if virtual_machine is
 	// also specified.

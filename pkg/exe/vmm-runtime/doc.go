@@ -1,6 +1,6 @@
 // Copyright © 2022. All rights reserved.
 
 //
-// Executable for managing OCI bundles for the OS.
+// Executable for the OS virtual machine monitor.
 //
 package main

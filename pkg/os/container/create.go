@@ -3,8 +3,9 @@ package container
 import (
 	"alt-os/api"
 	api_os_container_bundle_v0 "alt-os/api/os/container/bundle/v0"
-	api_os_container_machine_v0 "alt-os/api/os/container/machine/v0"
 	api_os_container_process_v0 "alt-os/api/os/container/process/v0"
+	api_os_machine_image_v0 "alt-os/api/os/machine/image/v0"
+	"alt-os/os/machine"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -37,7 +38,7 @@ func CreateBundle(def *api_os_container_bundle_v0.Bundle, rootDir string) error 
 	}
 
 	// Initialize the virtual machine if defined.
-	var vm *api_os_container_machine_v0.ContainerMachine
+	var vm *api_os_machine_image_v0.VirtualMachine
 	if def.VirtualMachine != nil {
 		vm = def.VirtualMachine
 	} else if def.VirtualMachineFile != "" {
@@ -45,16 +46,19 @@ func CreateBundle(def *api_os_container_bundle_v0.Bundle, rootDir string) error 
 			return err
 		} else if len(messages) != 1 {
 			return makeError("expected exactly 1 message from " + def.VirtualMachineFile)
-		} else if msg := messages[0]; msg.Kind+"/"+msg.Version != "os.container.machine.ContainerMachine/v0" {
+		} else if msg := messages[0]; msg.Kind+"/"+msg.Version != "os.machine.image.VirtualMachine/v0" {
 			return makeError("got unexpected message kind")
-		} else if typedDef, ok := msg.Def.(*api_os_container_machine_v0.ContainerMachine); !ok {
+		} else if typedDef, ok := msg.Def.(*api_os_machine_image_v0.VirtualMachine); !ok {
 			return makeError("message type error")
+		} else if err := machine.ValidateVirtualMachine(typedDef); err != nil {
+			return err
 		} else {
 			vm = typedDef
 		}
 	}
 	if vm != nil {
 		// TODO create and initialize the defined virtual machine.
+		fmt.Println(vm.GoString())
 	}
 
 	// Create and write the config.json file in the bundle output directory.

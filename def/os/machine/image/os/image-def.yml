@@ -1,7 +1,8 @@
 # Definition of a virtual machine that can run OS containers.
-kind: os.container.machine.ContainerMachine
+kind: os.machine.image.VirtualMachine
 version: v0
 def:
+  imageDir: alt-os
   memory: 0x200000000  # 8 GiB
   processors: 4
   virtualization: VIRTUALIZATION_FULL

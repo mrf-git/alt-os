@@ -2,7 +2,7 @@ kind: os.container.runtime.ApiServeRequest
 version: v0
 def:
   apiHostname: localhost
-  apiPort: 8889
+  apiPort: 8891
   apiTimeout: 10
   maxContainers: 5
   maxContainerMemory: 10000
@@ -11,13 +11,13 @@ kind: os.container.runtime.ListRequest
 version: v0
 def:
   apiHostname: localhost
-  apiPort: 8889
+  apiPort: 8891
   apiTimeout: 10
 ---
 kind: os.container.runtime.ApiUnserveRequest
 version: v0
 def:
   apiHostname: localhost
-  apiPort: 8889
+  apiPort: 8891
   apiTimeout: 10
 

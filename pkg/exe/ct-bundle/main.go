@@ -17,7 +17,7 @@ https://github.com/opencontainers/runtime-spec/blob/v1.0.2/bundle.md.
 // CtBundleContext holds context information for ct-bundle.
 type CtBundleContext struct {
 	*exe.ExeContext
-	rootDir string
+	rootDir string // Stores the root directory of all bundle subdirectories.
 }
 
 // main is the entry point.

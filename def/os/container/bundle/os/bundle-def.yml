@@ -7,7 +7,7 @@ def:
   volumeMounts:
     - destination: /mnt/shared
       source: ./workspace/shared
-  # virtualMachineFile: ./def/os/container/bundle/os/vm-def.yml
+  virtualMachineFile: ./def/os/machine/image/os/image-def.yml
   process:
     cwd: /
     user:

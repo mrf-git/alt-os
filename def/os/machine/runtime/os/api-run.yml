@@ -1,0 +1,22 @@
+kind: os.machine.runtime.ApiServeRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8889
+  apiTimeout: 10
+  maxMachines: 3
+---
+kind: os.machine.runtime.ListRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8889
+  apiTimeout: 10
+---
+kind: os.machine.runtime.ApiUnserveRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8889
+  apiTimeout: 10
+

@@ -1,12 +1,12 @@
 // To regenerate api.pb.go run `codegen -p`.
 syntax = "proto3";
 
-package os.container.runtime;
+package os.machine.runtime;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = "alt-os/api/os/container/runtime/v0";
+option go_package = "alt-os/api/os/machine/runtime/v0";
 option (gogoproto.gostring_all) = true;
 option (gogoproto.equal_all) = true;
 option (gogoproto.goproto_stringer_all) = false;
@@ -16,29 +16,29 @@ option (gogoproto.marshaler_all) = true;
 option (gogoproto.sizer_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 
-// ContainerRuntimeService is a service for managing container runtimes.
+// VmmRuntimeService is a service for managing virtual machine monitor runtimes.
 // After a successful call to ApiServe the runtime service can begin
-// operating containers using the other service methods.
-service ContainerRuntimeService {
-	// ApiServe enables the container runtime service api according to the given configuration.
+// operating virtual machines using the other service methods.
+service VmmRuntimeService {
+	// ApiServe enables the VMM runtime service api according to the given configuration.
 	rpc ApiServe(ApiServeRequest) returns (google.protobuf.Empty) {}
-	// ApiUnserve stops all containers and disables the container runtime service api.
+	// ApiUnserve stops all virtual machines and disables the VMM runtime service api.
 	rpc ApiUnserve(ApiUnserveRequest) returns (google.protobuf.Empty) {}
-	// List gets all containers the runtime knows about.
+	// List gets all virtual machines the runtime knows about.
 	rpc List(ListRequest) returns (ListResponse) {}
-	// QueryState gets the state of a specified container.
+	// QueryState gets the state of a specified virtual machine.
 	rpc QueryState(QueryStateRequest) returns (google.protobuf.Empty) {}
-	// Create creates a new container and begins preparing it to be started.
+	// Create creates a new virtual machine and begins preparing it to be started.
 	rpc Create(CreateRequest) returns (google.protobuf.Empty) {}
-	// Start begins running a created container.
+	// Start begins running a created virtual machine.
 	rpc Start(StartRequest) returns (google.protobuf.Empty) {}
-	// Kill stops a running container.
+	// Kill stops a running virtual machine.
 	rpc Kill(KillRequest) returns (google.protobuf.Empty) {}
-	// Delete removes a stopped container from the runtime.
+	// Delete removes a stopped virtual machine from the runtime.
 	rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {}
 }
 
-// ApiServeRequest specifies a ContainerRuntimeService.Serve call.
+// ApiServeRequest specifies a VmmRuntimeService.Serve call.
 message ApiServeRequest {
 	// The hostname for the API server to listen on.
 	string api_hostname = 1;
@@ -46,13 +46,11 @@ message ApiServeRequest {
 	uint32 api_port = 2;
 	// The number of seconds to timeout the API request.
 	uint32 api_timeout = 3;
-	// The maximum number of containers to allow.
-	int64 max_containers = 4;
-	// The maximum amount of memory to allow a single container to consume.
-	int64 max_container_memory = 5;
+	// The maximum number of virtual machines to allow.
+	int64 max_machines = 4;
 }
 
-// ApiUnserveRequest specifies a ContainerRuntimeService.Unserve call.
+// ApiUnserveRequest specifies a VmmRuntimeService.Unserve call.
 message ApiUnserveRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -62,7 +60,7 @@ message ApiUnserveRequest {
 	uint32 api_timeout = 3;
 }
 
-// ListRequest specifies a ContainerRuntimeService.List call.
+// ListRequest specifies a VmmRuntimeService.List call.
 message ListRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -72,7 +70,7 @@ message ListRequest {
 	uint32 api_timeout = 3;
 }
 
-// ListResponse returns the result of a ContainerRuntimeService.List call.
+// ListResponse returns the result of a VmmRuntimeService.List call.
 message ListResponse {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -80,11 +78,11 @@ message ListResponse {
 	uint32 api_port = 2;
 	// The number of seconds to timeout the API request.
 	uint32 api_timeout = 3;
-	// The unique id of the container.
+	// The unique id of the virtual machine.
 	repeated string id = 4;
 }
 
-// QueryStateRequest specifies a ContainerRuntimeService.QueryState call.
+// QueryStateRequest specifies a VmmRuntimeService.QueryState call.
 message QueryStateRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -92,21 +90,21 @@ message QueryStateRequest {
 	uint32 api_port = 2;
 	// The number of seconds to timeout the API request.
 	uint32 api_timeout = 3;
-	// The unique id of the container.
+	// The unique id of the virtual machine.
 	string id = 4;
 }
 
-// QueryStateResponse returns the result of a ContainerRuntimeService.QueryState call.
+// QueryStateResponse returns the result of a VmmRuntimeService.QueryState call.
 message QueryStateResponse {
-	// The request used to create the container's runtime.
+	// The request used to create the virtual machine's runtime.
 	CreateRequest create_request = 1;
-	// The container's runtime bundle directory.
-	string bundle_dir = 2;
-	// The JSON-encoded string containing OCI-specified container runtime state.
-	string oci_json = 3;
+	// The virtual machine's runtime image directory.
+	string image_dir = 2;
+	// The runtime status of the virtual machine.
+	VirtualMachineStatus status = 3;
 }
 
-// CreateRequest specifies a ContainerRuntimeService.Create call.
+// CreateRequest specifies a VmmRuntimeService.Create call.
 message CreateRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -114,13 +112,13 @@ message CreateRequest {
 	uint32 api_port = 2;
 	// The number of seconds to timeout the API request.
 	uint32 api_timeout = 3;
-	// The unique id of the container.
+	// The unique id of the virtual machine.
 	string id = 4;
-	// The container's bundle directory.
-	string bundle = 5;
+	// The virtual machine's image directory.
+	string image = 5;
 }
 
-// StartRequest specifies a ContainerRuntimeService.Start call.
+// StartRequest specifies a VmmRuntimeService.Start call.
 message StartRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -128,11 +126,11 @@ message StartRequest {
 	uint32 api_port = 2;
 	// The number of seconds to timeout the API request.
 	uint32 api_timeout = 3;
-	// The unique id of the container.
+	// The unique id of the virtual machine.
 	string id = 4;
 }
 
-// KillRequest specifies a ContainerRuntimeService.Kill call.
+// KillRequest specifies a VmmRuntimeService.Kill call.
 message KillRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -140,13 +138,11 @@ message KillRequest {
 	uint32 api_port = 2;
 	// The number of seconds to timeout the API request.
 	uint32 api_timeout = 3;
-	// The unique id of the container.
+	// The unique id of the virtual machine.
 	string id = 4;
-	// The kill signal to send.
-	int32 signal = 5;
 }
 
-// DeleteRequest specifies a ContainerRuntimeService.Delete call.
+// DeleteRequest specifies a VmmRuntimeService.Delete call.
 message DeleteRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -154,18 +150,18 @@ message DeleteRequest {
 	uint32 api_port = 2;
 	// The number of seconds to timeout the API request.
 	uint32 api_timeout = 3;
-	// The unique id of the container.
+	// The unique id of the virtual machine.
 	string id = 4;
 }
 
-// ContainerStatus represents the runtime state of a container.
-enum ContainerStatus {
-	// The container is being created.
+// VirtualMachineStatus represents the runtime state of a virtual machine.
+enum VirtualMachineStatus {
+	// The virtual machine is being created.
 	CREATING = 0;
-	// The create operation has finished and the container has neither exited nor started.
+	// The create operation has finished and the virtual machine has neither exited nor started.
 	CREATED = 1;
-	// The container process has started but has not exited.
+	// The virtual machine has started but has not exited.
 	RUNNING = 2;
-	// The container process has exited.
+	// The virtual machine has exited.
 	STOPPED = 3;
 }

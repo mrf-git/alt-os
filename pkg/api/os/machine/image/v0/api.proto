@@ -1,12 +1,12 @@
 // To regenerate api.pb.go run `codegen -p`.
 syntax = "proto3";
 
-package os.container.machine;
+package os.machine.image;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = "alt-os/api/os/container/machine/v0";
+option go_package = "alt-os/api/os/machine/image/v0";
 option (gogoproto.gostring_all) = true;
 option (gogoproto.equal_all) = true;
 option (gogoproto.goproto_stringer_all) = false;
@@ -16,28 +16,81 @@ option (gogoproto.marshaler_all) = true;
 option (gogoproto.sizer_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 
-// ContainerMachine defines settings for a machine hosting OS containers.
-message ContainerMachine {
+
+// VmmImageService is a service for managing virtual machine
+// images that are to be consumed by the VMM runtime service.
+// After a successful call to ApiServe the image service can begin
+// creating and managing images.
+service VmmImageService {
+	// ApiServe enables the virtual machine image service api according to the given configuration.
+	rpc ApiServe(ApiServeRequest) returns (google.protobuf.Empty) {}
+	// ApiUnserve disables the virtual machine image service api.
+	rpc ApiUnserve(ApiUnserveRequest) returns (google.protobuf.Empty) {}
+	// Create generates a new image in a subdirectory of the image service root directory.
+	rpc Create(CreateRequest) returns (google.protobuf.Empty) {}
+}
+
+// ApiServeRequest specifies a VmmImageService.Serve call.
+message ApiServeRequest {
+	// The hostname for the API server to listen on.
+	string api_hostname = 1;
+	// The port for the API server to listen on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
+	// The path to the root directory of images.
+	string root_dir = 4;
+}
+
+// ApiUnserveRequest specifies a VmmImageService.Unserve call.
+message ApiUnserveRequest {
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
+}
+
+// CreateRequest specifies a VmmImageService.Create call.
+message CreateRequest {
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
+	// The path to a file containing serialized VirtualMachines defining the images to create.
+	// Not allowed if virtual_machines is set.
+	string virtual_machines_file = 4;
+	// Objects defining the virtual_machines to create. Not allowed if virtual_machines_file is set.
+	repeated VirtualMachine virtual_machines = 5;
+}
+
+// VirtualMachine defines settings for a machine hosting OS containers.
+message VirtualMachine {
+	// The name of the subdirectory of the virtual machine image within the service's image root directory.
+	string image_dir = 1;
 	// Total memory of the machine in bytes.
-	uint64 memory = 1;
+	uint64 memory = 2;
 	// Number of processors available.
-	uint64 processors = 2;
+	uint64 processors = 3;
 	// The type of virtualization to use.
-	VirtualizationType virtualization = 3;
+	VirtualizationType virtualization = 4;
 	// Whether the hardware clock is UTC time.
-	bool clock_utc = 4;
+	bool clock_utc = 5;
 	// Primary pointing device type.
-	PointingDeviceType pointing_device = 5;
+	PointingDeviceType pointing_device = 6;
 	// Video settings for the machine.
-	Video video = 6;
+	Video video = 7;
 	// Audio settings for the machine.
-	Audio audio = 7;
+	Audio audio = 8;
 	// Storage devices attached to the machine.
-	repeated StorageDevice storage = 8;
+	repeated StorageDevice storage = 9;
 	// Network devices attached to the machine.
-	repeated NetworkDevice network = 9;
+	repeated NetworkDevice network = 10;
 	// Serial devices attached to the machine.
-	repeated SerialDevice serial = 10;
+	repeated SerialDevice serial = 11;
 }
 
 // Video defines machine video settings.
