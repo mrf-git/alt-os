@@ -26,6 +26,8 @@ func (server *VmmRuntimeServiceServerImpl) ApiServe(ctx context.Context,
 	fmt.Println("serving")
 	// TODO start vmm
 
+	fmt.Println("isVmxSupported ", isVmxSupported())
+
 	return &types.Empty{}, nil
 }
 

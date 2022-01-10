@@ -10,10 +10,17 @@ Version        | Status
 v0.0.0         | PROTOTYPE
 
 
+## Running
+
+### Requirements
+* VMM support requires nestable hardware virtualization features (VT-x/AMD-V)
+
+
 ## Building
 
 ### Requirements
 * [go-alt](https://github.com/mrf-git/go-alt/blob/feature/initialPort/README-alt.md) distribution of Go installed as the system Go
+* [llvm-alt](https://github.com/mrf-git/llvm-alt/blob/feature/initialPort/README-alt.md) distribution of the LLVM compiler toolchain installed as the system clang
 * Any dependency Go modules required by the `go.mod` files in this repo
 * A [protobuf](https://developers.google.com/protocol-buffers) compiler
 
@@ -25,10 +32,18 @@ go mod download all
 
 Before building, first ensure all auto-generated code is up to date by following the steps in the "Code generation" section below.
 
-Next,
+
+#### Host platform instructions: Windows
+Building on Windows requires [mingw-w64](https://www.mingw-w64.org) with the [mingw-w64-x86_64-clang](https://packages.msys2.org/package/mingw-w64-x86_64-clang) package installed.
+
+Next, the following environment variables should be set:
 ```
-TODO
+export PATH=/mingw64/bin:$PATH
+export CGO_ENABLED=1
+export CC=clang
+export CGO_CFLAGS="-fuse-ld=/mingw64/x86_64-w64-mingw32/bin/ld.exe"
 ```
+
 
 ## Code generation
 All code generation is done through the `codegen` tool. First, from the root of the source tree, build the tool:
@@ -41,7 +56,7 @@ Then, to generate the protocol buffer source code, run:
 ./workspace/tools/codegen -p
 ```
 
-Alternatively from VS Code you can use the "Build Tool: codegen" and "Generate Api Protos" tasks.
+You can use the defined tasks from VS Code to do these steps.
 
 Next all dependent code must be rebuilt by following the steps in the "Building" section above.
 

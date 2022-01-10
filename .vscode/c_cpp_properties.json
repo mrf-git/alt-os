@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "name": "clang",
+            "includePath": [
+            ],
+            "defines": [
+            ],
+            "intelliSenseMode": "clang-x64",
+            "compilerPath": "clang"
+        }
+    ],
+    "version": 4
+}
