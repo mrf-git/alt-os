@@ -23,12 +23,21 @@ func init() {
 	} else {
 		goBinPath = filepath.Clean(filepath.Join(goBinPath, "bin"))
 	}
+	addedPath := false
 	for _, val := range os.Environ() {
 		if strings.HasPrefix(val, "PATH=") {
-			execEnv = append(execEnv, val+string(os.PathListSeparator)+goBinPath)
+			existingPath := string(val[5:])
+			newPath := goBinPath + string(os.PathListSeparator) + existingPath
+			execEnv = append(execEnv, "PATH="+newPath)
+			addedPath = true
+			os.Setenv("PATH", newPath)
 		} else {
 			execEnv = append(execEnv, val)
 		}
+	}
+	if !addedPath {
+		execEnv = append(execEnv, "PATH="+goBinPath)
+		os.Setenv("PATH", goBinPath)
 	}
 }
 

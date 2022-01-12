@@ -5,6 +5,24 @@ def:
   apiPort: 8889
   apiTimeout: 10
   maxMachines: 3
+  imageDir: ./workspace/os/machine/image
+---
+kind: os.machine.runtime.CreateRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8889
+  apiTimeout: 10
+  id: alt-os
+  image: alt-os
+---
+kind: os.machine.runtime.StartRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8889
+  apiTimeout: 10
+  id: alt-os
 ---
 kind: os.machine.runtime.ListRequest
 version: v0
@@ -12,6 +30,30 @@ def:
   apiHostname: localhost
   apiPort: 8889
   apiTimeout: 10
+---
+kind: os.machine.runtime.QueryStateRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8889
+  apiTimeout: 10
+  id: alt-os
+---
+kind: os.machine.runtime.KillRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8889
+  apiTimeout: 10
+  id: alt-os
+---
+kind: os.machine.runtime.DeleteRequest
+version: v0
+def:
+  apiHostname: localhost
+  apiPort: 8889
+  apiTimeout: 10
+  id: alt-os
 ---
 kind: os.machine.runtime.ApiUnserveRequest
 version: v0

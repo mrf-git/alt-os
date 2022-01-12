@@ -5,7 +5,7 @@ def:
   imageDir: alt-os
   memory: 0x200000000  # 8 GiB
   processors: 4
-  virtualization: VIRTUALIZATION_FULL
+  virtualization: VIRTUALIZATION_HW
   clockUtc: true
   pointingDevice: POINTING_NONE
   video:

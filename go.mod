@@ -3,11 +3,11 @@ module alt-os-parent
 go 1.16
 
 replace alt-os => ./pkg
+
 replace oci => ./third-party/oci
 
 require (
 	alt-os v0.0.0
-	oci v0.0.0
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
 	golang.org/x/net v0.0.0-20220105145211-5b0dc2dfae98 // indirect

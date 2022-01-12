@@ -5,11 +5,12 @@ import (
 	api_os_container_bundle_v0 "alt-os/api/os/container/bundle/v0"
 	"alt-os/os/container"
 	"context"
-	"errors"
 	"fmt"
 	"path/filepath"
 
 	"github.com/gogo/protobuf/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // newContainerBundleServiceServerImpl returns a new server-impl for ct-bundle.
@@ -46,9 +47,9 @@ func (server *ContainerBundleServiceServerImpl) Create(ctx context.Context,
 	// Load/verify at least one bundle definition to create.
 	var bundles []*api_os_container_bundle_v0.Bundle
 	if in.Bundles == nil && in.BundlesFile == "" {
-		return &types.Empty{}, errors.New("missing bundle definitions")
+		return &types.Empty{}, status.Errorf(codes.InvalidArgument, "missing bundle definitions")
 	} else if in.Bundles != nil && in.BundlesFile != "" {
-		return &types.Empty{}, errors.New("multiple bundle definition fields")
+		return &types.Empty{}, status.Errorf(codes.InvalidArgument, "multiple bundle definition fields")
 	}
 	if in.Bundles != nil {
 		bundles = in.Bundles
@@ -57,10 +58,10 @@ func (server *ContainerBundleServiceServerImpl) Create(ctx context.Context,
 	} else {
 		for _, msg := range messages {
 			kindVer := msg.Kind + "/" + msg.Version
-			badTypeErr := errors.New("bad bundle definition message type")
+			badTypeErr := status.Errorf(codes.InvalidArgument, "bad bundle definition message type")
 			switch kindVer {
 			default:
-				return &types.Empty{}, errors.New("unrecognized bundle definition message " + kindVer)
+				return &types.Empty{}, status.Errorf(codes.InvalidArgument, "unrecognized bundle definition message %s", kindVer)
 			case "os.container.bundle.Bundle/v0":
 				if msgDef, ok := msg.Def.(*api_os_container_bundle_v0.Bundle); !ok {
 					return &types.Empty{}, badTypeErr
@@ -71,14 +72,14 @@ func (server *ContainerBundleServiceServerImpl) Create(ctx context.Context,
 		}
 	}
 	if len(bundles) < 1 {
-		return &types.Empty{}, errors.New("empty bundle definitions")
+		return &types.Empty{}, status.Errorf(codes.InvalidArgument, "empty bundle definitions")
 	}
 
 	// Create the requested bundles and make sure there are no duplicate directories.
 	sawDir := map[string]struct{}{}
 	for _, bundle := range bundles {
 		if _, ok := sawDir[bundle.BundleDir]; ok {
-			return &types.Empty{}, errors.New("duplicate bundle dir: " + bundle.BundleDir)
+			return &types.Empty{}, status.Errorf(codes.InvalidArgument, "duplicate bundle dir: %s", bundle.BundleDir)
 		}
 		if err := container.CreateBundle(bundle, server.ctxt.rootDir); err != nil {
 			return &types.Empty{}, err

@@ -69,7 +69,8 @@ message CreateRequest {
 
 // VirtualMachine defines settings for a machine hosting OS containers.
 message VirtualMachine {
-	// The name of the subdirectory of the virtual machine image within the service's image root directory.
+	// The name of the subdirectory of the created virtual machine image
+	// within the service's image root directory.
 	string image_dir = 1;
 	// Total memory of the machine in bytes.
 	uint64 memory = 2;
@@ -145,10 +146,10 @@ message SerialDevice {
 enum VirtualizationType {
 	// No virtualization.
 	VIRTUALIZATION_NONE = 0;
-	// Use paravirtualization.
-	VIRTUALIZATION_PARA = 1;
-	// Use full virtualization.
-	VIRTUALIZATION_FULL = 2;
+	// Use an external virtual machine.
+	VIRTUALIZATION_EXT = 1;
+	// Use full hardware virtualization.
+	VIRTUALIZATION_HW = 2;
 }
 
 // PointingDeviceType represents a type of pointing device.

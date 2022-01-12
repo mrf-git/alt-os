@@ -27,7 +27,7 @@ service VmmRuntimeService {
 	// List gets all virtual machines the runtime knows about.
 	rpc List(ListRequest) returns (ListResponse) {}
 	// QueryState gets the state of a specified virtual machine.
-	rpc QueryState(QueryStateRequest) returns (google.protobuf.Empty) {}
+	rpc QueryState(QueryStateRequest) returns (QueryStateResponse) {}
 	// Create creates a new virtual machine and begins preparing it to be started.
 	rpc Create(CreateRequest) returns (google.protobuf.Empty) {}
 	// Start begins running a created virtual machine.
@@ -46,8 +46,10 @@ message ApiServeRequest {
 	uint32 api_port = 2;
 	// The number of seconds to timeout the API request.
 	uint32 api_timeout = 3;
+	// The root directory of images to load from.
+	string image_dir = 4;
 	// The maximum number of virtual machines to allow.
-	int64 max_machines = 4;
+	int64 max_machines = 5;
 }
 
 // ApiUnserveRequest specifies a VmmRuntimeService.Unserve call.

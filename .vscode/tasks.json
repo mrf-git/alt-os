@@ -3,11 +3,11 @@
     "tasks": [
         {
             "label": "Build Tool: codegen",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "build",
                 "-o",
-                "${workspaceFolder}/workspace/tools/codegen",
+                "${workspaceFolder}/workspace/tools/",
                 "${workspaceFolder}/tools/codegen"
             ],
             "options": {
@@ -18,7 +18,7 @@
         },
         {
             "label": "Run Tool: codegen -p (generate protos)",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "-p"
             ],
@@ -31,11 +31,11 @@
         },
         {
             "label": "Build Exe: vmm-image",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "build",
                 "-o",
-                "${workspaceFolder}/workspace/exe/vmm-image",
+                "${workspaceFolder}/workspace/exe/",
                 "alt-os/exe/vmm-image"
             ],
             "options": {
@@ -46,7 +46,7 @@
         },
         {
             "label": "Run Exe: vmm-image (os)",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "-i",
                 "${workspaceFolder}/def/os/machine/image/os/api-create.yml"
@@ -60,11 +60,11 @@
         },
         {
             "label": "Build Exe: vmm-runtime",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "build",
                 "-o",
-                "${workspaceFolder}/workspace/exe/vmm-runtime",
+                "${workspaceFolder}/workspace/exe/",
                 "alt-os/exe/vmm-runtime"
             ],
             "options": {
@@ -75,7 +75,7 @@
         },
         {
             "label": "Run Exe: vmm-runtime (os)",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "-i",
                 "${workspaceFolder}/def/os/machine/runtime/os/api-run.yml"
@@ -89,11 +89,11 @@
         },
         {
             "label": "Build Exe: ct-bundle",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "build",
                 "-o",
-                "${workspaceFolder}/workspace/exe/ct-bundle",
+                "${workspaceFolder}/workspace/exe/",
                 "alt-os/exe/ct-bundle"
             ],
             "options": {
@@ -104,7 +104,7 @@
         },
         {
             "label": "Run Exe: ct-bundle (os)",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "-i",
                 "${workspaceFolder}/def/os/container/bundle/os/api-create.yml"
@@ -118,11 +118,11 @@
         },
         {
             "label": "Build Exe: ct-runtime",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "build",
                 "-o",
-                "${workspaceFolder}/workspace/exe/ct-runtime",
+                "${workspaceFolder}/workspace/exe/",
                 "alt-os/exe/ct-runtime"
             ],
             "options": {
@@ -133,7 +133,7 @@
         },
         {
             "label": "Run Exe: ct-runtime (os)",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "-i",
                 "${workspaceFolder}/def/os/container/runtime/os/api-run.yml"
