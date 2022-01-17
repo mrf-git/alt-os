@@ -74,12 +74,9 @@ func (server *VmmRuntimeServiceServerImpl) Create(ctx context.Context,
 		return &types.Empty{}, status.Errorf(codes.InvalidArgument,
 			"could not read %s: %s", initPath, err.Error())
 	} else {
-
-		fmt.Println("size", exeCode.GetSize())
+		vmEnv := newVmEnvironment(exeCode, server.ctxt)
+		server.ctxt.vmEnvs[in.Id] = vmEnv
 	}
-
-	// TODO send code to a new vm
-	// server.ctxt.vmEnvs[in.Id]
 
 	return &types.Empty{}, nil
 }
@@ -87,8 +84,19 @@ func (server *VmmRuntimeServiceServerImpl) Create(ctx context.Context,
 func (server *VmmRuntimeServiceServerImpl) Start(ctx context.Context,
 	in *api_os_machine_runtime_v0.StartRequest) (*types.Empty, error) {
 
-	// chReturnCode chan int
-	// TODO
+	vmEnv, ok := server.ctxt.vmEnvs[in.Id]
+	if !ok {
+		return &types.Empty{}, status.Errorf(codes.NotFound, in.Id)
+	}
+	if _, ok = server.ctxt.vmChs[in.Id]; ok {
+		return &types.Empty{}, status.Errorf(codes.AlreadyExists, in.Id)
+	}
+	returnCodeCh := make(chan int, 1)
+	if err := vmEnv.Run(returnCodeCh); err != nil {
+		return &types.Empty{}, status.Errorf(codes.Internal, err.Error())
+	}
+	server.ctxt.vmChs[in.Id] = returnCodeCh
+
 	return &types.Empty{}, nil
 }
 

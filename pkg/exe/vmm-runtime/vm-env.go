@@ -1,31 +1,37 @@
 package main
 
-import "alt-os/os/code"
+import (
+	"alt-os/os/code"
+	"fmt"
+)
 
 // VmEnvironment encapsulates the runtime environment for a single
 // virtual machine to run virtualized code.
 type VmEnvironment interface {
-	// RunExecutableCode creates a hardware-virtualized, privilege level 0
-	// environment in a new goroutine and starts running the specified
-	// executable code in it. Calls returnCodeCallback with the code
-	// returned by main when the code exits.
-	RunExecutableCode(exeCode code.ExecutableCode, returnCodeCallback func(int)) error
+	// Run creates a hardware-virtualized, privilege level 0
+	// environment in a new goroutine and starts running the virtual
+	// machine code in it. Sends the code returned by main to
+	// returnCodeCh when the virtual machine exits.
+	Run(returnCodeCh <-chan int) error
 }
 
-// newVmEnvironment returns a newly-instantiated VmEnvironment.
-func newVmEnvironment(ctxt *VmmRuntimeContext) VmEnvironment {
+// newVmEnvironment returns a newly-instantiated VmEnvironment for the
+// specified code to run in.
+func newVmEnvironment(exeCode code.ExecutableCode, ctxt *VmmRuntimeContext) VmEnvironment {
 	return &_VmEnvironment{
-		ctxt: ctxt,
+		ctxt:    ctxt,
+		exeCode: exeCode,
 	}
 }
 
 type _VmEnvironment struct {
-	ctxt *VmmRuntimeContext
+	ctxt    *VmmRuntimeContext
+	exeCode code.ExecutableCode
 }
 
-func (vmEnv *_VmEnvironment) RunExecutableCode(exeCode code.ExecutableCode,
-	returnCodeCallback func(int)) error {
+func (vmEnv *_VmEnvironment) Run(returnCodeCh <-chan int) error {
 
+	fmt.Println("starting run")
 	// TODO
 	return nil
 }
