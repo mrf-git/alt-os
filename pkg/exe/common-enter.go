@@ -12,7 +12,7 @@ import (
 // Parses command line parameters and initializes an ExeContext.
 func InitContext(cmdUsage string, allowedKindRe *regexp.Regexp,
 	allowedVersionRe *regexp.Regexp, kindImplMap map[string]interface{},
-	respHandlerMap map[string]func(interface{}) error) *ExeContext {
+	respHandlerMap map[string]func(interface{}) error, loggerConf *LoggerConf) *ExeContext {
 
 	// Parse command line.
 	var infile, format string
@@ -33,6 +33,7 @@ func InitContext(cmdUsage string, allowedKindRe *regexp.Regexp,
 	// Read and verify input file and initialize context.
 	ctxt := &ExeContext{
 		ApiServiceContext: api.InitContext(kindImplMap, respHandlerMap),
+		ExeLoggerConf:     loggerConf,
 	}
 	if messages, err := api.UnmarshalApiProtoMessages(infile, format); err != nil {
 		Fatal("unmarshaling proto messages", err, ctxt)

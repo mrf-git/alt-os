@@ -46,19 +46,21 @@ def:
   apiPort: 8889
   apiTimeout: 10
   id: alt-os
----
-kind: os.machine.runtime.DeleteRequest
-version: v0
-def:
-  apiHostname: localhost
-  apiPort: 8889
-  apiTimeout: 10
-  id: alt-os
----
-kind: os.machine.runtime.ApiUnserveRequest
-version: v0
-def:
-  apiHostname: localhost
-  apiPort: 8889
-  apiTimeout: 10
+  signal: SIGTERM
+# ---
+# kind: os.machine.runtime.DeleteRequest
+# version: v0
+# def:
+#   apiHostname: localhost
+#   apiPort: 8889
+#   apiTimeout: 10
+#   id: alt-os
+# ---
+# kind: os.machine.runtime.ApiUnserveRequest
+# version: v0
+# def:
+#   apiHostname: localhost
+#   apiPort: 8889
+#   apiTimeout: 10
+#   cleanupTimeout: 10
 

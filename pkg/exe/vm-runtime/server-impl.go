@@ -3,6 +3,7 @@ package main
 import (
 	api_os_machine_runtime_v0 "alt-os/api/os/machine/runtime/v0"
 	"alt-os/os/code"
+	"alt-os/os/limits"
 	"context"
 	"fmt"
 	"path/filepath"
@@ -12,24 +13,21 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// newVmmRuntimeServiceServerImpl returns a new server-impl for vmm-runtime.
-func newVmmRuntimeServiceServerImpl(ctxt *VmmRuntimeContext) *VmmRuntimeServiceServerImpl {
-	return &VmmRuntimeServiceServerImpl{
+// newVmRuntimeServiceServerImpl returns a new server-impl for vm-runtime.
+func newVmRuntimeServiceServerImpl(ctxt *VmRuntimeContext) *VmRuntimeServiceServerImpl {
+	return &VmRuntimeServiceServerImpl{
 		ctxt: ctxt,
 	}
 }
 
-type VmmRuntimeServiceServerImpl struct {
-	api_os_machine_runtime_v0.UnimplementedVmmRuntimeServiceServer
-	ctxt *VmmRuntimeContext
+type VmRuntimeServiceServerImpl struct {
+	api_os_machine_runtime_v0.UnimplementedVmRuntimeServiceServer
+	ctxt *VmRuntimeContext
 }
 
-func (server *VmmRuntimeServiceServerImpl) ApiServe(ctx context.Context,
+func (server *VmRuntimeServiceServerImpl) ApiServe(ctx context.Context,
 	in *api_os_machine_runtime_v0.ApiServeRequest) (*types.Empty, error) {
 
-	if !isVmxSupported() {
-		return &types.Empty{}, status.Errorf(codes.FailedPrecondition, "vmx features not enabled on host cpu")
-	}
 	server.ctxt.imageDir = filepath.Clean(in.ImageDir)
 	if server.ctxt.imageDir == "" {
 		return &types.Empty{}, status.Errorf(codes.InvalidArgument, "missing imageDir")
@@ -41,7 +39,7 @@ func (server *VmmRuntimeServiceServerImpl) ApiServe(ctx context.Context,
 	return &types.Empty{}, nil
 }
 
-func (server *VmmRuntimeServiceServerImpl) ApiUnserve(ctx context.Context,
+func (server *VmRuntimeServiceServerImpl) ApiUnserve(ctx context.Context,
 	in *api_os_machine_runtime_v0.ApiUnserveRequest) (*types.Empty, error) {
 
 	// TODO stop and delete all virtual machines
@@ -51,19 +49,19 @@ func (server *VmmRuntimeServiceServerImpl) ApiUnserve(ctx context.Context,
 	return &types.Empty{}, nil
 }
 
-func (server *VmmRuntimeServiceServerImpl) List(ctx context.Context,
+func (server *VmRuntimeServiceServerImpl) List(ctx context.Context,
 	in *api_os_machine_runtime_v0.ListRequest) (*api_os_machine_runtime_v0.ListResponse, error) {
 	// TODO
 	return &api_os_machine_runtime_v0.ListResponse{}, nil
 }
 
-func (server *VmmRuntimeServiceServerImpl) QueryState(ctx context.Context,
+func (server *VmRuntimeServiceServerImpl) QueryState(ctx context.Context,
 	in *api_os_machine_runtime_v0.QueryStateRequest) (*api_os_machine_runtime_v0.QueryStateResponse, error) {
 	// TODO
 	return &api_os_machine_runtime_v0.QueryStateResponse{}, nil
 }
 
-func (server *VmmRuntimeServiceServerImpl) Create(ctx context.Context,
+func (server *VmRuntimeServiceServerImpl) Create(ctx context.Context,
 	in *api_os_machine_runtime_v0.CreateRequest) (*types.Empty, error) {
 
 	if len(server.ctxt.vmEnvs) >= server.ctxt.maxMachines {
@@ -81,33 +79,49 @@ func (server *VmmRuntimeServiceServerImpl) Create(ctx context.Context,
 	return &types.Empty{}, nil
 }
 
-func (server *VmmRuntimeServiceServerImpl) Start(ctx context.Context,
+func (server *VmRuntimeServiceServerImpl) Start(ctx context.Context,
 	in *api_os_machine_runtime_v0.StartRequest) (*types.Empty, error) {
 
 	vmEnv, ok := server.ctxt.vmEnvs[in.Id]
 	if !ok {
 		return &types.Empty{}, status.Errorf(codes.NotFound, in.Id)
 	}
-	if _, ok = server.ctxt.vmChs[in.Id]; ok {
+	if _, ok = server.ctxt.vmRetChs[in.Id]; ok {
 		return &types.Empty{}, status.Errorf(codes.AlreadyExists, in.Id)
 	}
+	signalCh := make(chan int, limits.MAX_PROCESS_SIGNALS)
 	returnCodeCh := make(chan int, 1)
-	if err := vmEnv.Run(returnCodeCh); err != nil {
+	if err := vmEnv.Run(signalCh, returnCodeCh); err != nil {
 		return &types.Empty{}, status.Errorf(codes.Internal, err.Error())
 	}
-	server.ctxt.vmChs[in.Id] = returnCodeCh
+	server.ctxt.vmSigChs[in.Id] = signalCh
+	server.ctxt.vmRetChs[in.Id] = returnCodeCh
 
 	return &types.Empty{}, nil
 }
 
-func (server *VmmRuntimeServiceServerImpl) Kill(ctx context.Context,
+func (server *VmRuntimeServiceServerImpl) Kill(ctx context.Context,
 	in *api_os_machine_runtime_v0.KillRequest) (*types.Empty, error) {
 
-	// TODO
+	_, ok := server.ctxt.vmEnvs[in.Id]
+	if !ok {
+		return &types.Empty{}, status.Errorf(codes.NotFound, in.Id)
+	}
+	vmSigCh, ok := server.ctxt.vmSigChs[in.Id]
+	if !ok {
+		return &types.Empty{}, status.Errorf(codes.FailedPrecondition,
+			"%s not started", in.Id)
+	}
+	select {
+	default:
+		return &types.Empty{}, status.Errorf(codes.ResourceExhausted, in.Id)
+	case vmSigCh <- int(in.Signal):
+	}
+
 	return &types.Empty{}, nil
 }
 
-func (server *VmmRuntimeServiceServerImpl) Delete(ctx context.Context,
+func (server *VmRuntimeServiceServerImpl) Delete(ctx context.Context,
 	in *api_os_machine_runtime_v0.DeleteRequest) (*types.Empty, error) {
 
 	// TODO

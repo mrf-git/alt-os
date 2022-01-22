@@ -5,6 +5,7 @@ package os.container.runtime;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/empty.proto";
+import "os/machine/runtime/v0/api.proto";
 
 option go_package = "alt-os/api/os/container/runtime/v0";
 option (gogoproto.gostring_all) = true;
@@ -143,7 +144,7 @@ message KillRequest {
 	// The unique id of the container.
 	string id = 4;
 	// The kill signal to send.
-	int32 signal = 5;
+	os.machine.runtime.KillSignal signal = 5;
 }
 
 // DeleteRequest specifies a ContainerRuntimeService.Delete call.

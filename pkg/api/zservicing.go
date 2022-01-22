@@ -69,55 +69,55 @@ func serviceMessageKinds(ctxt *ApiServiceContext) error {
 				return err
 			}
 		case *api_os_machine_image_v0.ApiServeRequest:
-			if err := newServer("os.machine.image.VmmImageService", "v0", msg, ctxt); err != nil {
+			if err := newServer("os.machine.image.VmImageService", "v0", msg, ctxt); err != nil {
 				return err
-			} else if err := req_api_os_machine_image_v0_VmmImageService_v0_ApiServe(msg, ctxt); err != nil {
+			} else if err := req_api_os_machine_image_v0_VmImageService_v0_ApiServe(msg, ctxt); err != nil {
 				return err
 			}
 		case *api_os_machine_image_v0.ApiUnserveRequest:
-			if err := req_api_os_machine_image_v0_VmmImageService_v0_ApiUnserve(msg, ctxt); err != nil {
+			if err := req_api_os_machine_image_v0_VmImageService_v0_ApiUnserve(msg, ctxt); err != nil {
 				return err
 			} else if err := stopServer(fmt.Sprintf("%s:%d", msg.GetApiHostname(), msg.GetApiPort()), ctxt); err != nil {
 				return err
 			}
 		case *api_os_machine_image_v0.CreateRequest:
-			if err := req_api_os_machine_image_v0_VmmImageService_v0_Create(msg, ctxt); err != nil {
+			if err := req_api_os_machine_image_v0_VmImageService_v0_Create(msg, ctxt); err != nil {
 				return err
 			}
 		case *api_os_machine_runtime_v0.ApiServeRequest:
-			if err := newServer("os.machine.runtime.VmmRuntimeService", "v0", msg, ctxt); err != nil {
+			if err := newServer("os.machine.runtime.VmRuntimeService", "v0", msg, ctxt); err != nil {
 				return err
-			} else if err := req_api_os_machine_runtime_v0_VmmRuntimeService_v0_ApiServe(msg, ctxt); err != nil {
+			} else if err := req_api_os_machine_runtime_v0_VmRuntimeService_v0_ApiServe(msg, ctxt); err != nil {
 				return err
 			}
 		case *api_os_machine_runtime_v0.ApiUnserveRequest:
-			if err := req_api_os_machine_runtime_v0_VmmRuntimeService_v0_ApiUnserve(msg, ctxt); err != nil {
+			if err := req_api_os_machine_runtime_v0_VmRuntimeService_v0_ApiUnserve(msg, ctxt); err != nil {
 				return err
 			} else if err := stopServer(fmt.Sprintf("%s:%d", msg.GetApiHostname(), msg.GetApiPort()), ctxt); err != nil {
 				return err
 			}
 		case *api_os_machine_runtime_v0.ListRequest:
-			if err := req_api_os_machine_runtime_v0_VmmRuntimeService_v0_List(msg, ctxt); err != nil {
+			if err := req_api_os_machine_runtime_v0_VmRuntimeService_v0_List(msg, ctxt); err != nil {
 				return err
 			}
 		case *api_os_machine_runtime_v0.QueryStateRequest:
-			if err := req_api_os_machine_runtime_v0_VmmRuntimeService_v0_QueryState(msg, ctxt); err != nil {
+			if err := req_api_os_machine_runtime_v0_VmRuntimeService_v0_QueryState(msg, ctxt); err != nil {
 				return err
 			}
 		case *api_os_machine_runtime_v0.CreateRequest:
-			if err := req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Create(msg, ctxt); err != nil {
+			if err := req_api_os_machine_runtime_v0_VmRuntimeService_v0_Create(msg, ctxt); err != nil {
 				return err
 			}
 		case *api_os_machine_runtime_v0.StartRequest:
-			if err := req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Start(msg, ctxt); err != nil {
+			if err := req_api_os_machine_runtime_v0_VmRuntimeService_v0_Start(msg, ctxt); err != nil {
 				return err
 			}
 		case *api_os_machine_runtime_v0.KillRequest:
-			if err := req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Kill(msg, ctxt); err != nil {
+			if err := req_api_os_machine_runtime_v0_VmRuntimeService_v0_Kill(msg, ctxt); err != nil {
 				return err
 			}
 		case *api_os_machine_runtime_v0.DeleteRequest:
-			if err := req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Delete(msg, ctxt); err != nil {
+			if err := req_api_os_machine_runtime_v0_VmRuntimeService_v0_Delete(msg, ctxt); err != nil {
 				return err
 			}
 		}
@@ -141,10 +141,10 @@ func makeClientKind(addr string, ctxt *ApiServiceContext) error {
 		ctxt.AddrClientMap[addr] = api_os_container_bundle_v0.NewContainerBundleServiceClient(ctxt.AddrGrpcConnMap[addr])
 	case "os.container.runtime.ContainerRuntimeService/v0":
 		ctxt.AddrClientMap[addr] = api_os_container_runtime_v0.NewContainerRuntimeServiceClient(ctxt.AddrGrpcConnMap[addr])
-	case "os.machine.image.VmmImageService/v0":
-		ctxt.AddrClientMap[addr] = api_os_machine_image_v0.NewVmmImageServiceClient(ctxt.AddrGrpcConnMap[addr])
-	case "os.machine.runtime.VmmRuntimeService/v0":
-		ctxt.AddrClientMap[addr] = api_os_machine_runtime_v0.NewVmmRuntimeServiceClient(ctxt.AddrGrpcConnMap[addr])
+	case "os.machine.image.VmImageService/v0":
+		ctxt.AddrClientMap[addr] = api_os_machine_image_v0.NewVmImageServiceClient(ctxt.AddrGrpcConnMap[addr])
+	case "os.machine.runtime.VmRuntimeService/v0":
+		ctxt.AddrClientMap[addr] = api_os_machine_runtime_v0.NewVmRuntimeServiceClient(ctxt.AddrGrpcConnMap[addr])
 	}
 	if ctxt.AddrClientMap[addr] == nil {
 		return errors.New("failed to make client " + ctxt.AddrKindVerMap[addr] + " for " + addr)
@@ -166,13 +166,13 @@ func makeServerKind(addr string, ctxt *ApiServiceContext) error {
 		srv := ctxt.KindImplMap[ctxt.AddrKindVerMap[addr]].(api_os_container_runtime_v0.ContainerRuntimeServiceServer)
 		api_os_container_runtime_v0.RegisterContainerRuntimeServiceServer(ctxt.AddrGrpcServerMap[addr], srv)
 		ctxt.AddrServerMap[addr] = srv
-	case "os.machine.image.VmmImageService/v0":
-		srv := ctxt.KindImplMap[ctxt.AddrKindVerMap[addr]].(api_os_machine_image_v0.VmmImageServiceServer)
-		api_os_machine_image_v0.RegisterVmmImageServiceServer(ctxt.AddrGrpcServerMap[addr], srv)
+	case "os.machine.image.VmImageService/v0":
+		srv := ctxt.KindImplMap[ctxt.AddrKindVerMap[addr]].(api_os_machine_image_v0.VmImageServiceServer)
+		api_os_machine_image_v0.RegisterVmImageServiceServer(ctxt.AddrGrpcServerMap[addr], srv)
 		ctxt.AddrServerMap[addr] = srv
-	case "os.machine.runtime.VmmRuntimeService/v0":
-		srv := ctxt.KindImplMap[ctxt.AddrKindVerMap[addr]].(api_os_machine_runtime_v0.VmmRuntimeServiceServer)
-		api_os_machine_runtime_v0.RegisterVmmRuntimeServiceServer(ctxt.AddrGrpcServerMap[addr], srv)
+	case "os.machine.runtime.VmRuntimeService/v0":
+		srv := ctxt.KindImplMap[ctxt.AddrKindVerMap[addr]].(api_os_machine_runtime_v0.VmRuntimeServiceServer)
+		api_os_machine_runtime_v0.RegisterVmRuntimeServiceServer(ctxt.AddrGrpcServerMap[addr], srv)
 		ctxt.AddrServerMap[addr] = srv
 	}
 	return nil
@@ -400,18 +400,18 @@ func req_api_os_container_runtime_v0_ContainerRuntimeService_v0_Delete(req *api_
 	return nil
 }
 
-func req_api_os_machine_image_v0_VmmImageService_v0_ApiServe(req *api_os_machine_image_v0.ApiServeRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.image.VmmImageService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_image_v0_VmImageService_v0_ApiServe(req *api_os_machine_image_v0.ApiServeRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.image.VmImageService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_image_v0.VmmImageServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_image_v0.VmImageServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.ApiServe(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.image.VmmImageService/v0.ApiServe"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.image.VmImageService/v0.ApiServe"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -420,18 +420,18 @@ func req_api_os_machine_image_v0_VmmImageService_v0_ApiServe(req *api_os_machine
 	return nil
 }
 
-func req_api_os_machine_image_v0_VmmImageService_v0_ApiUnserve(req *api_os_machine_image_v0.ApiUnserveRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.image.VmmImageService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_image_v0_VmImageService_v0_ApiUnserve(req *api_os_machine_image_v0.ApiUnserveRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.image.VmImageService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_image_v0.VmmImageServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_image_v0.VmImageServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.ApiUnserve(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.image.VmmImageService/v0.ApiUnserve"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.image.VmImageService/v0.ApiUnserve"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -440,18 +440,18 @@ func req_api_os_machine_image_v0_VmmImageService_v0_ApiUnserve(req *api_os_machi
 	return nil
 }
 
-func req_api_os_machine_image_v0_VmmImageService_v0_Create(req *api_os_machine_image_v0.CreateRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.image.VmmImageService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_image_v0_VmImageService_v0_Create(req *api_os_machine_image_v0.CreateRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.image.VmImageService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_image_v0.VmmImageServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_image_v0.VmImageServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.Create(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.image.VmmImageService/v0.Create"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.image.VmImageService/v0.Create"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -460,18 +460,18 @@ func req_api_os_machine_image_v0_VmmImageService_v0_Create(req *api_os_machine_i
 	return nil
 }
 
-func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_ApiServe(req *api_os_machine_runtime_v0.ApiServeRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmmRuntimeService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_runtime_v0_VmRuntimeService_v0_ApiServe(req *api_os_machine_runtime_v0.ApiServeRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmmRuntimeServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.ApiServe(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmmRuntimeService/v0.ApiServe"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmRuntimeService/v0.ApiServe"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -480,18 +480,18 @@ func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_ApiServe(req *api_os_mac
 	return nil
 }
 
-func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_ApiUnserve(req *api_os_machine_runtime_v0.ApiUnserveRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmmRuntimeService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_runtime_v0_VmRuntimeService_v0_ApiUnserve(req *api_os_machine_runtime_v0.ApiUnserveRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmmRuntimeServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.ApiUnserve(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmmRuntimeService/v0.ApiUnserve"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmRuntimeService/v0.ApiUnserve"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -500,18 +500,18 @@ func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_ApiUnserve(req *api_os_m
 	return nil
 }
 
-func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_List(req *api_os_machine_runtime_v0.ListRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmmRuntimeService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_runtime_v0_VmRuntimeService_v0_List(req *api_os_machine_runtime_v0.ListRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmmRuntimeServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.List(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmmRuntimeService/v0.List"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmRuntimeService/v0.List"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -520,18 +520,18 @@ func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_List(req *api_os_machine
 	return nil
 }
 
-func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_QueryState(req *api_os_machine_runtime_v0.QueryStateRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmmRuntimeService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_runtime_v0_VmRuntimeService_v0_QueryState(req *api_os_machine_runtime_v0.QueryStateRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmmRuntimeServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.QueryState(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmmRuntimeService/v0.QueryState"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmRuntimeService/v0.QueryState"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -540,18 +540,18 @@ func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_QueryState(req *api_os_m
 	return nil
 }
 
-func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Create(req *api_os_machine_runtime_v0.CreateRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmmRuntimeService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_runtime_v0_VmRuntimeService_v0_Create(req *api_os_machine_runtime_v0.CreateRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmmRuntimeServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.Create(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmmRuntimeService/v0.Create"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmRuntimeService/v0.Create"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -560,18 +560,18 @@ func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Create(req *api_os_machi
 	return nil
 }
 
-func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Start(req *api_os_machine_runtime_v0.StartRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmmRuntimeService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_runtime_v0_VmRuntimeService_v0_Start(req *api_os_machine_runtime_v0.StartRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmmRuntimeServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.Start(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmmRuntimeService/v0.Start"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmRuntimeService/v0.Start"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -580,18 +580,18 @@ func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Start(req *api_os_machin
 	return nil
 }
 
-func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Kill(req *api_os_machine_runtime_v0.KillRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmmRuntimeService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_runtime_v0_VmRuntimeService_v0_Kill(req *api_os_machine_runtime_v0.KillRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmmRuntimeServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.Kill(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmmRuntimeService/v0.Kill"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmRuntimeService/v0.Kill"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err
@@ -600,18 +600,18 @@ func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Kill(req *api_os_machine
 	return nil
 }
 
-func req_api_os_machine_runtime_v0_VmmRuntimeService_v0_Delete(req *api_os_machine_runtime_v0.DeleteRequest, ctxt *ApiServiceContext) error {
-	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmmRuntimeService", "v0", req, ctxt); err != nil {
+func req_api_os_machine_runtime_v0_VmRuntimeService_v0_Delete(req *api_os_machine_runtime_v0.DeleteRequest, ctxt *ApiServiceContext) error {
+	if addr, grpcContext, grpcCancel, err := makeClientGrpcContextForMsg("os.machine.runtime.VmRuntimeService", "v0", req, ctxt); err != nil {
 		return err
 	} else {
 		defer grpcCancel()
-		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmmRuntimeServiceClient)
+		client, ok := ctxt.AddrClientMap[addr].(api_os_machine_runtime_v0.VmRuntimeServiceClient)
 		if !ok {
 			return errors.New("no client for " + addr)
 		}
 		if resp, err := client.Delete(grpcContext, req); err != nil {
 			return err
-		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmmRuntimeService/v0.Delete"]; handler == nil {
+		} else if handler := ctxt.RespHandlerMap["os.machine.runtime.VmRuntimeService/v0.Delete"]; handler == nil {
 			return nil
 		} else if err := handler(resp); err != nil {
 			return err

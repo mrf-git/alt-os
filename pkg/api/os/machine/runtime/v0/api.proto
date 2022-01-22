@@ -16,13 +16,13 @@ option (gogoproto.marshaler_all) = true;
 option (gogoproto.sizer_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 
-// VmmRuntimeService is a service for managing virtual machine monitor runtimes.
+// VmRuntimeService is a service for managing virtual machine monitor runtimes.
 // After a successful call to ApiServe the runtime service can begin
 // operating virtual machines using the other service methods.
-service VmmRuntimeService {
-	// ApiServe enables the VMM runtime service api according to the given configuration.
+service VmRuntimeService {
+	// ApiServe enables the VM runtime service api according to the given configuration.
 	rpc ApiServe(ApiServeRequest) returns (google.protobuf.Empty) {}
-	// ApiUnserve stops all virtual machines and disables the VMM runtime service api.
+	// ApiUnserve stops all virtual machines and disables the VM runtime service api.
 	rpc ApiUnserve(ApiUnserveRequest) returns (google.protobuf.Empty) {}
 	// List gets all virtual machines the runtime knows about.
 	rpc List(ListRequest) returns (ListResponse) {}
@@ -38,7 +38,7 @@ service VmmRuntimeService {
 	rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {}
 }
 
-// ApiServeRequest specifies a VmmRuntimeService.Serve call.
+// ApiServeRequest specifies a VmRuntimeService.Serve call.
 message ApiServeRequest {
 	// The hostname for the API server to listen on.
 	string api_hostname = 1;
@@ -52,7 +52,7 @@ message ApiServeRequest {
 	int64 max_machines = 5;
 }
 
-// ApiUnserveRequest specifies a VmmRuntimeService.Unserve call.
+// ApiUnserveRequest specifies a VmRuntimeService.Unserve call.
 message ApiUnserveRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -60,9 +60,11 @@ message ApiUnserveRequest {
 	uint32 api_port = 2;
 	// The number of seconds to timeout the API request.
 	uint32 api_timeout = 3;
+	// The number of seconds to timeout exit cleanup routines.
+	uint32 cleanup_timeout = 4;
 }
 
-// ListRequest specifies a VmmRuntimeService.List call.
+// ListRequest specifies a VmRuntimeService.List call.
 message ListRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -72,7 +74,7 @@ message ListRequest {
 	uint32 api_timeout = 3;
 }
 
-// ListResponse returns the result of a VmmRuntimeService.List call.
+// ListResponse returns the result of a VmRuntimeService.List call.
 message ListResponse {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -84,7 +86,7 @@ message ListResponse {
 	repeated string id = 4;
 }
 
-// QueryStateRequest specifies a VmmRuntimeService.QueryState call.
+// QueryStateRequest specifies a VmRuntimeService.QueryState call.
 message QueryStateRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -96,7 +98,7 @@ message QueryStateRequest {
 	string id = 4;
 }
 
-// QueryStateResponse returns the result of a VmmRuntimeService.QueryState call.
+// QueryStateResponse returns the result of a VmRuntimeService.QueryState call.
 message QueryStateResponse {
 	// The request used to create the virtual machine's runtime.
 	CreateRequest create_request = 1;
@@ -106,7 +108,7 @@ message QueryStateResponse {
 	VirtualMachineStatus status = 3;
 }
 
-// CreateRequest specifies a VmmRuntimeService.Create call.
+// CreateRequest specifies a VmRuntimeService.Create call.
 message CreateRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -120,7 +122,7 @@ message CreateRequest {
 	string image = 5;
 }
 
-// StartRequest specifies a VmmRuntimeService.Start call.
+// StartRequest specifies a VmRuntimeService.Start call.
 message StartRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -132,7 +134,7 @@ message StartRequest {
 	string id = 4;
 }
 
-// KillRequest specifies a VmmRuntimeService.Kill call.
+// KillRequest specifies a VmRuntimeService.Kill call.
 message KillRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -142,9 +144,11 @@ message KillRequest {
 	uint32 api_timeout = 3;
 	// The unique id of the virtual machine.
 	string id = 4;
+	// The kill signal to send.
+	KillSignal signal = 5;
 }
 
-// DeleteRequest specifies a VmmRuntimeService.Delete call.
+// DeleteRequest specifies a VmRuntimeService.Delete call.
 message DeleteRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -166,4 +170,24 @@ enum VirtualMachineStatus {
 	RUNNING = 2;
 	// The virtual machine has exited.
 	STOPPED = 3;
+}
+
+// KillSignal represents a signal that can be sent to a Kill command.
+enum KillSignal {
+	// No signal.
+	SIGNONE = 0;
+	// Hang up.
+	SIGHUP = 1;
+	// Interrupt.
+	SIGINT = 2;
+	// Quit.
+	SIGQUIT = 3;
+	// Floating-point/math exception.
+	SIGFPE = 8;
+	// Kill immediately.
+	SIGKILL = 9;
+	// Alarm.
+	SIGALRM = 14;
+	// Terminate.
+	SIGTERM = 15;
 }

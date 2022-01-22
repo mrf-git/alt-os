@@ -17,11 +17,11 @@ option (gogoproto.sizer_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 
 
-// VmmImageService is a service for managing virtual machine
-// images that are to be consumed by the VMM runtime service.
+// VmImageService is a service for managing virtual machine
+// images that are to be consumed by the VM runtime service.
 // After a successful call to ApiServe the image service can begin
 // creating and managing images.
-service VmmImageService {
+service VmImageService {
 	// ApiServe enables the virtual machine image service api according to the given configuration.
 	rpc ApiServe(ApiServeRequest) returns (google.protobuf.Empty) {}
 	// ApiUnserve disables the virtual machine image service api.
@@ -30,7 +30,7 @@ service VmmImageService {
 	rpc Create(CreateRequest) returns (google.protobuf.Empty) {}
 }
 
-// ApiServeRequest specifies a VmmImageService.Serve call.
+// ApiServeRequest specifies a VmImageService.Serve call.
 message ApiServeRequest {
 	// The hostname for the API server to listen on.
 	string api_hostname = 1;
@@ -42,7 +42,7 @@ message ApiServeRequest {
 	string root_dir = 4;
 }
 
-// ApiUnserveRequest specifies a VmmImageService.Unserve call.
+// ApiUnserveRequest specifies a VmImageService.Unserve call.
 message ApiUnserveRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;
@@ -52,7 +52,7 @@ message ApiUnserveRequest {
 	uint32 api_timeout = 3;
 }
 
-// CreateRequest specifies a VmmImageService.Create call.
+// CreateRequest specifies a VmImageService.Create call.
 message CreateRequest {
 	// The hostname of the listening API server to operate on.
 	string api_hostname = 1;

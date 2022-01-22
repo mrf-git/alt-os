@@ -13,7 +13,7 @@ v0.0.0         | PROTOTYPE
 ## Running
 
 ### Requirements
-* VMM support requires nestable hardware virtualization features (VT-x/AMD-V)
+* VM support requires Linux with KVM
 
 
 ## Building
@@ -36,13 +36,7 @@ Before building, first ensure all auto-generated code is up to date by following
 #### Host platform instructions: Windows
 Building on Windows requires [mingw-w64](https://www.mingw-w64.org) with the [mingw-w64-x86_64-clang](https://packages.msys2.org/package/mingw-w64-x86_64-clang) package installed as the system clang.
 
-Next, the following environment variables should be set:
-```
-PATH=/mingw64/bin:$PATH
-CGO_ENABLED=1
-CC=clang
-CGO_CFLAGS="-fuse-ld=/mingw64/x86_64-w64-mingw32/bin/ld.exe"
-```
+Next, TODO
 
 
 ## Code generation

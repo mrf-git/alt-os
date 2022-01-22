@@ -30,13 +30,13 @@
             "problemMatcher": []
         },
         {
-            "label": "Build Exe: vmm-image",
+            "label": "Build Exe: vm-image",
             "type": "shell",
             "args": [
                 "build",
                 "-o",
                 "${workspaceFolder}/workspace/exe/",
-                "alt-os/exe/vmm-image"
+                "alt-os/exe/vm-image"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -45,7 +45,7 @@
             "command": "go"
         },
         {
-            "label": "Run Exe: vmm-image (os)",
+            "label": "Run Exe: vm-image (os)",
             "type": "shell",
             "args": [
                 "-i",
@@ -55,17 +55,17 @@
                 "cwd": "${workspaceFolder}"
             },
             "group": "build",
-            "command": "${workspaceFolder}/workspace/exe/vmm-image",
+            "command": "${workspaceFolder}/workspace/exe/vm-image",
             "problemMatcher": []
         },
         {
-            "label": "Build Exe: vmm-runtime",
+            "label": "Build Exe: vm-runtime",
             "type": "shell",
             "args": [
                 "build",
                 "-o",
                 "${workspaceFolder}/workspace/exe/",
-                "alt-os/exe/vmm-runtime"
+                "alt-os/exe/vm-runtime"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -74,7 +74,7 @@
             "command": "go"
         },
         {
-            "label": "Run Exe: vmm-runtime (os)",
+            "label": "Run Exe: vm-runtime (os)",
             "type": "shell",
             "args": [
                 "-i",
@@ -84,7 +84,7 @@
                 "cwd": "${workspaceFolder}"
             },
             "group": "build",
-            "command": "${workspaceFolder}/workspace/exe/vmm-runtime",
+            "command": "${workspaceFolder}/workspace/exe/vm-runtime",
             "problemMatcher": []
         },
         {

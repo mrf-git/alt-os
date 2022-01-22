@@ -29,8 +29,14 @@ func main() {
 		"os.container.bundle.ContainerBundleService/v0": newContainerBundleServiceServerImpl(ctxt),
 	}
 	respHandlerMap := map[string]func(interface{}) error{}
+	loggerConf := &exe.LoggerConf{
+		Enabled:    true,
+		Level:      "info",
+		ExeTag:     "ct-bundle",
+		FormatJson: false,
+	}
 	ctxt.ExeContext = exe.InitContext(EXE_USAGE, allowedKindRe, allowedVersionRe,
-		kindImplMap, respHandlerMap)
+		kindImplMap, respHandlerMap, loggerConf)
 	if err := api.ServiceMessages(ctxt.ApiServiceContext); err != nil {
 		exe.Fatal("servicing messages", err, ctxt.ExeContext)
 	}

@@ -6,8 +6,8 @@ import (
 	"regexp"
 )
 
-const EXE_USAGE = `vmm-runtime
------------
+const EXE_USAGE = `vm-runtime
+----------
 Virtual machine monitor runtime service executable.
 
 Manages virtual machine runtimes for the OS.
@@ -17,16 +17,23 @@ Manages virtual machine runtimes for the OS.
 func main() {
 	allowedKindRe := regexp.MustCompile(`os.machine.runtime.[[:word:]]`)
 	allowedVersionRe := regexp.MustCompile(`v0`)
-	ctxt := &VmmRuntimeContext{
-		vmEnvs: make(map[string]VmEnvironment),
-		vmChs:  make(map[string]chan<- int),
+	ctxt := &VmRuntimeContext{
+		vmEnvs:   make(map[string]VmEnvironment),
+		vmSigChs: make(map[string]chan<- int),
+		vmRetChs: make(map[string]<-chan int),
 	}
 	kindImplMap := map[string]interface{}{
-		"os.machine.runtime.VmmRuntimeService/v0": newVmmRuntimeServiceServerImpl(ctxt),
+		"os.machine.runtime.VmRuntimeService/v0": newVmRuntimeServiceServerImpl(ctxt),
 	}
 	respHandlerMap := map[string]func(interface{}) error{}
+	loggerConf := &exe.LoggerConf{
+		Enabled:    true,
+		Level:      "info",
+		ExeTag:     "vm-runtime",
+		FormatJson: false,
+	}
 	ctxt.ExeContext = exe.InitContext(EXE_USAGE, allowedKindRe, allowedVersionRe,
-		kindImplMap, respHandlerMap)
+		kindImplMap, respHandlerMap, loggerConf)
 	if err := api.ServiceMessages(ctxt.ApiServiceContext); err != nil {
 		exe.Fatal("servicing messages", err, ctxt.ExeContext)
 	}

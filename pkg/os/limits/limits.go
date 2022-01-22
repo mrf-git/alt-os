@@ -12,4 +12,6 @@ const (
 	_ OsLimit = 0
 	// Maximum size of executable code in memory.
 	MAX_EXECUTABLE_SIZE = 0xFFFFF000
+	// Maximum number of signals that can be queued for a process.
+	MAX_PROCESS_SIGNALS = 256
 )

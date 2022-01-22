@@ -33,8 +33,14 @@ func main() {
 			return handleRespList(resp.(*api_os_container_runtime_v0.ListResponse))
 		},
 	}
+	loggerConf := &exe.LoggerConf{
+		Enabled:    true,
+		Level:      "info",
+		ExeTag:     "ct-runtime",
+		FormatJson: false,
+	}
 	ctxt.ExeContext = exe.InitContext(EXE_USAGE, allowedKindRe, allowedVersionRe,
-		kindImplMap, respHandlerMap)
+		kindImplMap, respHandlerMap, loggerConf)
 	if err := api.ServiceMessages(ctxt.ApiServiceContext); err != nil {
 		exe.Fatal("servicing messages", err, ctxt.ExeContext)
 	}

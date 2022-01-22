@@ -6,15 +6,15 @@ import (
 	"regexp"
 )
 
-const EXE_USAGE = `vmm-image
----------
+const EXE_USAGE = `vm-image
+--------
 Virtual machine monitor image service executable.
 
 Manages virtual machine images for the OS.
 `
 
-// VmmImageContext holds context information for vmm-image.
-type VmmImageContext struct {
+// VmImageContext holds context information for vm-image.
+type VmImageContext struct {
 	*exe.ExeContext
 	rootDir string // Stores the root directory of all image subdirectories.
 }
@@ -23,13 +23,19 @@ type VmmImageContext struct {
 func main() {
 	allowedKindRe := regexp.MustCompile(`os.machine.image.[[:word:]]`)
 	allowedVersionRe := regexp.MustCompile(`v0`)
-	ctxt := &VmmImageContext{}
+	ctxt := &VmImageContext{}
 	kindImplMap := map[string]interface{}{
-		"os.machine.image.VmmImageService/v0": newVmmImageServiceServerImpl(ctxt),
+		"os.machine.image.VmImageService/v0": newVmImageServiceServerImpl(ctxt),
 	}
 	respHandlerMap := map[string]func(interface{}) error{}
+	loggerConf := &exe.LoggerConf{
+		Enabled:    true,
+		Level:      "info",
+		ExeTag:     "vm-image",
+		FormatJson: false,
+	}
 	ctxt.ExeContext = exe.InitContext(EXE_USAGE, allowedKindRe, allowedVersionRe,
-		kindImplMap, respHandlerMap)
+		kindImplMap, respHandlerMap, loggerConf)
 	if err := api.ServiceMessages(ctxt.ApiServiceContext); err != nil {
 		exe.Fatal("servicing messages", err, ctxt.ExeContext)
 	}

@@ -67,7 +67,59 @@ func (VirtualMachineStatus) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_48372748125e3de9, []int{0}
 }
 
-// ApiServeRequest specifies a VmmRuntimeService.Serve call.
+// KillSignal represents a signal that can be sent to a Kill command.
+type KillSignal int32
+
+const (
+	// No signal.
+	KillSignal_SIGNONE KillSignal = 0
+	// Hang up.
+	KillSignal_SIGHUP KillSignal = 1
+	// Interrupt.
+	KillSignal_SIGINT KillSignal = 2
+	// Quit.
+	KillSignal_SIGQUIT KillSignal = 3
+	// Floating-point/math exception.
+	KillSignal_SIGFPE KillSignal = 8
+	// Kill immediately.
+	KillSignal_SIGKILL KillSignal = 9
+	// Alarm.
+	KillSignal_SIGALRM KillSignal = 14
+	// Terminate.
+	KillSignal_SIGTERM KillSignal = 15
+)
+
+var KillSignal_name = map[int32]string{
+	0:  "SIGNONE",
+	1:  "SIGHUP",
+	2:  "SIGINT",
+	3:  "SIGQUIT",
+	8:  "SIGFPE",
+	9:  "SIGKILL",
+	14: "SIGALRM",
+	15: "SIGTERM",
+}
+
+var KillSignal_value = map[string]int32{
+	"SIGNONE": 0,
+	"SIGHUP":  1,
+	"SIGINT":  2,
+	"SIGQUIT": 3,
+	"SIGFPE":  8,
+	"SIGKILL": 9,
+	"SIGALRM": 14,
+	"SIGTERM": 15,
+}
+
+func (x KillSignal) String() string {
+	return proto.EnumName(KillSignal_name, int32(x))
+}
+
+func (KillSignal) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_48372748125e3de9, []int{1}
+}
+
+// ApiServeRequest specifies a VmRuntimeService.Serve call.
 type ApiServeRequest struct {
 	// The hostname for the API server to listen on.
 	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
@@ -151,14 +203,16 @@ func (m *ApiServeRequest) GetMaxMachines() int64 {
 	return 0
 }
 
-// ApiUnserveRequest specifies a VmmRuntimeService.Unserve call.
+// ApiUnserveRequest specifies a VmRuntimeService.Unserve call.
 type ApiUnserveRequest struct {
 	// The hostname of the listening API server to operate on.
 	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
 	// The port of the listening API server to operate on.
 	ApiPort uint32 `protobuf:"varint,2,opt,name=api_port,json=apiPort,proto3" json:"api_port,omitempty"`
 	// The number of seconds to timeout the API request.
-	ApiTimeout           uint32   `protobuf:"varint,3,opt,name=api_timeout,json=apiTimeout,proto3" json:"api_timeout,omitempty"`
+	ApiTimeout uint32 `protobuf:"varint,3,opt,name=api_timeout,json=apiTimeout,proto3" json:"api_timeout,omitempty"`
+	// The number of seconds to timeout exit cleanup routines.
+	CleanupTimeout       uint32   `protobuf:"varint,4,opt,name=cleanup_timeout,json=cleanupTimeout,proto3" json:"cleanup_timeout,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -217,7 +271,14 @@ func (m *ApiUnserveRequest) GetApiTimeout() uint32 {
 	return 0
 }
 
-// ListRequest specifies a VmmRuntimeService.List call.
+func (m *ApiUnserveRequest) GetCleanupTimeout() uint32 {
+	if m != nil {
+		return m.CleanupTimeout
+	}
+	return 0
+}
+
+// ListRequest specifies a VmRuntimeService.List call.
 type ListRequest struct {
 	// The hostname of the listening API server to operate on.
 	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
@@ -283,7 +344,7 @@ func (m *ListRequest) GetApiTimeout() uint32 {
 	return 0
 }
 
-// ListResponse returns the result of a VmmRuntimeService.List call.
+// ListResponse returns the result of a VmRuntimeService.List call.
 type ListResponse struct {
 	// The hostname of the listening API server to operate on.
 	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
@@ -358,7 +419,7 @@ func (m *ListResponse) GetId() []string {
 	return nil
 }
 
-// QueryStateRequest specifies a VmmRuntimeService.QueryState call.
+// QueryStateRequest specifies a VmRuntimeService.QueryState call.
 type QueryStateRequest struct {
 	// The hostname of the listening API server to operate on.
 	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
@@ -433,7 +494,7 @@ func (m *QueryStateRequest) GetId() string {
 	return ""
 }
 
-// QueryStateResponse returns the result of a VmmRuntimeService.QueryState call.
+// QueryStateResponse returns the result of a VmRuntimeService.QueryState call.
 type QueryStateResponse struct {
 	// The request used to create the virtual machine's runtime.
 	CreateRequest *CreateRequest `protobuf:"bytes,1,opt,name=create_request,json=createRequest,proto3" json:"create_request,omitempty"`
@@ -499,7 +560,7 @@ func (m *QueryStateResponse) GetStatus() VirtualMachineStatus {
 	return VirtualMachineStatus_CREATING
 }
 
-// CreateRequest specifies a VmmRuntimeService.Create call.
+// CreateRequest specifies a VmRuntimeService.Create call.
 type CreateRequest struct {
 	// The hostname of the listening API server to operate on.
 	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
@@ -583,7 +644,7 @@ func (m *CreateRequest) GetImage() string {
 	return ""
 }
 
-// StartRequest specifies a VmmRuntimeService.Start call.
+// StartRequest specifies a VmRuntimeService.Start call.
 type StartRequest struct {
 	// The hostname of the listening API server to operate on.
 	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
@@ -658,7 +719,7 @@ func (m *StartRequest) GetId() string {
 	return ""
 }
 
-// KillRequest specifies a VmmRuntimeService.Kill call.
+// KillRequest specifies a VmRuntimeService.Kill call.
 type KillRequest struct {
 	// The hostname of the listening API server to operate on.
 	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
@@ -667,10 +728,12 @@ type KillRequest struct {
 	// The number of seconds to timeout the API request.
 	ApiTimeout uint32 `protobuf:"varint,3,opt,name=api_timeout,json=apiTimeout,proto3" json:"api_timeout,omitempty"`
 	// The unique id of the virtual machine.
-	Id                   string   `protobuf:"bytes,4,opt,name=id,proto3" json:"id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Id string `protobuf:"bytes,4,opt,name=id,proto3" json:"id,omitempty"`
+	// The kill signal to send.
+	Signal               KillSignal `protobuf:"varint,5,opt,name=signal,proto3,enum=os.machine.runtime.KillSignal" json:"signal,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
 }
 
 func (m *KillRequest) Reset()      { *m = KillRequest{} }
@@ -733,7 +796,14 @@ func (m *KillRequest) GetId() string {
 	return ""
 }
 
-// DeleteRequest specifies a VmmRuntimeService.Delete call.
+func (m *KillRequest) GetSignal() KillSignal {
+	if m != nil {
+		return m.Signal
+	}
+	return KillSignal_SIGNONE
+}
+
+// DeleteRequest specifies a VmRuntimeService.Delete call.
 type DeleteRequest struct {
 	// The hostname of the listening API server to operate on.
 	ApiHostname string `protobuf:"bytes,1,opt,name=api_hostname,json=apiHostname,proto3" json:"api_hostname,omitempty"`
@@ -810,6 +880,7 @@ func (m *DeleteRequest) GetId() string {
 
 func init() {
 	proto.RegisterEnum("os.machine.runtime.VirtualMachineStatus", VirtualMachineStatus_name, VirtualMachineStatus_value)
+	proto.RegisterEnum("os.machine.runtime.KillSignal", KillSignal_name, KillSignal_value)
 	proto.RegisterType((*ApiServeRequest)(nil), "os.machine.runtime.ApiServeRequest")
 	proto.RegisterType((*ApiUnserveRequest)(nil), "os.machine.runtime.ApiUnserveRequest")
 	proto.RegisterType((*ListRequest)(nil), "os.machine.runtime.ListRequest")
@@ -827,50 +898,57 @@ func init() {
 }
 
 var fileDescriptor_48372748125e3de9 = []byte{
-	// 682 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0xd1, 0x4e, 0x13, 0x4d,
-	0x14, 0xee, 0xb4, 0xa5, 0xb4, 0xa7, 0x94, 0x1f, 0x26, 0xe4, 0x4f, 0xff, 0x92, 0x2c, 0x65, 0xff,
-	0xa8, 0x8d, 0x89, 0xbb, 0x06, 0x5f, 0xc0, 0x42, 0x1b, 0x21, 0x08, 0xe2, 0x16, 0xb8, 0x30, 0x31,
-	0xcd, 0x50, 0xc6, 0x32, 0x71, 0xb7, 0xb3, 0xce, 0xce, 0x12, 0x48, 0xd4, 0x18, 0x9f, 0xc1, 0x87,
-	0xf0, 0xd2, 0x17, 0xf0, 0xde, 0x4b, 0x2f, 0xbd, 0x94, 0xbe, 0x80, 0x5e, 0x7a, 0x69, 0x66, 0x76,
-	0x91, 0x16, 0xb6, 0xe5, 0xca, 0x72, 0xd7, 0x33, 0x73, 0xfa, 0x9d, 0xef, 0xcc, 0x7c, 0xe7, 0x9b,
-	0x85, 0x3b, 0xfe, 0xcb, 0xae, 0x4d, 0x7c, 0x66, 0xf3, 0xc0, 0xf6, 0x48, 0xe7, 0x88, 0xf5, 0xa8,
-	0x2d, 0xc2, 0x9e, 0x64, 0x1e, 0xb5, 0x8f, 0xef, 0xab, 0x1d, 0xcb, 0x17, 0x5c, 0x72, 0x8c, 0x79,
-	0x60, 0xc5, 0x09, 0x56, 0x9c, 0x50, 0x59, 0xe8, 0xf2, 0x2e, 0xd7, 0xdb, 0xb6, 0xfa, 0x15, 0x65,
-	0x56, 0x16, 0xbb, 0x9c, 0x77, 0x5d, 0x6a, 0xeb, 0xe8, 0x20, 0x7c, 0x61, 0x53, 0xcf, 0x97, 0xa7,
-	0xd1, 0xa6, 0xf9, 0x09, 0xc1, 0x3f, 0x75, 0x9f, 0xb5, 0xa8, 0x38, 0xa6, 0x0e, 0x7d, 0x15, 0xd2,
-	0x40, 0xe2, 0x65, 0x98, 0x21, 0x3e, 0x6b, 0x1f, 0xf1, 0x40, 0xf6, 0x88, 0x47, 0xcb, 0xa8, 0x8a,
-	0x6a, 0x05, 0xa7, 0x48, 0x7c, 0xb6, 0x1e, 0x2f, 0xe1, 0xff, 0x20, 0xaf, 0x52, 0x7c, 0x2e, 0x64,
-	0x39, 0x5d, 0x45, 0xb5, 0x92, 0x33, 0x4d, 0x7c, 0xb6, 0xc3, 0x85, 0xc4, 0x4b, 0xa0, 0x32, 0xdb,
-	0x8a, 0x10, 0x0f, 0x65, 0x39, 0xa3, 0x77, 0x81, 0xf8, 0x6c, 0x37, 0x5a, 0xc1, 0x8b, 0x50, 0x60,
-	0x1e, 0xe9, 0xd2, 0xf6, 0x21, 0x13, 0xe5, 0xac, 0xc6, 0xce, 0xeb, 0x85, 0x06, 0x13, 0xaa, 0xb6,
-	0x47, 0x4e, 0xda, 0x71, 0x67, 0x41, 0x79, 0xaa, 0x8a, 0x6a, 0x19, 0xa7, 0xe8, 0x91, 0x93, 0xad,
-	0x78, 0xc9, 0x14, 0x30, 0x5f, 0xf7, 0xd9, 0x5e, 0x2f, 0x98, 0x1c, 0x67, 0xd3, 0x85, 0xe2, 0x63,
-	0x16, 0xc8, 0x09, 0x55, 0x7b, 0x03, 0x33, 0x51, 0xb5, 0xc0, 0xe7, 0xbd, 0x80, 0xfe, 0xed, 0x0b,
-	0x99, 0x85, 0x34, 0x3b, 0x2c, 0x67, 0xab, 0x99, 0x5a, 0xc1, 0x49, 0xb3, 0x43, 0xf3, 0x3d, 0x82,
-	0xf9, 0xa7, 0x21, 0x15, 0xa7, 0x2d, 0x49, 0xe4, 0xa4, 0x54, 0x71, 0x4e, 0x02, 0xc5, 0x24, 0x3e,
-	0x23, 0xc0, 0x83, 0x24, 0xe2, 0xa3, 0x58, 0x87, 0xd9, 0x8e, 0xa0, 0x44, 0xd2, 0xb6, 0x88, 0x78,
-	0x69, 0x1e, 0xc5, 0x95, 0x65, 0xeb, 0xea, 0x3c, 0x58, 0x6b, 0x3a, 0x33, 0x6e, 0xc0, 0x29, 0x75,
-	0x06, 0xc3, 0x61, 0x19, 0xa6, 0x2f, 0xc9, 0xf0, 0x21, 0xe4, 0x02, 0x49, 0x64, 0x18, 0x68, 0xa6,
-	0xb3, 0x2b, 0xb5, 0x24, 0xf8, 0x7d, 0x26, 0x64, 0x48, 0xdc, 0x58, 0x98, 0x2d, 0x9d, 0xef, 0xc4,
-	0xff, 0x33, 0x3f, 0x20, 0x28, 0x0d, 0xd5, 0x9f, 0xf0, 0x01, 0xe2, 0x05, 0x98, 0xd2, 0xed, 0xe8,
-	0x11, 0x2a, 0x38, 0x51, 0xa0, 0xa4, 0xd5, 0x92, 0x44, 0xc8, 0x1b, 0xba, 0xd5, 0xd7, 0x50, 0xdc,
-	0x64, 0xae, 0x7b, 0x43, 0xd5, 0xdf, 0x42, 0xa9, 0x41, 0x5d, 0x7a, 0x53, 0x57, 0x72, 0x77, 0x13,
-	0x16, 0x92, 0x34, 0x83, 0x67, 0x20, 0xbf, 0xe6, 0x34, 0xeb, 0xbb, 0x1b, 0xdb, 0x8f, 0xe6, 0x52,
-	0xb8, 0x08, 0xd3, 0x3a, 0x6a, 0x36, 0xe6, 0x90, 0x0a, 0x9c, 0xbd, 0xed, 0x6d, 0xb5, 0x93, 0x56,
-	0x41, 0x6b, 0xf7, 0xc9, 0xce, 0x4e, 0xb3, 0x31, 0x97, 0x59, 0xf9, 0x91, 0x85, 0xf9, 0x7d, 0xcf,
-	0x73, 0x22, 0x31, 0x2a, 0x03, 0x67, 0x1d, 0x8a, 0x37, 0x20, 0x7f, 0x6e, 0xe7, 0xf8, 0xff, 0x24,
-	0xd1, 0x5e, 0x32, 0xfb, 0xca, 0xbf, 0x56, 0xf4, 0x3c, 0x58, 0xe7, 0xcf, 0x83, 0xd5, 0x54, 0xcf,
-	0x83, 0x99, 0xc2, 0x5b, 0x00, 0x17, 0x3e, 0x8b, 0x6f, 0x8d, 0x00, 0x1b, 0xf6, 0xe1, 0x31, 0x70,
-	0x9b, 0x90, 0x55, 0xa6, 0x86, 0x97, 0x92, 0x80, 0x06, 0xcc, 0xb5, 0x52, 0x1d, 0x9d, 0x10, 0x99,
-	0x80, 0x99, 0xc2, 0xcf, 0x01, 0x2e, 0xcc, 0x21, 0x99, 0xdb, 0x15, 0x07, 0xab, 0xdc, 0xbe, 0x2e,
-	0xed, 0x0f, 0x7c, 0x13, 0x72, 0xd1, 0xec, 0xe2, 0xeb, 0x7d, 0x65, 0x4c, 0xcb, 0x6b, 0x30, 0xa5,
-	0x87, 0x0d, 0x27, 0xb6, 0x34, 0x38, 0x87, 0x63, 0x40, 0xea, 0x90, 0x55, 0x23, 0x93, 0x7c, 0x6e,
-	0x03, 0xc3, 0x34, 0x06, 0xa2, 0x09, 0xb9, 0x48, 0xf7, 0xc9, 0xed, 0x0c, 0xcd, 0xc4, 0x68, 0x98,
-	0xd5, 0xd5, 0x6f, 0x67, 0x46, 0xea, 0xe7, 0x99, 0x81, 0x7e, 0x9d, 0x19, 0xa9, 0x77, 0x7d, 0x03,
-	0x7d, 0xec, 0x1b, 0xe8, 0x4b, 0xdf, 0x40, 0x5f, 0xfb, 0x06, 0xfa, 0xde, 0x37, 0xd0, 0xb3, 0x2a,
-	0x71, 0xe5, 0x3d, 0x1e, 0x8c, 0xfe, 0x80, 0x39, 0xc8, 0x69, 0xd4, 0x07, 0xbf, 0x03, 0x00, 0x00,
-	0xff, 0xff, 0xd2, 0xe4, 0x8d, 0x21, 0xe8, 0x08, 0x00, 0x00,
+	// 792 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0x4f, 0x8f, 0xda, 0x46,
+	0x14, 0x67, 0x80, 0x25, 0xf0, 0x58, 0x58, 0x67, 0xb4, 0xaa, 0x28, 0x91, 0x1c, 0xe2, 0xaa, 0x0d,
+	0x8a, 0x54, 0xbb, 0xa2, 0x52, 0xcf, 0x25, 0x8b, 0xcb, 0x5a, 0xfc, 0x09, 0x31, 0x90, 0x43, 0xa5,
+	0x0a, 0x4d, 0xd8, 0x29, 0x19, 0xd5, 0xc6, 0x8e, 0x3d, 0x8e, 0x92, 0x43, 0xab, 0xaa, 0x9f, 0xa1,
+	0xb7, 0x7e, 0x81, 0x1e, 0x7b, 0xe8, 0xb5, 0xf7, 0x1e, 0x7b, 0xec, 0xb1, 0xcb, 0x07, 0xa8, 0x7a,
+	0xec, 0xb1, 0xf2, 0x78, 0x76, 0x17, 0x76, 0x0d, 0x7b, 0x2a, 0x7b, 0xe3, 0xcd, 0xfb, 0xf9, 0x37,
+	0xbf, 0xf7, 0xe6, 0xfd, 0x01, 0x1e, 0xfb, 0xdf, 0x2c, 0x0c, 0xe2, 0x33, 0xc3, 0x0b, 0x0d, 0x97,
+	0xcc, 0x5f, 0xb1, 0x25, 0x35, 0x82, 0x68, 0xc9, 0x99, 0x4b, 0x8d, 0x37, 0x9f, 0xc4, 0x1e, 0xdd,
+	0x0f, 0x3c, 0xee, 0x61, 0xec, 0x85, 0xba, 0x04, 0xe8, 0x12, 0x50, 0x3f, 0x5e, 0x78, 0x0b, 0x4f,
+	0xb8, 0x8d, 0xf8, 0x57, 0x82, 0xac, 0x3f, 0x58, 0x78, 0xde, 0xc2, 0xa1, 0x86, 0xb0, 0x5e, 0x46,
+	0x5f, 0x1b, 0xd4, 0xf5, 0xf9, 0xbb, 0xc4, 0xa9, 0xfd, 0x82, 0xe0, 0xa8, 0xed, 0xb3, 0x31, 0x0d,
+	0xde, 0x50, 0x9b, 0xbe, 0x8e, 0x68, 0xc8, 0xf1, 0x23, 0x38, 0x24, 0x3e, 0x9b, 0xbd, 0xf2, 0x42,
+	0xbe, 0x24, 0x2e, 0xad, 0xa1, 0x06, 0x6a, 0x96, 0xec, 0x32, 0xf1, 0xd9, 0xa9, 0x3c, 0xc2, 0xef,
+	0x43, 0x31, 0x86, 0xf8, 0x5e, 0xc0, 0x6b, 0xd9, 0x06, 0x6a, 0x56, 0xec, 0x7b, 0xc4, 0x67, 0x23,
+	0x2f, 0xe0, 0xf8, 0x21, 0xc4, 0xc8, 0x59, 0x2c, 0xc8, 0x8b, 0x78, 0x2d, 0x27, 0xbc, 0x40, 0x7c,
+	0x36, 0x49, 0x4e, 0xf0, 0x03, 0x28, 0x31, 0x97, 0x2c, 0xe8, 0xec, 0x8c, 0x05, 0xb5, 0xbc, 0xe0,
+	0x2e, 0x8a, 0x83, 0x0e, 0x0b, 0xe2, 0xbb, 0x5d, 0xf2, 0x76, 0x26, 0x23, 0x0b, 0x6b, 0x07, 0x0d,
+	0xd4, 0xcc, 0xd9, 0x65, 0x97, 0xbc, 0x1d, 0xc8, 0x23, 0xed, 0x27, 0x04, 0xf7, 0xdb, 0x3e, 0x9b,
+	0x2e, 0xc3, 0x3d, 0x8a, 0x7e, 0x0c, 0x47, 0x73, 0x87, 0x92, 0x65, 0xe4, 0x5f, 0x82, 0xf2, 0x02,
+	0x54, 0x95, 0xc7, 0x12, 0xa8, 0x39, 0x50, 0xee, 0xb3, 0x90, 0xef, 0x47, 0x96, 0xf6, 0x2d, 0x1c,
+	0x26, 0xb7, 0x85, 0xbe, 0xb7, 0x0c, 0xe9, 0xff, 0x9d, 0x85, 0x2a, 0x64, 0xd9, 0x59, 0x2d, 0xdf,
+	0xc8, 0x35, 0x4b, 0x76, 0x96, 0x9d, 0x69, 0x3f, 0x20, 0xb8, 0xff, 0x3c, 0xa2, 0xc1, 0xbb, 0x31,
+	0x27, 0x7c, 0x5f, 0x4f, 0x71, 0x21, 0x02, 0x49, 0x11, 0xbf, 0x21, 0xc0, 0xeb, 0x22, 0x64, 0x2a,
+	0x4e, 0xa1, 0x3a, 0x0f, 0x28, 0xe1, 0x74, 0x16, 0x24, 0xba, 0x84, 0x8e, 0x72, 0xeb, 0x91, 0x7e,
+	0xb3, 0x73, 0xf4, 0x13, 0x81, 0x94, 0x01, 0xd8, 0x95, 0xf9, 0xba, 0xb9, 0x59, 0xb0, 0xd9, 0x6b,
+	0x05, 0xfb, 0x39, 0x14, 0x42, 0x4e, 0x78, 0x14, 0x0a, 0xa5, 0xd5, 0x56, 0x33, 0x8d, 0xfe, 0x05,
+	0x0b, 0x78, 0x44, 0x1c, 0x59, 0xc2, 0x63, 0x81, 0xb7, 0xe5, 0x77, 0xda, 0x8f, 0x08, 0x2a, 0x1b,
+	0xf7, 0xef, 0x39, 0x81, 0xf8, 0x18, 0x0e, 0x44, 0x38, 0xa2, 0xd9, 0x4a, 0x76, 0x62, 0xc4, 0xa5,
+	0x35, 0xe6, 0x24, 0xe0, 0x77, 0xf4, 0xaa, 0xbf, 0x22, 0x28, 0xf7, 0x98, 0xe3, 0xdc, 0x51, 0x4e,
+	0x3e, 0x83, 0x42, 0xc8, 0x16, 0x4b, 0xe2, 0x88, 0xa4, 0x54, 0x5b, 0x6a, 0xda, 0xb3, 0xc6, 0xfa,
+	0xc6, 0x02, 0x65, 0x4b, 0xb4, 0xf6, 0x1d, 0x54, 0x3a, 0xd4, 0xa1, 0x77, 0xf5, 0x96, 0x4f, 0x7a,
+	0x70, 0x9c, 0x56, 0x6c, 0xf8, 0x10, 0x8a, 0x27, 0xb6, 0xd9, 0x9e, 0x58, 0xc3, 0xae, 0x92, 0xc1,
+	0x65, 0xb8, 0x27, 0x2c, 0xb3, 0xa3, 0xa0, 0xd8, 0xb0, 0xa7, 0xc3, 0x61, 0xec, 0xc9, 0xc6, 0xc6,
+	0x78, 0xf2, 0x6c, 0x34, 0x32, 0x3b, 0x4a, 0xee, 0xc9, 0x6b, 0x80, 0xab, 0x10, 0x85, 0xcb, 0xea,
+	0x0e, 0x9f, 0x0d, 0x4d, 0x25, 0x83, 0x01, 0x0a, 0x63, 0xab, 0x7b, 0x3a, 0x1d, 0x29, 0x48, 0xfe,
+	0xb6, 0x86, 0x13, 0xf9, 0xbd, 0xd5, 0x7d, 0x3e, 0xb5, 0x26, 0x4a, 0x4e, 0x3a, 0xbe, 0x18, 0x99,
+	0x4a, 0x51, 0x3a, 0x7a, 0x56, 0xbf, 0xaf, 0x94, 0xa4, 0xd1, 0xee, 0xdb, 0x03, 0xa5, 0x2a, 0x8d,
+	0x89, 0x69, 0x0f, 0x94, 0xa3, 0xd6, 0xdf, 0x79, 0x50, 0x5e, 0xb8, 0x76, 0x92, 0xe0, 0x78, 0x2b,
+	0xb1, 0x39, 0xc5, 0x16, 0x14, 0x2f, 0x76, 0x14, 0xfe, 0x20, 0xed, 0x21, 0xae, 0x6d, 0xb0, 0xfa,
+	0x7b, 0x7a, 0xb2, 0xf3, 0xf4, 0x8b, 0x9d, 0xa7, 0x9b, 0xf1, 0xce, 0xd3, 0x32, 0x78, 0x00, 0x70,
+	0xb5, 0x3b, 0xf0, 0x87, 0x5b, 0xc8, 0x36, 0x77, 0xcb, 0x0e, 0xba, 0x1e, 0xe4, 0xe3, 0xf9, 0x8b,
+	0x1f, 0xa6, 0x11, 0xad, 0xed, 0x81, 0x7a, 0x63, 0x3b, 0x20, 0x99, 0x57, 0x5a, 0x06, 0x7f, 0x05,
+	0x70, 0x35, 0xc7, 0xd2, 0xb5, 0xdd, 0x18, 0xb6, 0xf5, 0x8f, 0x6e, 0x83, 0x5d, 0xd2, 0x9b, 0x50,
+	0x48, 0xc6, 0x0c, 0xbe, 0x7d, 0x04, 0xee, 0x08, 0xf9, 0x04, 0x0e, 0xc4, 0x5c, 0xc0, 0xa9, 0x21,
+	0xad, 0x8f, 0x8c, 0x1d, 0x24, 0x6d, 0xc8, 0xc7, 0x95, 0x95, 0x9e, 0xb7, 0xb5, 0xb6, 0xdf, 0x41,
+	0x61, 0x42, 0x21, 0xe9, 0xb4, 0xf4, 0x70, 0x36, 0xba, 0x70, 0x3b, 0xcd, 0xd3, 0xa7, 0x7f, 0x9e,
+	0xab, 0x99, 0x7f, 0xce, 0x55, 0xf4, 0xef, 0xb9, 0x9a, 0xf9, 0x7e, 0xa5, 0xa2, 0x9f, 0x57, 0x2a,
+	0xfa, 0x7d, 0xa5, 0xa2, 0x3f, 0x56, 0x2a, 0xfa, 0x6b, 0xa5, 0xa2, 0x2f, 0x1b, 0xc4, 0xe1, 0x1f,
+	0x7b, 0xe1, 0xf6, 0x7f, 0x65, 0x2f, 0x0b, 0x82, 0xf5, 0xd3, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff,
+	0x7f, 0x8d, 0x04, 0xdd, 0xbd, 0x09, 0x00, 0x00,
 }
 
 func (this *ApiServeRequest) Equal(that interface{}) bool {
@@ -938,6 +1016,9 @@ func (this *ApiUnserveRequest) Equal(that interface{}) bool {
 		return false
 	}
 	if this.ApiTimeout != that1.ApiTimeout {
+		return false
+	}
+	if this.CleanupTimeout != that1.CleanupTimeout {
 		return false
 	}
 	if !bytes.Equal(this.XXX_unrecognized, that1.XXX_unrecognized) {
@@ -1194,6 +1275,9 @@ func (this *KillRequest) Equal(that interface{}) bool {
 	if this.Id != that1.Id {
 		return false
 	}
+	if this.Signal != that1.Signal {
+		return false
+	}
 	if !bytes.Equal(this.XXX_unrecognized, that1.XXX_unrecognized) {
 		return false
 	}
@@ -1256,11 +1340,12 @@ func (this *ApiUnserveRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 7)
+	s := make([]string, 0, 8)
 	s = append(s, "&v0.ApiUnserveRequest{")
 	s = append(s, "ApiHostname: "+fmt.Sprintf("%#v", this.ApiHostname)+",\n")
 	s = append(s, "ApiPort: "+fmt.Sprintf("%#v", this.ApiPort)+",\n")
 	s = append(s, "ApiTimeout: "+fmt.Sprintf("%#v", this.ApiTimeout)+",\n")
+	s = append(s, "CleanupTimeout: "+fmt.Sprintf("%#v", this.CleanupTimeout)+",\n")
 	if this.XXX_unrecognized != nil {
 		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
 	}
@@ -1368,12 +1453,13 @@ func (this *KillRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 8)
+	s := make([]string, 0, 9)
 	s = append(s, "&v0.KillRequest{")
 	s = append(s, "ApiHostname: "+fmt.Sprintf("%#v", this.ApiHostname)+",\n")
 	s = append(s, "ApiPort: "+fmt.Sprintf("%#v", this.ApiPort)+",\n")
 	s = append(s, "ApiTimeout: "+fmt.Sprintf("%#v", this.ApiTimeout)+",\n")
 	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	s = append(s, "Signal: "+fmt.Sprintf("%#v", this.Signal)+",\n")
 	if this.XXX_unrecognized != nil {
 		s = append(s, "XXX_unrecognized:"+fmt.Sprintf("%#v", this.XXX_unrecognized)+",\n")
 	}
@@ -1413,13 +1499,13 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// VmmRuntimeServiceClient is the client API for VmmRuntimeService service.
+// VmRuntimeServiceClient is the client API for VmRuntimeService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type VmmRuntimeServiceClient interface {
-	// ApiServe enables the VMM runtime service api according to the given configuration.
+type VmRuntimeServiceClient interface {
+	// ApiServe enables the VM runtime service api according to the given configuration.
 	ApiServe(ctx context.Context, in *ApiServeRequest, opts ...grpc.CallOption) (*types.Empty, error)
-	// ApiUnserve stops all virtual machines and disables the VMM runtime service api.
+	// ApiUnserve stops all virtual machines and disables the VM runtime service api.
 	ApiUnserve(ctx context.Context, in *ApiUnserveRequest, opts ...grpc.CallOption) (*types.Empty, error)
 	// List gets all virtual machines the runtime knows about.
 	List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
@@ -1435,91 +1521,91 @@ type VmmRuntimeServiceClient interface {
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*types.Empty, error)
 }
 
-type vmmRuntimeServiceClient struct {
+type vmRuntimeServiceClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewVmmRuntimeServiceClient(cc *grpc.ClientConn) VmmRuntimeServiceClient {
-	return &vmmRuntimeServiceClient{cc}
+func NewVmRuntimeServiceClient(cc *grpc.ClientConn) VmRuntimeServiceClient {
+	return &vmRuntimeServiceClient{cc}
 }
 
-func (c *vmmRuntimeServiceClient) ApiServe(ctx context.Context, in *ApiServeRequest, opts ...grpc.CallOption) (*types.Empty, error) {
+func (c *vmRuntimeServiceClient) ApiServe(ctx context.Context, in *ApiServeRequest, opts ...grpc.CallOption) (*types.Empty, error) {
 	out := new(types.Empty)
-	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmmRuntimeService/ApiServe", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmRuntimeService/ApiServe", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vmmRuntimeServiceClient) ApiUnserve(ctx context.Context, in *ApiUnserveRequest, opts ...grpc.CallOption) (*types.Empty, error) {
+func (c *vmRuntimeServiceClient) ApiUnserve(ctx context.Context, in *ApiUnserveRequest, opts ...grpc.CallOption) (*types.Empty, error) {
 	out := new(types.Empty)
-	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmmRuntimeService/ApiUnserve", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmRuntimeService/ApiUnserve", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vmmRuntimeServiceClient) List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error) {
+func (c *vmRuntimeServiceClient) List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error) {
 	out := new(ListResponse)
-	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmmRuntimeService/List", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmRuntimeService/List", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vmmRuntimeServiceClient) QueryState(ctx context.Context, in *QueryStateRequest, opts ...grpc.CallOption) (*QueryStateResponse, error) {
+func (c *vmRuntimeServiceClient) QueryState(ctx context.Context, in *QueryStateRequest, opts ...grpc.CallOption) (*QueryStateResponse, error) {
 	out := new(QueryStateResponse)
-	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmmRuntimeService/QueryState", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmRuntimeService/QueryState", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vmmRuntimeServiceClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*types.Empty, error) {
+func (c *vmRuntimeServiceClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*types.Empty, error) {
 	out := new(types.Empty)
-	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmmRuntimeService/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmRuntimeService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vmmRuntimeServiceClient) Start(ctx context.Context, in *StartRequest, opts ...grpc.CallOption) (*types.Empty, error) {
+func (c *vmRuntimeServiceClient) Start(ctx context.Context, in *StartRequest, opts ...grpc.CallOption) (*types.Empty, error) {
 	out := new(types.Empty)
-	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmmRuntimeService/Start", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmRuntimeService/Start", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vmmRuntimeServiceClient) Kill(ctx context.Context, in *KillRequest, opts ...grpc.CallOption) (*types.Empty, error) {
+func (c *vmRuntimeServiceClient) Kill(ctx context.Context, in *KillRequest, opts ...grpc.CallOption) (*types.Empty, error) {
 	out := new(types.Empty)
-	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmmRuntimeService/Kill", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmRuntimeService/Kill", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *vmmRuntimeServiceClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*types.Empty, error) {
+func (c *vmRuntimeServiceClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*types.Empty, error) {
 	out := new(types.Empty)
-	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmmRuntimeService/Delete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/os.machine.runtime.VmRuntimeService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// VmmRuntimeServiceServer is the server API for VmmRuntimeService service.
-type VmmRuntimeServiceServer interface {
-	// ApiServe enables the VMM runtime service api according to the given configuration.
+// VmRuntimeServiceServer is the server API for VmRuntimeService service.
+type VmRuntimeServiceServer interface {
+	// ApiServe enables the VM runtime service api according to the given configuration.
 	ApiServe(context.Context, *ApiServeRequest) (*types.Empty, error)
-	// ApiUnserve stops all virtual machines and disables the VMM runtime service api.
+	// ApiUnserve stops all virtual machines and disables the VM runtime service api.
 	ApiUnserve(context.Context, *ApiUnserveRequest) (*types.Empty, error)
 	// List gets all virtual machines the runtime knows about.
 	List(context.Context, *ListRequest) (*ListResponse, error)
@@ -1535,218 +1621,218 @@ type VmmRuntimeServiceServer interface {
 	Delete(context.Context, *DeleteRequest) (*types.Empty, error)
 }
 
-// UnimplementedVmmRuntimeServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedVmmRuntimeServiceServer struct {
+// UnimplementedVmRuntimeServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedVmRuntimeServiceServer struct {
 }
 
-func (*UnimplementedVmmRuntimeServiceServer) ApiServe(ctx context.Context, req *ApiServeRequest) (*types.Empty, error) {
+func (*UnimplementedVmRuntimeServiceServer) ApiServe(ctx context.Context, req *ApiServeRequest) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApiServe not implemented")
 }
-func (*UnimplementedVmmRuntimeServiceServer) ApiUnserve(ctx context.Context, req *ApiUnserveRequest) (*types.Empty, error) {
+func (*UnimplementedVmRuntimeServiceServer) ApiUnserve(ctx context.Context, req *ApiUnserveRequest) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApiUnserve not implemented")
 }
-func (*UnimplementedVmmRuntimeServiceServer) List(ctx context.Context, req *ListRequest) (*ListResponse, error) {
+func (*UnimplementedVmRuntimeServiceServer) List(ctx context.Context, req *ListRequest) (*ListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
 }
-func (*UnimplementedVmmRuntimeServiceServer) QueryState(ctx context.Context, req *QueryStateRequest) (*QueryStateResponse, error) {
+func (*UnimplementedVmRuntimeServiceServer) QueryState(ctx context.Context, req *QueryStateRequest) (*QueryStateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryState not implemented")
 }
-func (*UnimplementedVmmRuntimeServiceServer) Create(ctx context.Context, req *CreateRequest) (*types.Empty, error) {
+func (*UnimplementedVmRuntimeServiceServer) Create(ctx context.Context, req *CreateRequest) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (*UnimplementedVmmRuntimeServiceServer) Start(ctx context.Context, req *StartRequest) (*types.Empty, error) {
+func (*UnimplementedVmRuntimeServiceServer) Start(ctx context.Context, req *StartRequest) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Start not implemented")
 }
-func (*UnimplementedVmmRuntimeServiceServer) Kill(ctx context.Context, req *KillRequest) (*types.Empty, error) {
+func (*UnimplementedVmRuntimeServiceServer) Kill(ctx context.Context, req *KillRequest) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Kill not implemented")
 }
-func (*UnimplementedVmmRuntimeServiceServer) Delete(ctx context.Context, req *DeleteRequest) (*types.Empty, error) {
+func (*UnimplementedVmRuntimeServiceServer) Delete(ctx context.Context, req *DeleteRequest) (*types.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 
-func RegisterVmmRuntimeServiceServer(s *grpc.Server, srv VmmRuntimeServiceServer) {
-	s.RegisterService(&_VmmRuntimeService_serviceDesc, srv)
+func RegisterVmRuntimeServiceServer(s *grpc.Server, srv VmRuntimeServiceServer) {
+	s.RegisterService(&_VmRuntimeService_serviceDesc, srv)
 }
 
-func _VmmRuntimeService_ApiServe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _VmRuntimeService_ApiServe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ApiServeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VmmRuntimeServiceServer).ApiServe(ctx, in)
+		return srv.(VmRuntimeServiceServer).ApiServe(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/os.machine.runtime.VmmRuntimeService/ApiServe",
+		FullMethod: "/os.machine.runtime.VmRuntimeService/ApiServe",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VmmRuntimeServiceServer).ApiServe(ctx, req.(*ApiServeRequest))
+		return srv.(VmRuntimeServiceServer).ApiServe(ctx, req.(*ApiServeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VmmRuntimeService_ApiUnserve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _VmRuntimeService_ApiUnserve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ApiUnserveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VmmRuntimeServiceServer).ApiUnserve(ctx, in)
+		return srv.(VmRuntimeServiceServer).ApiUnserve(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/os.machine.runtime.VmmRuntimeService/ApiUnserve",
+		FullMethod: "/os.machine.runtime.VmRuntimeService/ApiUnserve",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VmmRuntimeServiceServer).ApiUnserve(ctx, req.(*ApiUnserveRequest))
+		return srv.(VmRuntimeServiceServer).ApiUnserve(ctx, req.(*ApiUnserveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VmmRuntimeService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _VmRuntimeService_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VmmRuntimeServiceServer).List(ctx, in)
+		return srv.(VmRuntimeServiceServer).List(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/os.machine.runtime.VmmRuntimeService/List",
+		FullMethod: "/os.machine.runtime.VmRuntimeService/List",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VmmRuntimeServiceServer).List(ctx, req.(*ListRequest))
+		return srv.(VmRuntimeServiceServer).List(ctx, req.(*ListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VmmRuntimeService_QueryState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _VmRuntimeService_QueryState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryStateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VmmRuntimeServiceServer).QueryState(ctx, in)
+		return srv.(VmRuntimeServiceServer).QueryState(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/os.machine.runtime.VmmRuntimeService/QueryState",
+		FullMethod: "/os.machine.runtime.VmRuntimeService/QueryState",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VmmRuntimeServiceServer).QueryState(ctx, req.(*QueryStateRequest))
+		return srv.(VmRuntimeServiceServer).QueryState(ctx, req.(*QueryStateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VmmRuntimeService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _VmRuntimeService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VmmRuntimeServiceServer).Create(ctx, in)
+		return srv.(VmRuntimeServiceServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/os.machine.runtime.VmmRuntimeService/Create",
+		FullMethod: "/os.machine.runtime.VmRuntimeService/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VmmRuntimeServiceServer).Create(ctx, req.(*CreateRequest))
+		return srv.(VmRuntimeServiceServer).Create(ctx, req.(*CreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VmmRuntimeService_Start_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _VmRuntimeService_Start_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StartRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VmmRuntimeServiceServer).Start(ctx, in)
+		return srv.(VmRuntimeServiceServer).Start(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/os.machine.runtime.VmmRuntimeService/Start",
+		FullMethod: "/os.machine.runtime.VmRuntimeService/Start",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VmmRuntimeServiceServer).Start(ctx, req.(*StartRequest))
+		return srv.(VmRuntimeServiceServer).Start(ctx, req.(*StartRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VmmRuntimeService_Kill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _VmRuntimeService_Kill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(KillRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VmmRuntimeServiceServer).Kill(ctx, in)
+		return srv.(VmRuntimeServiceServer).Kill(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/os.machine.runtime.VmmRuntimeService/Kill",
+		FullMethod: "/os.machine.runtime.VmRuntimeService/Kill",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VmmRuntimeServiceServer).Kill(ctx, req.(*KillRequest))
+		return srv.(VmRuntimeServiceServer).Kill(ctx, req.(*KillRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VmmRuntimeService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _VmRuntimeService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VmmRuntimeServiceServer).Delete(ctx, in)
+		return srv.(VmRuntimeServiceServer).Delete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/os.machine.runtime.VmmRuntimeService/Delete",
+		FullMethod: "/os.machine.runtime.VmRuntimeService/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VmmRuntimeServiceServer).Delete(ctx, req.(*DeleteRequest))
+		return srv.(VmRuntimeServiceServer).Delete(ctx, req.(*DeleteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _VmmRuntimeService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "os.machine.runtime.VmmRuntimeService",
-	HandlerType: (*VmmRuntimeServiceServer)(nil),
+var _VmRuntimeService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "os.machine.runtime.VmRuntimeService",
+	HandlerType: (*VmRuntimeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "ApiServe",
-			Handler:    _VmmRuntimeService_ApiServe_Handler,
+			Handler:    _VmRuntimeService_ApiServe_Handler,
 		},
 		{
 			MethodName: "ApiUnserve",
-			Handler:    _VmmRuntimeService_ApiUnserve_Handler,
+			Handler:    _VmRuntimeService_ApiUnserve_Handler,
 		},
 		{
 			MethodName: "List",
-			Handler:    _VmmRuntimeService_List_Handler,
+			Handler:    _VmRuntimeService_List_Handler,
 		},
 		{
 			MethodName: "QueryState",
-			Handler:    _VmmRuntimeService_QueryState_Handler,
+			Handler:    _VmRuntimeService_QueryState_Handler,
 		},
 		{
 			MethodName: "Create",
-			Handler:    _VmmRuntimeService_Create_Handler,
+			Handler:    _VmRuntimeService_Create_Handler,
 		},
 		{
 			MethodName: "Start",
-			Handler:    _VmmRuntimeService_Start_Handler,
+			Handler:    _VmRuntimeService_Start_Handler,
 		},
 		{
 			MethodName: "Kill",
-			Handler:    _VmmRuntimeService_Kill_Handler,
+			Handler:    _VmRuntimeService_Kill_Handler,
 		},
 		{
 			MethodName: "Delete",
-			Handler:    _VmmRuntimeService_Delete_Handler,
+			Handler:    _VmRuntimeService_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1832,6 +1918,11 @@ func (m *ApiUnserveRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.CleanupTimeout != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.CleanupTimeout))
+		i--
+		dAtA[i] = 0x20
 	}
 	if m.ApiTimeout != 0 {
 		i = encodeVarintApi(dAtA, i, uint64(m.ApiTimeout))
@@ -2185,6 +2276,11 @@ func (m *KillRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
+	if m.Signal != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Signal))
+		i--
+		dAtA[i] = 0x28
+	}
 	if len(m.Id) > 0 {
 		i -= len(m.Id)
 		copy(dAtA[i:], m.Id)
@@ -2318,6 +2414,9 @@ func (m *ApiUnserveRequest) Size() (n int) {
 	}
 	if m.ApiTimeout != 0 {
 		n += 1 + sovApi(uint64(m.ApiTimeout))
+	}
+	if m.CleanupTimeout != 0 {
+		n += 1 + sovApi(uint64(m.CleanupTimeout))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -2500,6 +2599,9 @@ func (m *KillRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovApi(uint64(l))
 	}
+	if m.Signal != 0 {
+		n += 1 + sovApi(uint64(m.Signal))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -2561,6 +2663,7 @@ func (this *ApiUnserveRequest) String() string {
 		`ApiHostname:` + fmt.Sprintf("%v", this.ApiHostname) + `,`,
 		`ApiPort:` + fmt.Sprintf("%v", this.ApiPort) + `,`,
 		`ApiTimeout:` + fmt.Sprintf("%v", this.ApiTimeout) + `,`,
+		`CleanupTimeout:` + fmt.Sprintf("%v", this.CleanupTimeout) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
 	}, "")
@@ -2658,6 +2761,7 @@ func (this *KillRequest) String() string {
 		`ApiPort:` + fmt.Sprintf("%v", this.ApiPort) + `,`,
 		`ApiTimeout:` + fmt.Sprintf("%v", this.ApiTimeout) + `,`,
 		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
+		`Signal:` + fmt.Sprintf("%v", this.Signal) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
 	}, "")
@@ -2952,6 +3056,25 @@ func (m *ApiUnserveRequest) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.ApiTimeout |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CleanupTimeout", wireType)
+			}
+			m.CleanupTimeout = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CleanupTimeout |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -4012,6 +4135,25 @@ func (m *KillRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Id = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Signal", wireType)
+			}
+			m.Signal = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Signal |= KillSignal(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipApi(dAtA[iNdEx:])

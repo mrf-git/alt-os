@@ -13,26 +13,26 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// newVmmImageServiceServerImpl returns a new server-impl for vmm-image.
-func newVmmImageServiceServerImpl(ctxt *VmmImageContext) *VmmImageServiceServerImpl {
-	return &VmmImageServiceServerImpl{
+// newVmImageServiceServerImpl returns a new server-impl for vm-image.
+func newVmImageServiceServerImpl(ctxt *VmImageContext) *VmImageServiceServerImpl {
+	return &VmImageServiceServerImpl{
 		ctxt: ctxt,
 	}
 }
 
-type VmmImageServiceServerImpl struct {
-	api_os_machine_image_v0.UnimplementedVmmImageServiceServer
-	ctxt *VmmImageContext
+type VmImageServiceServerImpl struct {
+	api_os_machine_image_v0.UnimplementedVmImageServiceServer
+	ctxt *VmImageContext
 }
 
-func (server *VmmImageServiceServerImpl) ApiServe(ctx context.Context,
+func (server *VmImageServiceServerImpl) ApiServe(ctx context.Context,
 	in *api_os_machine_image_v0.ApiServeRequest) (*types.Empty, error) {
 
 	server.ctxt.rootDir = filepath.Clean(in.RootDir)
 	return &types.Empty{}, nil
 }
 
-func (server *VmmImageServiceServerImpl) ApiUnserve(ctx context.Context,
+func (server *VmImageServiceServerImpl) ApiUnserve(ctx context.Context,
 	in *api_os_machine_image_v0.ApiUnserveRequest) (*types.Empty, error) {
 
 	addr := fmt.Sprintf("%s:%d", in.ApiHostname, in.ApiPort)
@@ -41,7 +41,7 @@ func (server *VmmImageServiceServerImpl) ApiUnserve(ctx context.Context,
 	return &types.Empty{}, nil
 }
 
-func (server *VmmImageServiceServerImpl) Create(ctx context.Context,
+func (server *VmImageServiceServerImpl) Create(ctx context.Context,
 	in *api_os_machine_image_v0.CreateRequest) (*types.Empty, error) {
 
 	// Load/verify at least one virtual machine definition to create.
