@@ -1,0 +1,33 @@
+# Configuration for building the OS artifact.
+kind: os.build.BuildConfiguration
+version: v0
+def:
+  osName: alt-os
+  deps:
+    edk2:
+      gitUrl: https://github.com/tianocore/edk2.git
+      tag: edk2-stable202108
+    acpica:
+      gitUrl: https://github.com/acpica/acpica.git
+      tag: R09_30_21
+  profiles:
+    - name: dev
+      arch: amd64
+      artifact: ./workspace/build/BOOTX64.EFI
+      bootType: BOOT_EFI
+      allowUnclean: true
+      allowUnsigned: true
+      efiGuidPlatform: 0f448209-c019-430d-8edc-aa0a8496479f
+      efiGuidFile: 5afa2d01-d1b3-4eb4-86bc-c62b58f78f75
+      efiGuidPackage: 3381e48b-5e3e-4d6f-90e9-eef49774df94
+      efiGuidToken: e7962838-fcef-4d0b-8e3f-5d2e9481d9fa
+    - name: test
+      arch: amd64
+      artifact: ./workspace/build/BOOTX64.EFI
+      bootType: BOOT_EFI
+      allowUnclean: true
+      allowUnsigned: true
+      efiGuidPlatform: 854d7d72-a428-4c35-b469-27e25593a994
+      efiGuidFile: 800ec67c-37fe-4a77-bcb6-c9436b9ea8bd
+      efiGuidPackage: cc11137c-cd7c-4bc4-8883-e8ab59f448b2
+      efiGuidToken: 2a0173b7-cf55-4b6b-ac29-0eb88045e195

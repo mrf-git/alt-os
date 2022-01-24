@@ -8,6 +8,7 @@ replace oci => ./third-party/oci
 
 require (
 	alt-os v0.0.0
+	github.com/google/uuid v1.3.0
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
 	golang.org/x/net v0.0.0-20220105145211-5b0dc2dfae98 // indirect

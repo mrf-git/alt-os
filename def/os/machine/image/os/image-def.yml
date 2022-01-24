@@ -3,9 +3,11 @@ kind: os.machine.image.VirtualMachine
 version: v0
 def:
   imageDir: alt-os
+  efiPath: ./workspace/build/BOOTX64.EFI
+  biosImage: /usr/share/ovmf/x64/OVMF_CODE.fd
+  varsImage: /usr/share/ovmf/x64/OVMF_VARS.fd
   memory: 0x200000000  # 8 GiB
   processors: 4
-  virtualization: VIRTUALIZATION_HW
   clockUtc: true
   pointingDevice: POINTING_NONE
   video:
@@ -20,6 +22,6 @@ def:
       size: 0x20000000  # 512 MiB
       dynamic: true
   serial:
-    - port: 0x3F8
-      irq: 4
+    - port: 0x2E8
+      type: SERIAL_STDOUT
 

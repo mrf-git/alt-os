@@ -1,0 +1,134 @@
+// To regenerate api.pb.go run `codegen -p`.
+syntax = "proto3";
+
+package os.build;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "alt-os/api/os/build/v0";
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.stringer_all) =  true;
+option (gogoproto.populate_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+
+// BuildConfiguration specifies configuration parameters for building the OS.
+message BuildConfiguration {
+	// The name of the operating system.
+	string os_name = 1;
+	// Configuration for dependencies.
+	DependencyConfiguration deps = 2;
+	// Configuration for profiles.
+	repeated BuildProfile profiles = 3;
+}
+
+// BuildProfile specifies configuration parameters for a specific build profile.
+message BuildProfile {
+	// The name of the profile.
+	string name = 1;
+	// The architecture to build for.
+	string arch = 2;
+	// The path of the output artifact.
+	string artifact = 3;
+	// The type of boot mechanism.
+	BootType boot_type = 4;
+	// Whether to allow building with a source tree different from the origin.
+	bool allow_unclean = 5;
+	// Whether to allow building with a source tree that is unsigned.
+	bool allow_unsigned = 6;
+	// The optional guid to use for the EFI platform.
+	string efi_guid_platform = 7;
+	// The optional guid to use for the EFI file.
+	string efi_guid_file = 8;
+	// The optional guid to use for the EFI package.
+	string efi_guid_package = 9;
+	// The optional guid to use for the EFI token.
+	string efi_guid_token = 10;
+}
+
+// DependencyConfiguration specifies configuration parameters for
+// OS build dependencies.
+message DependencyConfiguration {
+	// Configuration for EDK2.
+	Edk2Configuration edk2 = 1;
+	// Configuration for ACPICA.
+	AcpicaConfiguration acpica = 2;
+}
+
+// Edk2Configuration specifies configuration parameters for EDK2.
+message Edk2Configuration {
+	// The url for the git repository.
+	string gitUrl = 1;
+	// The tag to checkout.
+	string tag = 2;
+}
+
+// AcpicaConfiguration specifies configuration parameters for ACPICA.
+message AcpicaConfiguration {
+	// The url for the git repository.
+	string gitUrl = 1;
+	// The tag to checkout.
+	string tag = 2;
+}
+
+// BuildInfo records additional information about the build.
+message BuildInfo {
+	// The version string.
+	string version_str = 1;
+	// The major version number.
+	uint32 version_major_num = 2;
+	// The minor version number.
+	uint32 version_minor_num = 3;
+	// The revision number.
+	uint32 revision_num = 4;
+	// A uuid to refer to the build.
+	string uuid = 5;
+	// The source control snapshot.
+	ScmSnapshot scm = 6;
+	// The time of the build in UTC.
+	uint64 timestamp = 7;
+	// The username of the build.
+	string username = 8;
+	// The version of Go.
+	string go_version_str = 9;
+	// The host OS.
+	string host_os = 10;
+	// The host architecture.
+	string host_arch = 11;
+}
+
+// ScmSnapshot records information about the state of source control management at build time.
+message ScmSnapshot {
+	// The commit hash.
+	string commit_hash = 1;
+	// The author name.
+	string author_name = 2;
+	// The author email.
+	string author_email = 3;
+	// The author time in UTC.
+	uint64 author_time = 4;
+	// The branch name locally.
+	string branch_local = 5;
+	// The remote branch name.
+	string branch_remote = 6;
+	// The the remote url.
+	string remote_url = 7;
+	// Whether the commit is signed.
+	bool is_signed = 8;
+	// Whether the branch is clean.
+	bool is_clean = 9;
+}
+
+// BootType represents a boot mechanism.
+enum BootType {
+	// Represents a null BootType.
+	BOOT_NONE = 0;
+	// Use master-boot-record for booting.
+	BOOT_MBR = 1;
+	// Use UEFI for booting.
+	BOOT_EFI = 2;
+}

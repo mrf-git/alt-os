@@ -23,5 +23,14 @@ func ValidateVirtualMachine(def *api_os_machine_image_v0.VirtualMachine) error {
 	if def.Memory == 0 {
 		return makeError("bad `VirtualMachine.memory`")
 	}
+	if def.EfiPath == "" {
+		return makeError("missing `VirtualMachine.efiPath`")
+	}
+	if def.BiosImage == "" {
+		return makeError("missing `VirtualMachine.biosImage`")
+	}
+	if def.VarsImage == "" {
+		return makeError("missing `VirtualMachine.varsImage`")
+	}
 	return nil
 }

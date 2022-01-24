@@ -5,6 +5,7 @@ package api;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
+import "os/build/v0/api.proto";
 import "os/machine/image/v0/api.proto";
 import "os/machine/runtime/v0/api.proto";
 import "os/container/bundle/v0/api.proto";

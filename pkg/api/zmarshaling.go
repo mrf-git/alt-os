@@ -3,6 +3,7 @@ package api
 
 import (
 	api_api_v0 "alt-os/api/api/v0"
+	api_os_build_v0 "alt-os/api/os/build/v0"
 	api_os_container_bundle_v0 "alt-os/api/os/container/bundle/v0"
 	api_os_container_process_v0 "alt-os/api/os/container/process/v0"
 	api_os_container_runtime_v0 "alt-os/api/os/container/runtime/v0"
@@ -32,6 +33,27 @@ func unmarshalKind(kind, version string, value []byte) (proto.Message, error) {
 
 	case "api.ApiMessageList/v0":
 		return doUnmarshal(&api_api_v0.ApiMessageList{})
+
+	case "os.build.BuildConfiguration/v0":
+		return doUnmarshal(&api_os_build_v0.BuildConfiguration{})
+
+	case "os.build.BuildProfile/v0":
+		return doUnmarshal(&api_os_build_v0.BuildProfile{})
+
+	case "os.build.DependencyConfiguration/v0":
+		return doUnmarshal(&api_os_build_v0.DependencyConfiguration{})
+
+	case "os.build.Edk2Configuration/v0":
+		return doUnmarshal(&api_os_build_v0.Edk2Configuration{})
+
+	case "os.build.AcpicaConfiguration/v0":
+		return doUnmarshal(&api_os_build_v0.AcpicaConfiguration{})
+
+	case "os.build.BuildInfo/v0":
+		return doUnmarshal(&api_os_build_v0.BuildInfo{})
+
+	case "os.build.ScmSnapshot/v0":
+		return doUnmarshal(&api_os_build_v0.ScmSnapshot{})
 
 	case "os.container.bundle.ApiServeRequest/v0":
 		return doUnmarshal(&api_os_container_bundle_v0.ApiServeRequest{})
@@ -173,6 +195,27 @@ func marshalKind(msg proto.Message) (kind, version string, bytes []byte, err err
 
 	case *api_api_v0.ApiMessageList:
 		return doMarshal("api.ApiMessageList", "v0", msg)
+
+	case *api_os_build_v0.BuildConfiguration:
+		return doMarshal("os.build.BuildConfiguration", "v0", msg)
+
+	case *api_os_build_v0.BuildProfile:
+		return doMarshal("os.build.BuildProfile", "v0", msg)
+
+	case *api_os_build_v0.DependencyConfiguration:
+		return doMarshal("os.build.DependencyConfiguration", "v0", msg)
+
+	case *api_os_build_v0.Edk2Configuration:
+		return doMarshal("os.build.Edk2Configuration", "v0", msg)
+
+	case *api_os_build_v0.AcpicaConfiguration:
+		return doMarshal("os.build.AcpicaConfiguration", "v0", msg)
+
+	case *api_os_build_v0.BuildInfo:
+		return doMarshal("os.build.BuildInfo", "v0", msg)
+
+	case *api_os_build_v0.ScmSnapshot:
+		return doMarshal("os.build.ScmSnapshot", "v0", msg)
 
 	case *api_os_container_bundle_v0.ApiServeRequest:
 		return doMarshal("os.container.bundle.ApiServeRequest", "v0", msg)

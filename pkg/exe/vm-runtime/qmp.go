@@ -3,7 +3,9 @@ package main
 import (
 	"alt-os/exe"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"time"
 )
 
@@ -73,15 +75,49 @@ const (
 // issues commands via the specified encoder.
 func qmpService(params *qmpServiceParams) error {
 	logger := params.vmEnv.logger
+
+	errCommand := errors.New("error servicing QMP command")
+
+	do := func(command *QmpCommand) *QmpResponse {
+		params.encoder.Encode(command)
+		response := &QmpResponse{}
+		for {
+			if err := params.decoder.Decode(response); err != nil && !errors.Is(err, io.EOF) {
+				logger.Error(err.Error())
+				return nil
+			} else {
+				break
+			}
+		}
+		return response
+	}
+
+	var response *QmpResponse
+	command := &QmpCommand{}
+
+	// Negotiate capabilities (none needed).
+	command.Id = 0
+	command.Execute = "qmp_capabilities"
+	response = do(command)
+	if response.Error.Class != "" {
+		return errCommand
+	}
+
 	logger.WithFields(exe.Fields{
 		"qemu-version": fmt.Sprintf("%d.%d.%d", params.verMajor,
 			params.verMinor, params.verMicro),
 		"resume-time": params.resumeTime,
 	}).Info("Starting QMP servicing")
 
-	command := &QmpCommand{}
-	command.Id = 0
-	command.Execute = "qmp_capabilities"
+	for {
+		control, ok := <-params.controlCh
+		if !ok {
+			break
+		}
+
+		_ = control
+		// TODO handle control message
+	}
 
 	return nil
 }

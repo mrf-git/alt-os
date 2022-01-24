@@ -1,6 +1,7 @@
 package main
 
 import (
+	api_os_machine_image_v0 "alt-os/api/os/machine/image/v0"
 	api_os_machine_runtime_v0 "alt-os/api/os/machine/runtime/v0"
 	"alt-os/exe"
 	"alt-os/os/code"
@@ -8,8 +9,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
+	"net"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -26,17 +31,20 @@ type VmEnvironment interface {
 
 // newVmEnvironment returns a newly-instantiated VmEnvironment for the
 // specified code to run in.
-func newVmEnvironment(exeCode code.ExecutableCode, ctxt *VmRuntimeContext) VmEnvironment {
+func newVmEnvironment(exeCode code.ExecutableCode, imagePath string, ctxt *VmRuntimeContext) VmEnvironment {
 	return &_VmEnvironment{
-		logger:  exe.NewLogger(ctxt.ExeLoggerConf),
-		ctxt:    ctxt,
-		exeCode: exeCode,
+		logger:    exe.NewLogger(ctxt.ExeLoggerConf),
+		ctxt:      ctxt,
+		imagePath: imagePath,
+		exeCode:   exeCode,
 	}
 }
 
 type _VmEnvironment struct {
 	logger       exe.Logger
 	ctxt         *VmRuntimeContext
+	vmDef        *api_os_machine_image_v0.VirtualMachine
+	imagePath    string
 	exeCode      code.ExecutableCode
 	signalCh     <-chan int
 	returnCodeCh chan<- int
@@ -47,6 +55,20 @@ func (vmEnv *_VmEnvironment) Run(signalCh <-chan int, returnCodeCh chan<- int) e
 	vmEnv.returnCodeCh = returnCodeCh
 	go runVm(vmEnv)
 	return nil
+}
+
+type _TrimmingReader struct {
+	r io.Reader
+}
+
+func (r _TrimmingReader) Read(data []byte) (int, error) {
+	n, err := r.r.Read(data)
+	if err != nil {
+		return n, err
+	}
+	outData := bytes.Trim(data, " \x00\n")
+	n = copy(data[:len(outData)], outData)
+	return n, nil
 }
 
 // runVm initializes and runs the virtual machine environment to completion.
@@ -74,6 +96,7 @@ func runVm(vmEnv *_VmEnvironment) {
 	stopHandlingKillSignals:
 	}()
 
+	// Prepare input/output and control mechanisms.
 	var decoder *json.Decoder
 	resumeEvent := &QmpEvent{}
 	initEvent := &QmpInit{}
@@ -81,17 +104,80 @@ func runVm(vmEnv *_VmEnvironment) {
 	errBuff := bytes.NewBuffer(nil)
 	inBuff := bytes.NewBuffer(nil)
 
+	absImageDir, _ := filepath.Abs(vmEnv.imagePath)
+	absImageDir = filepath.Clean(absImageDir)
+	vmDefName := filepath.Join(absImageDir, "vm-def.json")
+	biosCodeName := filepath.Join(absImageDir, "bios-code.fd")
+	biosVarsName := filepath.Join(absImageDir, "bios-vars.fd")
+	imageRootName := filepath.Join(absImageDir, "root")
+
+	// Load the serialized vm definition.
+	vmEnv.vmDef = &api_os_machine_image_v0.VirtualMachine{}
+	if f, err := os.Open(vmDefName); err != nil {
+		vmEnv.logger.WithFields(exe.Fields{
+			"err": err.Error(),
+		}).Error("failed to open vm def")
+		close(controlCh)
+		return
+	} else {
+		decoder := json.NewDecoder(f)
+		err := decoder.Decode(vmEnv.vmDef)
+		f.Close()
+		if err != nil {
+			vmEnv.logger.WithFields(exe.Fields{
+				"err": err.Error(),
+			}).Error("failed to decode vm def")
+			close(controlCh)
+			return
+		}
+	}
+	memoryMib := vmEnv.vmDef.Memory >> 20
+	vmEnv.logger.WithFields(exe.Fields{
+		"image-dir":  vmEnv.vmDef.ImageDir,
+		"processors": vmEnv.vmDef.Processors,
+		"memory-mib": memoryMib,
+	}).Info("Loaded vm definition")
+
+	sockNames := [...]string{"com1.sock", "com2.sock", "com3.sock", "com4.sock"}
+	for i, name := range sockNames {
+		sockNames[i] = filepath.Join(absImageDir, name)
+		os.RemoveAll(sockNames[i])
+	}
+	os.MkdirAll(absImageDir, 0755)
+
+	ioParams := &ioServiceParams{
+		vmEnv: vmEnv,
+	}
+	for i, name := range sockNames {
+		if sock, err := net.Listen("unix", name); err == nil {
+			defer sock.Close()
+			defer os.RemoveAll(name)
+			ioParams.comSocks[i] = sock
+		}
+	}
+
 	// QEMU settings based on qemu wiki: https://wiki.qemu.org/Features/VT-d
 	args := []string{"-display", "none", "-cpu", "host", "-enable-kvm",
-		"-machine", "q35,kernel-irqchip=split",
+		"-machine", "q35,kernel-irqchip=split", "-m", fmt.Sprintf("%d", memoryMib),
+		"-smp", fmt.Sprintf("%d", vmEnv.vmDef.Processors),
 		"-device", "intel-iommu,intremap=on,caching-mode=on,device-iotlb=on",
 		"-netdev", "user,id=net0", "-device", "ioh3420,id=pcie.1,chassis=1",
 		"-device", "virtio-net-pci,bus=pcie.1,netdev=net0,disable-legacy=on," +
 			"disable-modern=off,iommu_platform=on,ats=on",
-		"-chardev", "stdio,mux=on,id=charctl", "-mon", "charctl,mode=control"}
+		"-chardev", "stdio,mux=on,id=charctl", "-mon", "charctl,mode=control",
+		"-chardev", "socket,mux=on,id=charcom1,path=" + sockNames[0],
+		"-chardev", "socket,mux=on,id=charcom2,path=" + sockNames[1],
+		"-chardev", "socket,mux=on,id=charcom3,path=" + sockNames[2],
+		"-chardev", "socket,mux=on,id=charcom4,path=" + sockNames[3],
+		"-serial", "chardev:charcom1",
+		"-serial", "chardev:charcom2",
+		"-serial", "chardev:charcom3",
+		"-serial", "chardev:charcom4",
+		"-drive", "format=raw,if=pflash,unit=0,readonly=on,file=" + biosCodeName,
+		"-drive", "format=raw,if=pflash,unit=1,file=" + biosVarsName}
 
-	var serviceParams *qmpServiceParams
-	args = append(args, "-drive", "format=raw,file=workspace/alpine.iso")
+	var qmpParams *qmpServiceParams
+	args = append(args, "-drive", "format=raw,file=fat:rw:"+imageRootName)
 	cmd := exec.Command("qemu-system-x86_64", args...)
 	cmd.Stdout = outBuff
 	cmd.Stdin = inBuff
@@ -143,7 +229,7 @@ func runVm(vmEnv *_VmEnvironment) {
 		}
 		if errBuff.Len() > 0 {
 			if str, err := errBuff.ReadString('\n'); err == nil || errors.Is(err, io.EOF) {
-				str = strings.Trim(resumeEventStr, " \x00\n")
+				str = strings.Trim(str, " \x00\n")
 				if str != "" {
 					vmEnv.logger.Error(str)
 				}
@@ -175,10 +261,13 @@ func runVm(vmEnv *_VmEnvironment) {
 		goto killVm
 	}
 
-	// Service the VM.
-	serviceParams = &qmpServiceParams{
+	// Service the VM IO in another goroutine.
+	go ioService(ioParams)
+
+	// Service the VM QMP messages.
+	qmpParams = &qmpServiceParams{
 		encoder:    json.NewEncoder(inBuff),
-		decoder:    json.NewDecoder(outBuff),
+		decoder:    json.NewDecoder(_TrimmingReader{r: outBuff}),
 		controlCh:  controlCh,
 		vmEnv:      vmEnv,
 		resumeTime: time.Unix(int64(resumeEvent.Timestamp.Seconds), 0),
@@ -186,9 +275,9 @@ func runVm(vmEnv *_VmEnvironment) {
 		verMinor:   initEvent.Qmp.Version.Qemu.Minor,
 		verMicro:   initEvent.Qmp.Version.Qemu.Micro,
 	}
-	serviceParams.resumeTime.Add(time.Duration(resumeEvent.Timestamp.Microseconds) * time.Microsecond)
-	serviceParams.resumeTime = serviceParams.resumeTime.UTC()
-	if err := qmpService(serviceParams); err != nil {
+	qmpParams.resumeTime.Add(time.Duration(resumeEvent.Timestamp.Microseconds) * time.Microsecond)
+	qmpParams.resumeTime = qmpParams.resumeTime.UTC()
+	if err := qmpService(qmpParams); err != nil {
 		vmEnv.logger.WithFields(exe.Fields{
 			"err": err.Error(),
 		}).Error("QMP servicing error")

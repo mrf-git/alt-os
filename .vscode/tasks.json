@@ -18,6 +18,7 @@
         },
         {
             "label": "Run Tool: codegen -p (generate protos)",
+            "dependsOn": ["Build Tool: codegen"],
             "type": "shell",
             "args": [
                 "-p"
@@ -27,6 +28,37 @@
             },
             "group": "build",
             "command": "${workspaceFolder}/workspace/tools/codegen",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Tool: osbuild",
+            "type": "shell",
+            "args": [
+                "build",
+                "-o",
+                "${workspaceFolder}/workspace/tools/",
+                "${workspaceFolder}/tools/osbuild"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "go"
+        },
+        {
+            "label": "Run Tool: osbuild (build os)",
+            "dependsOn": ["Build Tool: osbuild"],
+            "type": "shell",
+            "args": [
+                "-i",
+                "${workspaceFolder}/def/os/build/conf.yml",
+                "-v"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/tools/osbuild",
             "problemMatcher": []
         },
         {
@@ -46,6 +78,7 @@
         },
         {
             "label": "Run Exe: vm-image (os)",
+            "dependsOn": ["Build Exe: vm-image"],
             "type": "shell",
             "args": [
                 "-i",
@@ -75,6 +108,7 @@
         },
         {
             "label": "Run Exe: vm-runtime (os)",
+            "dependsOn": ["Build Exe: vm-runtime"],
             "type": "shell",
             "args": [
                 "-i",
@@ -104,6 +138,7 @@
         },
         {
             "label": "Run Exe: ct-bundle (os)",
+            "dependsOn": ["Build Exe: ct-bundle"],
             "type": "shell",
             "args": [
                 "-i",
@@ -133,6 +168,7 @@
         },
         {
             "label": "Run Exe: ct-runtime (os)",
+            "dependsOn": ["Build Exe: ct-runtime"],
             "type": "shell",
             "args": [
                 "-i",

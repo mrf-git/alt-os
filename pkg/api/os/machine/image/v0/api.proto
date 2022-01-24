@@ -72,26 +72,30 @@ message VirtualMachine {
 	// The name of the subdirectory of the created virtual machine image
 	// within the service's image root directory.
 	string image_dir = 1;
+	// The bootable UEFI image to load when the virtual machine boots.
+	string efi_path = 2;
+	// Path to the custom bios code image to boot with.
+	string bios_image = 3;
+	// Path to the custom bios variables image to boot with.
+	string vars_image = 4;
 	// Total memory of the machine in bytes.
-	uint64 memory = 2;
+	uint64 memory = 5;
 	// Number of processors available.
-	uint64 processors = 3;
-	// The type of virtualization to use.
-	VirtualizationType virtualization = 4;
+	uint64 processors = 6;
 	// Whether the hardware clock is UTC time.
-	bool clock_utc = 5;
+	bool clock_utc = 7;
 	// Primary pointing device type.
-	PointingDeviceType pointing_device = 6;
+	PointingDeviceType pointing_device = 8;
 	// Video settings for the machine.
-	Video video = 7;
+	Video video = 9;
 	// Audio settings for the machine.
-	Audio audio = 8;
+	Audio audio = 10;
 	// Storage devices attached to the machine.
-	repeated StorageDevice storage = 9;
+	repeated StorageDevice storage = 11;
 	// Network devices attached to the machine.
-	repeated NetworkDevice network = 10;
+	repeated NetworkDevice network = 12;
 	// Serial devices attached to the machine.
-	repeated SerialDevice serial = 11;
+	repeated SerialDevice serial = 13;
 }
 
 // Video defines machine video settings.
@@ -137,19 +141,8 @@ message NetworkDevice {
 message SerialDevice {
 	// The serial I/O port.
 	uint32 port = 1;
-	// The interrupt number to use.
-	uint32 irq = 2;
-}
-
-// VirtualizationType represents the type of virtualization for a
-// machine to use.
-enum VirtualizationType {
-	// No virtualization.
-	VIRTUALIZATION_NONE = 0;
-	// Use an external virtual machine.
-	VIRTUALIZATION_EXT = 1;
-	// Use full hardware virtualization.
-	VIRTUALIZATION_HW = 2;
+	// The type of function for the serial port.
+	SerialType type = 2;
 }
 
 // PointingDeviceType represents a type of pointing device.
@@ -195,3 +188,15 @@ enum NetworkAttachmentType {
 	NET_ATTACHMENT_NAT_NETWORK = 2;
 }
 
+// SerialType represents the type of input or output a
+// serial port functions as.
+enum SerialType {
+	// No function.
+	SERIAL_NONE = 0;
+	// Serial port functions as standard input.
+	SERIAL_STDIN = 1;
+	// Serial port functions as standard output.
+	SERIAL_STDOUT = 2;
+	// Serial port functions as standard error.
+	SERIAL_STDERR = 3;
+}

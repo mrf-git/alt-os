@@ -67,12 +67,13 @@ func (server *VmRuntimeServiceServerImpl) Create(ctx context.Context,
 	if len(server.ctxt.vmEnvs) >= server.ctxt.maxMachines {
 		return &types.Empty{}, status.Errorf(codes.ResourceExhausted, "at maxMachines")
 	}
-	initPath := filepath.Clean(filepath.Join(server.ctxt.imageDir, in.Image, "init.code"))
+	imagePath := filepath.Clean(filepath.Join(server.ctxt.imageDir, in.Image))
+	initPath := filepath.Join(imagePath, "init.code")
 	if exeCode, err := code.FromFile(initPath); err != nil {
 		return &types.Empty{}, status.Errorf(codes.InvalidArgument,
 			"could not read %s: %s", initPath, err.Error())
 	} else {
-		vmEnv := newVmEnvironment(exeCode, server.ctxt)
+		vmEnv := newVmEnvironment(exeCode, imagePath, server.ctxt)
 		server.ctxt.vmEnvs[in.Id] = vmEnv
 	}
 

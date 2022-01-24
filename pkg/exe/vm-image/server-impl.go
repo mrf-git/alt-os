@@ -81,7 +81,10 @@ func (server *VmImageServiceServerImpl) Create(ctx context.Context,
 		if _, ok := sawDir[vm.ImageDir]; ok {
 			return &types.Empty{}, status.Errorf(codes.InvalidArgument, "duplicate virtual machine image dir: %s", vm.ImageDir)
 		}
-		if err := machine.CreateImage(vm, server.ctxt.rootDir); err != nil {
+		if err := machine.ValidateVirtualMachine(vm); err != nil {
+			return &types.Empty{}, err
+		}
+		if err := qemuCreateImage(vm, server.ctxt.rootDir); err != nil {
 			return &types.Empty{}, err
 		}
 		sawDir[vm.ImageDir] = struct{}{}
