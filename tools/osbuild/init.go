@@ -63,6 +63,7 @@ func toolinit(ctxt *OsbuildContext) {
 		ctxt.FlagsLinkBootArch = linkBoot
 		ctxt.FlagsRCBoot = append(ctxt.FlagsRCBoot, "-O", "elf64-x86-64", "-B", "i386")
 		ctxt.FlagsNasmBoot = append(ctxt.FlagsNasmBoot, "-f", "elf64")
+		ctxt.TargetTriple = "x86_64-pc-alt"
 	}
 }
 
@@ -76,13 +77,16 @@ func infoinit(ctxt *OsbuildContext) {
 		username = user.Username
 	}
 	ctxt.BuildInfo = &api_os_build_v0.BuildInfo{
-		VersionStr:   "v0.0-proto",
-		Uuid:         uuid.Must(uuid.NewRandom()).String(),
-		Scm:          gitinfo(ctxt),
-		Timestamp:    uint64(time.Now().UTC().Unix()),
-		Username:     username,
-		GoVersionStr: runtime.Version(),
-		HostOs:       runtime.GOOS,
-		HostArch:     runtime.GOARCH,
+		VersionStr:      "v0.0.0-prototype",
+		VersionMajorNum: 0,
+		VersionMinorNum: 0,
+		RevisionNum:     0,
+		Uuid:            uuid.Must(uuid.NewRandom()).String(),
+		Scm:             gitinfo(ctxt),
+		Timestamp:       uint64(time.Now().UTC().Unix()),
+		Username:        username,
+		GoVersionStr:    runtime.Version(),
+		HostOs:          runtime.GOOS,
+		HostArch:        runtime.GOARCH,
 	}
 }

@@ -10,10 +10,8 @@ import (
 	"strings"
 )
 
-// execEnv is the environment variable list to use for exec.
-var execEnv []string
-
-func init() {
+func makeExecEnv() []string {
+	var execEnv []string
 	goBinPath := os.Getenv("GOPATH")
 	if goBinPath == "" {
 		goBinPath = build.Default.GOPATH
@@ -39,6 +37,7 @@ func init() {
 		execEnv = append(execEnv, "PATH="+goBinPath)
 		os.Setenv("PATH", goBinPath)
 	}
+	return execEnv
 }
 
 // Doexec executes the command with the specified arguments and returns the output.
@@ -47,7 +46,7 @@ func Doexec(dir, name string, args ...string) (stdOutStr, stdErrStr string, err 
 	errBuff := bytes.NewBuffer(nil)
 	cmd := exec.Command(name, args...)
 	cmd.Dir = dir
-	cmd.Env = execEnv
+	cmd.Env = makeExecEnv()
 	cmd.Stdout = outBuff
 	cmd.Stderr = errBuff
 	err = cmd.Run()

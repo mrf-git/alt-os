@@ -51,8 +51,23 @@
             "type": "shell",
             "args": [
                 "-i",
+                "${workspaceFolder}/def/os/build/conf.yml"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/tools/osbuild",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Tool: osbuild (wipe & build os)",
+            "dependsOn": ["Build Tool: osbuild"],
+            "type": "shell",
+            "args": [
+                "-i",
                 "${workspaceFolder}/def/os/build/conf.yml",
-                "-v"
+                "-w"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -78,7 +93,7 @@
         },
         {
             "label": "Run Exe: vm-image (os)",
-            "dependsOn": ["Build Exe: vm-image"],
+            "dependsOn": ["Run Tool: osbuild (build os)", "Build Exe: vm-image"],
             "type": "shell",
             "args": [
                 "-i",
@@ -108,7 +123,7 @@
         },
         {
             "label": "Run Exe: vm-runtime (os)",
-            "dependsOn": ["Build Exe: vm-runtime"],
+            "dependsOn": ["Run Exe: vm-image (os)", "Build Exe: vm-runtime"],
             "type": "shell",
             "args": [
                 "-i",

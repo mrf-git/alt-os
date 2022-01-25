@@ -12,14 +12,21 @@ import (
 // OsbuildContext holds context information for osbuild.
 type OsbuildContext struct {
 	*exe.ExeContext
-	SrcRootDir string
-	CacheDir   string
-	Outpath    string
-	IsVerbose  bool
-	Conf       *api_os_build_v0.BuildConfiguration
-	Profile    *api_os_build_v0.BuildProfile
-	BuildInfo  *api_os_build_v0.BuildInfo
-	ArchEFI    string
+	Logger exe.Logger
+
+	SrcRootDir        string
+	CacheDir          string
+	Outpath           string
+	LlvmDir           string
+	IsVerbose         bool
+	TargetTriple      string
+	Conf              *api_os_build_v0.BuildConfiguration
+	Profile           *api_os_build_v0.BuildProfile
+	BuildInfo         *api_os_build_v0.BuildInfo
+	ArchEFI           string
+	Edk2WorkspacePath string
+	Edk2ConfPath      string
+	Edk2VarsPath      string
 
 	FlagsCCRuntime    []string // All clang cc flags for sys runtime.
 	FlagsCCRes        []string // All clang cc flags for boot resources.
@@ -30,12 +37,18 @@ type OsbuildContext struct {
 	FlagsLinkBootArch []string // Arch-specific clang linker flags for boot.
 	FlagsRCBoot       []string // llvm-rc flags for boot.
 	FlagsNasmBoot     []string // nasm for boot.
+
+	CacheManifest map[string]string
+	WipeSource    bool
 }
 
 // initContext initializes a new osbuild context and quickly checks that the
 // current working directory is the source root, then loads the configuration.
-func initContext(profilename, confname, cachedir string, verbose bool) *OsbuildContext {
-	ctxt := &OsbuildContext{ExeContext: &exe.ExeContext{}}
+func initContext(profilename, confname, cachedir, llvmdir string,
+	verbose bool, loggerConf *exe.LoggerConf) *OsbuildContext {
+	ctxt := &OsbuildContext{ExeContext: &exe.ExeContext{
+		ExeLoggerConf: loggerConf,
+	}}
 
 	wkToolsDir, _ := os.Executable()
 	wkToolsDir = filepath.Dir(filepath.Clean(wkToolsDir))
@@ -51,6 +64,8 @@ func initContext(profilename, confname, cachedir string, verbose bool) *OsbuildC
 
 	ctxt.SrcRootDir = srcRootDir
 	ctxt.CacheDir, _ = filepath.Abs(filepath.Clean(cachedir))
+	ctxt.LlvmDir, _ = filepath.Abs(filepath.Clean(llvmdir))
+	ctxt.LlvmDir = filepath.Join(ctxt.LlvmDir, "bin")
 	ctxt.IsVerbose = verbose
 
 	fatalReadError := func(msg string) {
@@ -81,6 +96,7 @@ func initContext(profilename, confname, cachedir string, verbose bool) *OsbuildC
 	}
 
 	ctxt.Outpath, _ = filepath.Abs(filepath.Clean(ctxt.Profile.Artifact))
+	ctxt.Logger = exe.NewLogger(loggerConf)
 
 	return ctxt
 }

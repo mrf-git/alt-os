@@ -3,6 +3,12 @@
         {
             "name": "clang",
             "includePath": [
+                "${workspaceFolder}/sys-boot",
+                "~/.cache/os-build-cache/src/sys/api/include",
+                "~/.cache/os-build-cache/dep/edk2/MdeModulePkg/Include",
+                "~/.cache/os-build-cache/dep/edk2/MdePkg/Include",
+                "~/.cache/os-build-cache/dep/edk2/MdePkg/Include/X64",
+                "~/.cache/os-build-cache/dep/edk2/RedfishPkg/Include"
             ],
             "defines": [
             ],

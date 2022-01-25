@@ -7,5 +7,9 @@
         "options": [
             "--proto_path=${env.GOPATH}/src/github.com/gogo/**"
         ]
+    },
+    "files.associations": {
+        "*.asm": "gas",
+        "*.h": "c"
     }
 }
