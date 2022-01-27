@@ -120,7 +120,7 @@ typedef struct {
     }
 
 #else
-    #error "cpu: platform not supported"
+    // #error "cpu: platform not supported"
 #endif
 
 
@@ -202,7 +202,7 @@ typedef struct {
 
 
 #else
-    #error "cpu: platform not supported"
+    // #error "cpu: platform not supported"
 #endif
 
 

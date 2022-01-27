@@ -11,7 +11,8 @@ def:
       gitUrl: https://github.com/acpica/acpica.git
       tag: R09_30_21
   profiles:
-    - name: dev
+    # amd64
+    - name: dev-amd64
       arch: amd64
       artifact: ./workspace/build/BOOTX64.EFI
       bootType: BOOT_EFI
@@ -21,7 +22,7 @@ def:
       efiGuidFile: 5afa2d01-d1b3-4eb4-86bc-c62b58f78f75
       efiGuidPackage: 3381e48b-5e3e-4d6f-90e9-eef49774df94
       efiGuidToken: e7962838-fcef-4d0b-8e3f-5d2e9481d9fa
-    - name: test
+    - name: test-amd64
       arch: amd64
       artifact: ./workspace/build/BOOTX64.EFI
       bootType: BOOT_EFI
@@ -31,3 +32,24 @@ def:
       efiGuidFile: 800ec67c-37fe-4a77-bcb6-c9436b9ea8bd
       efiGuidPackage: cc11137c-cd7c-4bc4-8883-e8ab59f448b2
       efiGuidToken: 2a0173b7-cf55-4b6b-ac29-0eb88045e195
+    # aarch64
+    - name: dev-aarch64
+      arch: aarch64
+      artifact: ./workspace/build/BOOTAA64.EFI
+      bootType: BOOT_EFI
+      allowUnclean: true
+      allowUnsigned: true
+      efiGuidPlatform: 8587487c-3941-48a5-ab6e-26d9ace42d91
+      efiGuidFile: 44ef1632-af7f-49c3-9f04-dacc81971609
+      efiGuidPackage: 0ea8d9d6-0b84-4c5a-bb2e-5ce99639f07a
+      efiGuidToken: 3323f64e-d7f4-4d5d-a7e0-a4c769029716
+    - name: test-aarch64
+      arch: aarch64
+      artifact: ./workspace/build/BOOTAA64.EFI
+      bootType: BOOT_EFI
+      allowUnclean: true
+      allowUnsigned: true
+      efiGuidPlatform: 9fb670ce-95f1-44b7-8670-e64f5f1c70b9
+      efiGuidFile: 9b37ea3d-d52b-4625-abb7-636db6801931
+      efiGuidPackage: 0ec32f73-7948-42f9-818d-adfefe9600c0
+      efiGuidToken: 1d28db00-cdae-4820-a7c3-7c08f9345789

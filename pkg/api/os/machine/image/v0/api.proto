@@ -82,20 +82,22 @@ message VirtualMachine {
 	uint64 memory = 5;
 	// Number of processors available.
 	uint64 processors = 6;
+	// The type of cpu architecture.
+	ArchType arch_type = 7;
 	// Whether the hardware clock is UTC time.
-	bool clock_utc = 7;
+	bool clock_utc = 8;
 	// Primary pointing device type.
-	PointingDeviceType pointing_device = 8;
+	PointingDeviceType pointing_device = 9;
 	// Video settings for the machine.
-	Video video = 9;
+	Video video = 10;
 	// Audio settings for the machine.
-	Audio audio = 10;
+	Audio audio = 11;
 	// Storage devices attached to the machine.
-	repeated StorageDevice storage = 11;
+	repeated StorageDevice storage = 12;
 	// Network devices attached to the machine.
-	repeated NetworkDevice network = 12;
+	repeated NetworkDevice network = 13;
 	// Serial devices attached to the machine.
-	repeated SerialDevice serial = 13;
+	repeated SerialDevice serial = 14;
 }
 
 // Video defines machine video settings.
@@ -143,6 +145,16 @@ message SerialDevice {
 	uint32 port = 1;
 	// The type of function for the serial port.
 	SerialType type = 2;
+}
+
+// ArchType represents a type of cpu architecture.
+enum ArchType {
+	// Represents a null ArchType.
+	ARCH_NONE = 0;
+	// Intel or AMD x86 with 64-bit extensions.
+	ARCH_AMD64 = 1;
+	// ARM64.
+	ARCH_AARCH64 = 2;
 }
 
 // PointingDeviceType represents a type of pointing device.

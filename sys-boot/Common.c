@@ -5,7 +5,7 @@
     // Intel requires the value in the A register and port in DX to enable the full range of port values.
     #define SYS_SERIAL_OUTB(Val, Port)         __asm__("outb %%al, %%dx": :"a"((UINT8) Val), "d"(Port))
 #else
-    #error "common: platform not supported"
+    #define SYS_SERIAL_OUTB(Val, Port) 
 #endif
 
 

@@ -546,7 +546,7 @@ SYS_ELF_LIB * SYSABI Sys_Elf_ReadLib(IN const UINT8 *ElfBytes, IN const UINTN El
     // Not implemented yet.
     return 0;
 #else
-    #error "init: architecture not supported"
+    // #error "init: architecture not supported"
 #endif
 }
 

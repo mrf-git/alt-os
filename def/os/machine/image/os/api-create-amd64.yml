@@ -16,7 +16,7 @@ def:
   apiHostname: localhost
   apiPort: 8888
   apiTimeout: 10
-  virtualMachinesFile: ./def/os/machine/image/os/image-def.yml
+  virtualMachinesFile: ./def/os/machine/image/os/image-def-amd64.yml
 
 ---
 

@@ -46,12 +46,12 @@
             "command": "go"
         },
         {
-            "label": "Run Tool: osbuild (build os)",
+            "label": "Run Tool: osbuild amd64 (build os)",
             "dependsOn": ["Build Tool: osbuild"],
             "type": "shell",
             "args": [
-                "-i",
-                "${workspaceFolder}/def/os/build/conf.yml"
+                "-i", "${workspaceFolder}/def/os/build/conf.yml",
+                "-profile", "dev-amd64"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -61,12 +61,43 @@
             "problemMatcher": []
         },
         {
-            "label": "Run Tool: osbuild (wipe & build os)",
+            "label": "Run Tool: osbuild amd64 (wipe & build os)",
             "dependsOn": ["Build Tool: osbuild"],
             "type": "shell",
             "args": [
-                "-i",
-                "${workspaceFolder}/def/os/build/conf.yml",
+                "-i", "${workspaceFolder}/def/os/build/conf.yml",
+                "-profile", "dev-amd64",
+                "-w"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/tools/osbuild",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Tool: osbuild aarch64 (build os)",
+            "dependsOn": ["Build Tool: osbuild"],
+            "type": "shell",
+            "args": [
+                "-i", "${workspaceFolder}/def/os/build/conf.yml",
+                "-profile", "dev-aarch64"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/tools/osbuild",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Tool: osbuild aarch64 (wipe & build os)",
+            "dependsOn": ["Build Tool: osbuild"],
+            "type": "shell",
+            "args": [
+                "-i", "${workspaceFolder}/def/os/build/conf.yml",
+                "-profile", "dev-aarch64",
                 "-w"
             ],
             "options": {
@@ -92,12 +123,27 @@
             "command": "go"
         },
         {
-            "label": "Run Exe: vm-image (os)",
-            "dependsOn": ["Run Tool: osbuild (build os)", "Build Exe: vm-image"],
+            "label": "Run Exe: vm-image (os amd64)",
+            "dependsOn": ["Run Tool: osbuild amd64 (build os)", "Build Exe: vm-image"],
             "type": "shell",
             "args": [
                 "-i",
-                "${workspaceFolder}/def/os/machine/image/os/api-create.yml"
+                "${workspaceFolder}/def/os/machine/image/os/api-create-amd64.yml"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/exe/vm-image",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Exe: vm-image (os aarch64)",
+            "dependsOn": ["Run Tool: osbuild aarch64 (build os)", "Build Exe: vm-image"],
+            "type": "shell",
+            "args": [
+                "-i",
+                "${workspaceFolder}/def/os/machine/image/os/api-create-aarch64.yml"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -122,8 +168,23 @@
             "command": "go"
         },
         {
-            "label": "Run Exe: vm-runtime (os)",
-            "dependsOn": ["Run Exe: vm-image (os)", "Build Exe: vm-runtime"],
+            "label": "Run Exe: vm-runtime (os amd64)",
+            "dependsOn": ["Run Exe: vm-image (os amd64)", "Build Exe: vm-runtime"],
+            "type": "shell",
+            "args": [
+                "-i",
+                "${workspaceFolder}/def/os/machine/runtime/os/api-run.yml"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "command": "${workspaceFolder}/workspace/exe/vm-runtime",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Exe: vm-runtime (os aarch64)",
+            "dependsOn": ["Run Exe: vm-image (os aarch64)", "Build Exe: vm-runtime"],
             "type": "shell",
             "args": [
                 "-i",

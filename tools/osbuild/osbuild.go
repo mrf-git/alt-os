@@ -21,6 +21,8 @@ func osbuild(ctxt *OsbuildContext) {
 	switch ctxt.Profile.Arch {
 	case "amd64":
 		ctxt.ArchEFI = "X64"
+	case "aarch64":
+		ctxt.ArchEFI = "AA64"
 	default:
 		exe.Fatal("initializing build", errors.New("unrecognized profile arch: "+ctxt.Profile.Arch), ctxt.ExeContext)
 	}
