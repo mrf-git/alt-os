@@ -7,7 +7,7 @@ import (
 
 // ValidateVirtualMachine verifies that all values of the VirtualMachine
 // are valid.
-func ValidateVirtualMachine(def *api_os_machine_image_v0.VirtualMachine) error {
+func ValidateVirtualMachine(def *api_os_machine_image_v0.VirtualMachine, virtualized bool) error {
 	makeError := func(msg string) error {
 		return errors.New(msg + " for validating os.machine.image.VirtualMachine")
 	}
@@ -23,14 +23,21 @@ func ValidateVirtualMachine(def *api_os_machine_image_v0.VirtualMachine) error {
 	if def.Memory == 0 {
 		return makeError("bad `VirtualMachine.memory`")
 	}
-	if def.EfiPath == "" {
-		return makeError("missing `VirtualMachine.efiPath`")
+	for _, serial := range def.Serial {
+		if serial.Address != 0 && serial.Port != 0 {
+			return makeError("bad `VirtualMachine.serial`: cannot have both port and address")
+		}
 	}
-	if def.BiosImage == "" {
-		return makeError("missing `VirtualMachine.biosImage`")
-	}
-	if def.VarsImage == "" {
-		return makeError("missing `VirtualMachine.varsImage`")
+	if virtualized {
+		if def.EfiPath == "" {
+			return makeError("missing `VirtualMachine.efiPath`")
+		}
+		if def.BiosImage == "" {
+			return makeError("missing `VirtualMachine.biosImage`")
+		}
+		if def.VarsImage == "" {
+			return makeError("missing `VirtualMachine.varsImage`")
+		}
 	}
 	return nil
 }

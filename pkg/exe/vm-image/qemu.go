@@ -26,9 +26,11 @@ func qemuCreateImage(def *api_os_machine_image_v0.VirtualMachine, rootDir string
 	imageBootName = filepath.Join(imageBootName, filepath.Base(def.EfiPath))
 
 	debugPort := uint32(0)
+	debugAddress := uint32(0)
 	for _, serial := range def.Serial {
 		if serial.Type == api_os_machine_image_v0.SerialType_SERIAL_STDOUT {
 			debugPort = serial.Port
+			debugAddress = serial.Address
 			break
 		}
 	}
@@ -43,6 +45,13 @@ func qemuCreateImage(def *api_os_machine_image_v0.VirtualMachine, rootDir string
 			return err
 		} else {
 			f.WriteString(fmt.Sprintf("DebugPort=0x%04X\n", debugPort))
+			f.Close()
+		}
+	} else if debugAddress != 0 {
+		if f, err := os.Create(confBootName); err != nil {
+			return err
+		} else {
+			f.WriteString(fmt.Sprintf("DebugAddress=0x%08X\n", debugAddress))
 			f.Close()
 		}
 	}

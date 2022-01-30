@@ -8,7 +8,7 @@ SECTIONS
 {
     . = PECOFF_HEADER_SIZE;
 
-    .text : ALIGN(CONSTANT(MAXPAGESIZE))
+    .text ALIGN(0x1000) :
     {
         *(.text .text.* .stub)
         *(.rodata .rodata.*)
@@ -16,13 +16,13 @@ SECTIONS
         *:AutoGen.obj(.data.g*Guid)
     }
 
-    .data ALIGN(ALIGNOF(.text)) : ALIGN(CONSTANT(MAXPAGESIZE))
+    .data ALIGN(0x1000) :
     {
         *(.data .data.*)
         *(.bss .bss.*)
     }
 
-    .eh_frame ALIGN(CONSTANT(MAXPAGESIZE)) :
+    .eh_frame ALIGN(0x1000) :
     {
         KEEP (*(.eh_frame))
     }
@@ -32,20 +32,23 @@ SECTIONS
         *(.rela .rela.*)
     }
 
-    .hii : ALIGN(CONSTANT(MAXPAGESIZE))
+    .hii ALIGN(0x1000) :
     {
         KEEP (*(.hii))
+    }
+
+    .build-id (INFO) : {
+        *(.note.gnu.build-id)
     }
 
     /DISCARD/ :
     {
         *(.note.GNU-stack)
         *(.gnu_debuglink)
-        *(.gnu.*)
         *(.interp)
         *(.dynsym)
         *(.dynstr)
-        *(.hash)
+        *(.hash .gnu.hash)
         *(.comment)
         *(COMMON)
     }

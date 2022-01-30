@@ -174,6 +174,9 @@ func unmarshalKind(kind, version string, value []byte) (proto.Message, error) {
 
 	case "os.machine.runtime.DeleteRequest/v0":
 		return doUnmarshal(&api_os_machine_runtime_v0.DeleteRequest{})
+
+	case "os.machine.runtime.DeployRequest/v0":
+		return doUnmarshal(&api_os_machine_runtime_v0.DeployRequest{})
 	}
 }
 
@@ -336,5 +339,8 @@ func marshalKind(msg proto.Message) (kind, version string, bytes []byte, err err
 
 	case *api_os_machine_runtime_v0.DeleteRequest:
 		return doMarshal("os.machine.runtime.DeleteRequest", "v0", msg)
+
+	case *api_os_machine_runtime_v0.DeployRequest:
+		return doMarshal("os.machine.runtime.DeployRequest", "v0", msg)
 	}
 }

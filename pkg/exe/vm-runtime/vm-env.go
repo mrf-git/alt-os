@@ -4,7 +4,6 @@ import (
 	api_os_machine_image_v0 "alt-os/api/os/machine/image/v0"
 	api_os_machine_runtime_v0 "alt-os/api/os/machine/runtime/v0"
 	"alt-os/exe"
-	"alt-os/os/code"
 	"alt-os/os/limits"
 	"bytes"
 	"encoding/json"
@@ -15,6 +14,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -29,14 +29,12 @@ type VmEnvironment interface {
 	Run(signalCh <-chan int, returnCodeCh chan<- int) error
 }
 
-// newVmEnvironment returns a newly-instantiated VmEnvironment for the
-// specified code to run in.
-func newVmEnvironment(exeCode code.ExecutableCode, imagePath string, ctxt *VmRuntimeContext) VmEnvironment {
+// newVmEnvironment returns a newly-instantiated VmEnvironment.
+func newVmEnvironment(imagePath string, ctxt *VmRuntimeContext) VmEnvironment {
 	return &_VmEnvironment{
 		logger:    exe.NewLogger(ctxt.ExeLoggerConf),
 		ctxt:      ctxt,
 		imagePath: imagePath,
-		exeCode:   exeCode,
 	}
 }
 
@@ -45,7 +43,6 @@ type _VmEnvironment struct {
 	ctxt         *VmRuntimeContext
 	vmDef        *api_os_machine_image_v0.VirtualMachine
 	imagePath    string
-	exeCode      code.ExecutableCode
 	signalCh     <-chan int
 	returnCodeCh chan<- int
 }
@@ -157,13 +154,8 @@ func runVm(vmEnv *_VmEnvironment) {
 	}
 
 	// QEMU settings based on qemu wiki: https://wiki.qemu.org/Features/VT-d
-	args := []string{"-display", "none", "-cpu", "host", "-enable-kvm",
-		"-machine", "q35,kernel-irqchip=split", "-m", fmt.Sprintf("%d", memoryMib),
+	args := []string{"-display", "none", "-m", fmt.Sprintf("%d", memoryMib),
 		"-smp", fmt.Sprintf("%d", vmEnv.vmDef.Processors),
-		"-device", "intel-iommu,intremap=on,caching-mode=on,device-iotlb=on",
-		"-netdev", "user,id=net0", "-device", "ioh3420,id=pcie.1,chassis=1",
-		"-device", "virtio-net-pci,bus=pcie.1,netdev=net0,disable-legacy=on," +
-			"disable-modern=off,iommu_platform=on,ats=on",
 		"-chardev", "stdio,mux=on,id=charctl", "-mon", "charctl,mode=control",
 		"-chardev", "socket,mux=on,id=charcom1,path=" + sockNames[0],
 		"-chardev", "socket,mux=on,id=charcom2,path=" + sockNames[1],
@@ -173,12 +165,42 @@ func runVm(vmEnv *_VmEnvironment) {
 		"-serial", "chardev:charcom2",
 		"-serial", "chardev:charcom3",
 		"-serial", "chardev:charcom4",
-		"-drive", "format=raw,if=pflash,unit=0,readonly=on,file=" + biosCodeName,
-		"-drive", "format=raw,if=pflash,unit=1,file=" + biosVarsName}
+		"-device", "virtio-blk-pci,drive=bootdisk,bootindex=0",
+	}
+
+	qemuCmd := ""
+	switch vmEnv.vmDef.ArchType {
+	case api_os_machine_image_v0.ArchType_ARCH_AMD64:
+		qemuCmd = "qemu-system-x86_64"
+		args = append(args, "-netdev", "user,id=net0")
+		args = append(args, "-device", "intel-iommu,intremap=on,caching-mode=on,device-iotlb=on")
+		args = append(args, "-device", "ioh3420,id=pcie.1,chassis=1")
+		args = append(args, "-device", "virtio-net-pci,bus=pcie.1,netdev=net0,disable-legacy=on,"+
+			"disable-modern=off,iommu_platform=on,ats=on")
+		args = append(args, "-machine", "q35,kernel-irqchip=split")
+		if runtime.GOARCH == "amd64" {
+			args = append(args, "-cpu", "host", "-enable-kvm")
+		} else {
+			args = append(args, "-cpu", "max")
+		}
+	case api_os_machine_image_v0.ArchType_ARCH_AARCH64:
+		qemuCmd = "qemu-system-aarch64"
+		args = append(args, "-machine", "virt")
+		if runtime.GOARCH == "aarch64" {
+			args = append(args, "-cpu", "host", "-enable-kvm")
+		} else {
+			args = append(args, "-cpu", "max")
+		}
+	}
+
+	args = append(args,
+		"-drive", "format=raw,if=pflash,unit=0,readonly=on,file="+biosCodeName,
+		"-drive", "format=raw,if=pflash,unit=1,file="+biosVarsName,
+	)
 
 	var qmpParams *qmpServiceParams
-	args = append(args, "-drive", "format=raw,file=fat:rw:"+imageRootName)
-	cmd := exec.Command("qemu-system-x86_64", args...)
+	args = append(args, "-drive", "format=raw,unit=2,if=none,id=bootdisk,file=fat:rw:"+imageRootName)
+	cmd := exec.Command(qemuCmd, args...)
 	cmd.Stdout = outBuff
 	cmd.Stdin = inBuff
 	cmd.Stderr = errBuff
@@ -189,6 +211,7 @@ func runVm(vmEnv *_VmEnvironment) {
 			vmEnv.returnCodeCh <- 0
 		}
 	}()
+	// vmEnv.logger.Info(strings.Join(cmd.Args, " "))
 
 	// Read the initialization event from qemu.
 	resumeEventStr := ""

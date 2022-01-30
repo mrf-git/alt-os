@@ -21,8 +21,10 @@ func osbuild(ctxt *OsbuildContext) {
 	switch ctxt.Profile.Arch {
 	case "amd64":
 		ctxt.ArchEFI = "X64"
+		ctxt.OutArchEFI = "X64"
 	case "aarch64":
-		ctxt.ArchEFI = "AA64"
+		ctxt.ArchEFI = "AArch64"
+		ctxt.OutArchEFI = "AA64"
 	default:
 		exe.Fatal("initializing build", errors.New("unrecognized profile arch: "+ctxt.Profile.Arch), ctxt.ExeContext)
 	}
@@ -111,7 +113,7 @@ func depbuild(ctxt *OsbuildContext) {
 
 // finalize completes any last build steps and copies the output boot image into the target output directory.
 func finalize(ctxt *OsbuildContext) {
-	edk2ImagePath := path.Join(ctxt.Edk2WorkspacePath, "Build", "SysModuleOutput", "RELEASE_SYS", ctxt.ArchEFI, "SysBoot.efi")
+	edk2ImagePath := path.Join(ctxt.Edk2WorkspacePath, "Build", "SysModuleOutput", "RELEASE_SYS", strings.ToUpper(ctxt.ArchEFI), "SysBoot.efi")
 	if data, err := os.ReadFile(edk2ImagePath); err != nil {
 		exe.Fatal("reading image output", err, ctxt.ExeContext)
 	} else {

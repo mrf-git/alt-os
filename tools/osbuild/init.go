@@ -26,7 +26,8 @@ func toolinit(ctxt *OsbuildContext) {
 	flagsBase = append(flagsBase, "-DOS_BUILD_PROFILE="+ctxt.Profile.Name)
 	flagsBase = append(flagsBase, "-DOS_BUILD_PROFILE_"+profileDef+"=1")
 	flagsBaseBoot := []string{
-		"-ffreestanding", "-static", "-fno-stack-protector", "-fshort-wchar", "-fno-asynchronous-unwind-tables",
+		"-ffreestanding", "-static", "-fno-stack-protector", "-fshort-wchar", "-fno-unwind-tables",
+		"-fno-asynchronous-unwind-tables",
 		"-mno-implicit-float", "-mcmodel=small", "-fno-builtin",
 		"-funsigned-char", "-DUSE_MS_ABI=1",
 	}
@@ -44,12 +45,12 @@ func toolinit(ctxt *OsbuildContext) {
 	ctxt.FlagsCCRes = append(ctxt.FlagsCCRes, "-I"+path.Join(ctxt.CacheDir, "dep", "edk2", "RedfishPkg", "Include"))
 	ctxt.FlagsCCBoot = append(ctxt.FlagsCCBoot, flagsBaseBoot...)
 	ctxt.FlagsCCBoot = append(ctxt.FlagsCCBoot, "-include", "AutoGen.h")
+	ctxt.FlagsCCRes = append(ctxt.FlagsCCRes, "-I"+path.Join(ctxt.CacheDir, "dep", "edk2", "MdePkg", "Include", ctxt.ArchEFI))
+	ctxt.FlagsCCRuntime = append(ctxt.FlagsCCRuntime, "-I"+path.Join(ctxt.CacheDir, "dep", "edk2", "MdePkg", "Include", ctxt.ArchEFI))
+	ctxt.FlagsCCBoot = append(ctxt.FlagsCCBoot, "-I"+path.Join(ctxt.CacheDir, "dep", "edk2", "MdePkg", "Include", ctxt.ArchEFI))
 
 	switch ctxt.Profile.Arch {
 	case "amd64":
-		ctxt.FlagsCCRes = append(ctxt.FlagsCCRes, "-I"+path.Join(ctxt.CacheDir, "dep", "edk2", "MdePkg", "Include", "X64"))
-		ctxt.FlagsCCRuntime = append(ctxt.FlagsCCRuntime, "-I"+path.Join(ctxt.CacheDir, "dep", "edk2", "MdePkg", "Include", "X64"))
-		ctxt.FlagsCCBoot = append(ctxt.FlagsCCBoot, "-I"+path.Join(ctxt.CacheDir, "dep", "edk2", "MdePkg", "Include", "X64"))
 		ccBoot := []string{"--target=x86_64-pc-linux", "-m64", "-mno-sse", "-mno-mmx", "-msoft-float",
 			"-DEFIAPI=\"__attribute__((ms_abi))\""}
 		linkBoot := []string{"-fuse-ld=lld", "--target=x86_64-pc-linux", "-Wl,-melf_x86_64", "-Wl,--oformat,elf64-x86-64"}
@@ -68,11 +69,8 @@ func toolinit(ctxt *OsbuildContext) {
 		ctxt.TargetTriple = "x86_64-pc-alt"
 
 	case "aarch64":
-		ctxt.FlagsCCRes = append(ctxt.FlagsCCRes, "-I"+path.Join(ctxt.CacheDir, "dep", "edk2", "MdePkg", "Include", "AArch64"))
-		ctxt.FlagsCCRuntime = append(ctxt.FlagsCCRuntime, "-I"+path.Join(ctxt.CacheDir, "dep", "edk2", "MdePkg", "Include", "AArch64"))
-		ctxt.FlagsCCBoot = append(ctxt.FlagsCCBoot, "-I"+path.Join(ctxt.CacheDir, "dep", "edk2", "MdePkg", "Include", "AArch64"))
-		ccBoot := []string{"--target=aarch64-pc-linux", "-m64", "-DEFIAPI="}
-		linkBoot := []string{"-fuse-ld=lld", "--target=aarch64-pc-linux", "-Wl,-melf_aarch64", "-Wl,--oformat,elf64-littleaarch64"}
+		ccBoot := []string{"--target=aarch64-pc-linux", "-march=armv8", "-m64", "-DEFIAPI="}
+		linkBoot := []string{"-fuse-ld=lld", "--target=aarch64-pc-linux", "-march=armv8", "-Wl,-maarch64linux", "-Wl,--oformat,elf64-littleaarch64"}
 		ccRuntime := []string{"--target=aarch64-pc-alt"}
 		linkRuntime := []string{"-nodefaultlibs", "-nostdlib", "-fuse-ld=lld", "--target=aarch64-pc-alt",
 			"-Wl,--dynamic-linker=boot", "-Wl,--strip-debug", "-Wl,--emit-relocs", "-Wl,-shared", "-Wl,--no-pie"}

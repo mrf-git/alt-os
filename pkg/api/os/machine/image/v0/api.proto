@@ -141,10 +141,12 @@ message NetworkDevice {
 
 // SerialDevice defines a 16550A-compatible UART serial device attached to the machine.
 message SerialDevice {
-	// The serial I/O port.
+	// The serial I/O port. Must be specified if address is not.
 	uint32 port = 1;
+	// The base address of serial registers. Must be specified if port is not.
+	uint32 address = 2;
 	// The type of function for the serial port.
-	SerialType type = 2;
+	SerialType type = 3;
 }
 
 // ArchType represents a type of cpu architecture.

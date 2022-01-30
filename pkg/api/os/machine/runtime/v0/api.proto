@@ -36,6 +36,8 @@ service VmRuntimeService {
 	rpc Kill(KillRequest) returns (google.protobuf.Empty) {}
 	// Delete removes a stopped virtual machine from the runtime.
 	rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {}
+	// Deploy deploys a virtual machine runtime service to the hardware device.
+	rpc Deploy(DeployRequest) returns (google.protobuf.Empty) {}
 }
 
 // ApiServeRequest specifies a VmRuntimeService.Serve call.
@@ -158,6 +160,22 @@ message DeleteRequest {
 	uint32 api_timeout = 3;
 	// The unique id of the virtual machine.
 	string id = 4;
+}
+
+// DeployRequest specifies a HwRuntimeService.Deploy call.
+message DeployRequest {
+	// The hostname of the listening API server to operate on.
+	string api_hostname = 1;
+	// The port of the listening API server to operate on.
+	uint32 api_port = 2;
+	// The number of seconds to timeout the API request.
+	uint32 api_timeout = 3;
+	// The unique id of the hardware machine.
+	string id = 4;
+	// The hardware device definition filename, if present.
+	string hw_def_file = 5;
+	// The deployer machine device to use for connecting to the target device serial port.
+	string serial_device = 6;
 }
 
 // VirtualMachineStatus represents the runtime state of a virtual machine.

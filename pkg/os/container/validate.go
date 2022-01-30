@@ -61,7 +61,7 @@ func ValidateBundle(def *api_os_container_bundle_v0.Bundle) error {
 		if def.VirtualMachineFile != "" {
 			return errors.New("multiple virtual machine definition fields")
 		}
-		if err := machine.ValidateVirtualMachine(def.VirtualMachine); err != nil {
+		if err := machine.ValidateVirtualMachine(def.VirtualMachine, true); err != nil {
 			return nil
 		}
 	}

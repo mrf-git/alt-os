@@ -77,51 +77,9 @@ SYSEXPORT void SYSABI Sys_Common_MemCopy(IN const void *Mem, IN const UINTN Len,
 
 
 //
-// Writes the contents of the specified buffer to the specified serial port.
-//
-SYSEXPORT void SYSABI Sys_Common_WriteSerial(IN const UINTN Port, IN const UINT8 *Buffer, IN const UINTN BufferLen);
-
-
-//
-// Formats the specified integer as an ASCII string and writes the contents to the specified serial port.
-//
-SYSEXPORT void SYSABI Sys_Common_WriteSerialInt(IN const UINTN Port, IN const INTN Int,
-    IN const BOOLEAN IsUnsigned, IN const UINTN Base);
-
-
-//
-// Causes the system to dump the contents of the specified buffer to the specified serial port and then hang forever.
-//
-SYSEXPORT void SYSABI Sys_Common_Panic(IN const UINTN Port, IN const UINT8 *Buffer, IN const UINTN BufferLen);
-
-
-//
-// Panics with the specified ASCII message and error status code.
-//
-SYSEXPORT void SYSABI Sys_Common_PanicError(IN const UINTN Port, IN const CHAR8 *Message, IN const INTN ErrorStatus);
-
-
-//
 // Calculates a pseudorandom hash for the given string using the specified seed and modulus.
 //
 SYSEXPORT UINTN SYSABI Sys_Common_StringHash(IN const CHAR8 *String, IN const UINTN Seed, IN const UINTN Mod);
-
-
-//
-// Macro definitions.
-//
-
-#define SYS_SERIAL_LOG(Str,Port) \
-    Sys_Common_WriteSerial((UINTN) Port, (UINT8*) Str, Sys_Common_AsciiStrLen((CHAR8*) Str))
-
-#define SYS_SERIAL_LOG_INT(Int,IsUnsigned,Port) \
-    Sys_Common_WriteSerialInt((UINTN) Port, (INTN) Int, (BOOLEAN) IsUnsigned, 10)
-
-#define SYS_SERIAL_LOG_INT_HEX(Int,IsUnsigned,Port) \
-    Sys_Common_WriteSerialInt((UINTN) Port, (INTN) Int, (BOOLEAN) IsUnsigned, 16)
-
-#define PANIC_EXIT(FailMessage,Status,Port) \
-    Sys_Common_PanicError((UINTN) Port, (CHAR8*) FailMessage, (INTN) Status)
 
 
 #endif // SYS_BOOT_COMMON_H

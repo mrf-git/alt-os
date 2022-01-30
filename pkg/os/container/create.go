@@ -50,7 +50,7 @@ func CreateBundle(def *api_os_container_bundle_v0.Bundle, rootDir string) error 
 			return makeError("got unexpected message kind")
 		} else if typedDef, ok := msg.Def.(*api_os_machine_image_v0.VirtualMachine); !ok {
 			return makeError("message type error")
-		} else if err := machine.ValidateVirtualMachine(typedDef); err != nil {
+		} else if err := machine.ValidateVirtualMachine(typedDef, true); err != nil {
 			return err
 		} else {
 			vm = typedDef

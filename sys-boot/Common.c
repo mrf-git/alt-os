@@ -1,17 +1,6 @@
 #include "Common.h"
 
 
-#if defined(__amd64__) || defined(__x86__)
-    // Intel requires the value in the A register and port in DX to enable the full range of port values.
-    #define SYS_SERIAL_OUTB(Val, Port)         __asm__("outb %%al, %%dx": :"a"((UINT8) Val), "d"(Port))
-#else
-    #define SYS_SERIAL_OUTB(Val, Port) 
-#endif
-
-
-static CHAR8 AsciiIntBuffer[SYS_MAX_INT_ASCII_LEN];
-
-
 UINTN SYSABI Sys_Common_AsciiStrLen(IN const CHAR8 *Str) {
     UINTN Len;
     for (Len=0; *Str && Len < SYS_MAX_STR_LEN; Str++, Len++) {}
@@ -110,42 +99,6 @@ void SYSABI Sys_Common_MemCopy(IN const void *Mem, IN const UINTN Len, OUT const
     for (UINTN i=0; i < Len; i++) {
         *Dest++ = *Src++;
     }
-}
-
-
-void SYSABI Sys_Common_WriteSerial(IN const UINTN Port, IN const UINT8 *Buffer, IN const UINTN BufferLen) {
-    // If the port isn't set, writing to it is disabled so we skip everything.
-    if (Port){
-        for (UINTN i=0; i < BufferLen; i++) {
-            SYS_SERIAL_OUTB(Buffer[i], Port);
-        }
-    }
-}
-
-
-void SYSABI Sys_Common_WriteSerialInt(IN const UINTN Port, IN const INTN Int, IN const BOOLEAN IsUnsigned, IN const UINTN Base) {
-    Sys_Common_IntToAscii((INTN) Int, IsUnsigned, Base, AsciiIntBuffer);
-    SYS_SERIAL_LOG(AsciiIntBuffer, Port);
-}
-
-
-void SYSABI Sys_Common_Panic(IN const UINTN Port, IN const UINT8 *Buffer, IN const UINTN BufferLen) {
-    Sys_Common_WriteSerial(Port, Buffer, BufferLen);
-    for (UINTN i = 0;;) {
-        if(i == 0){
-            i++;
-        }
-    }
-}
-
-
-void SYSABI Sys_Common_PanicError(IN const UINTN Port, IN const CHAR8 *Message, IN const INTN ErrorStatus) {
-    Sys_Common_IntToAscii(ErrorStatus, FALSE, 16, AsciiIntBuffer);
-    SYS_SERIAL_LOG("*error*: ", Port);
-    SYS_SERIAL_LOG(AsciiIntBuffer, Port);
-    SYS_SERIAL_LOG("\n", Port);
-    SYS_SERIAL_LOG("***panic*** ", Port);
-    Sys_Common_Panic(Port, (UINT8*) Message, Sys_Common_AsciiStrLen(Message));
 }
 
 

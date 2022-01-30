@@ -21,7 +21,7 @@ func edk2toolparams(ctxt *OsbuildContext) (toolDefs map[string]string, buildPara
 
 	// Definitions used by tool params.
 	toolDefs = map[string]string{
-		"SYS_DLINK_FLAGS_COMMON":  "-nodefaultlibs -nostdlib -Wl,-q,--gc-sections -z max-page-size=0x40 -fuse-ld=lld",
+		"SYS_DLINK_FLAGS_COMMON":  "-fPIC -nodefaultlibs -nostdlib -Wl,--apply-dynamic-relocs --static -z max-page-size=0x1000 -fuse-ld=lld",
 		"SYS_DLINK2_FLAGS_COMMON": "-Wl,--script=" + path.Join(ctxt.SrcRootDir, "sys-boot", "link.lds"),
 		"SYS_DLINK_FLAGS_APP":     "-Wl,--entry,$(IMAGE_ENTRY_POINT) -u $(IMAGE_ENTRY_POINT) -Wl,-Map,$(DEST_DIR_DEBUG)/$(BASE_NAME).map",
 		"SYS_DLINK_FLAGS":         "DEF(SYS_DLINK_FLAGS_COMMON) DEF(SYS_DLINK_FLAGS_APP) -Wl,--whole-archive",
@@ -61,9 +61,9 @@ func edk2toolparams(ctxt *OsbuildContext) (toolDefs map[string]string, buildPara
 		"OPTROM_PATH":            "EfiRom",
 		"PKCS7SIGN_PATH":         "Pkcs7Sign",
 		"PP_PATH":                path.Join(ctxt.LlvmDir, "clang"),
-		"RC_PATH":                "llvm-rc",
+		"RC_PATH":                path.Join(ctxt.LlvmDir, "llvm-rc"),
 		"RSA2048SHA256SIGN_PATH": "Rsa2048Sha256Sign",
-		"SLINK_PATH":             "llvm-ar",
+		"SLINK_PATH":             path.Join(ctxt.LlvmDir, "llvm-ar"),
 		"TIANO_PATH":             "TianoCompress",
 		"VFR_PATH":               "VfrCompile",
 		"VFRPP_PATH":             path.Join(ctxt.LlvmDir, "clang"),
@@ -75,9 +75,9 @@ func edk2toolparams(ctxt *OsbuildContext) (toolDefs map[string]string, buildPara
 		"ASLDLINK_FLAGS":         "DEF(SYS_DLINK_FLAGS_COMMON) DEF(SYS_DLINK2_FLAGS_COMMON) DEF(SYS_ASLDLINK_FLAGS) " + linkFlagsArch,
 		"ASLPP_FLAGS":            "-E -include AutoGen.h " + ccFlagsArch,
 		"ASM_FLAGS":              "-c -x assembler -imacros AutoGen.h " + ccFlagsArch,
-		"CC_FLAGS":               ccFlags + " -DSTRING_ARRAY_NAME=$(BASE_NAME)Strings",
-		"DLINK_FLAGS":            "DEF(SYS_DLINK_FLAGS) -fno-lto -Wl,-O3 -Wl,-pie -Wl,--apply-dynamic-relocs " + linkFlagsArch,
-		"DLINK2_FLAGS":           "DEF(SYS_DLINK2_FLAGS) -O3 -fuse-ld=lld",
+		"CC_FLAGS":               ccFlags + " -DSTRING_ARRAY_NAME=$(BASE_NAME)Strings " + ccFlagsArch,
+		"DLINK_FLAGS":            "DEF(SYS_DLINK_FLAGS) -fno-lto -Wl,-O2 -Wl,-pie -Wl,--apply-dynamic-relocs " + linkFlagsArch,
+		"DLINK2_FLAGS":           "DEF(SYS_DLINK2_FLAGS) " + linkFlagsArch,
 		"GENFW_FLAGS":            "",
 		"NASM_FLAGS":             nasmFlags,
 		"NASMB_FLAGS":            "-f bin",
@@ -183,6 +183,11 @@ func edk2libparams(ctxt *OsbuildContext) (libParams map[string]string) {
 
 		"Ucs2Utf8Lib": "RedfishPkg/Library/BaseUcs2Utf8Lib/BaseUcs2Utf8Lib.inf",
 	}
+
+	if ctxt.ArchEFI == "AArch64" {
+		libParams["ArmBaseLib"] = "ArmPkg/Library/ArmLib/ArmBaseLib.inf"
+	}
+
 	return
 }
 
@@ -196,17 +201,25 @@ func edk2infparams(guidFile *uuid.UUID, ctxt *OsbuildContext) (edk2DefinesInf ma
 		"MODULE_TYPE":               "UEFI_APPLICATION",
 		"VERSION_STRING":            ctxt.BuildInfo.VersionStr,
 		"UEFI_HII_RESOURCE_SECTION": "FALSE",
-		"VALID_ARCHITECTURES":       ctxt.ArchEFI,
+		"VALID_ARCHITECTURES":       strings.ToUpper(ctxt.ArchEFI),
 		"ENTRY_POINT":               "Sys_Boot_Entry",
 		"FILE_GUID":                 guidFile.String(),
 	}
-	edk2PackagesInf = []string{
+	edk2PackagesInf = []string{"OvmfPkg/OvmfPkg.dec"}
+	if ctxt.ArchEFI == "AArch64" {
+		edk2PackagesInf = append(edk2PackagesInf, "ArmPkg/ArmPkg.dec")
+	}
+	edk2PackagesInf = append(edk2PackagesInf,
 		"MdePkg/MdePkg.dec",
 		"MdeModulePkg/MdeModulePkg.dec",
 		"RedfishPkg/RedfishPkg.dec",
 		"edk2Conf/SysModulePkg/SysModulePkg.dec",
+	)
+	edk2LibraryClassesInf = []string{}
+	if ctxt.ArchEFI == "AArch64" {
+		edk2LibraryClassesInf = append(edk2LibraryClassesInf, "ArmBaseLib")
 	}
-	edk2LibraryClassesInf = []string{
+	edk2LibraryClassesInf = append(edk2LibraryClassesInf,
 		"BaseLib",
 		"BaseMemoryLib",
 		"MemoryAllocationLib",
@@ -215,7 +228,7 @@ func edk2infparams(guidFile *uuid.UUID, ctxt *OsbuildContext) (edk2DefinesInf ma
 		"UefiRuntimeServicesTableLib",
 		"UefiApplicationEntryPoint",
 		"Ucs2Utf8Lib",
-	}
+	)
 	edk2GuidsInf = []string{
 		"gEfiAcpiTableGuid",
 		"gEfiAcpi10TableGuid",
@@ -269,7 +282,7 @@ func edk2dscparams(guidPlatform *uuid.UUID, ctxt *OsbuildContext) (edk2DefinesDs
 		"DSC_SPECIFICATION":       "0x00010005",
 		"PLATFORM_VERSION":        ctxt.BuildInfo.VersionStr,
 		"OUTPUT_DIRECTORY":        path.Join("Build", "SysModuleOutput"),
-		"SUPPORTED_ARCHITECTURES": ctxt.ArchEFI,
+		"SUPPORTED_ARCHITECTURES": strings.ToUpper(ctxt.ArchEFI),
 		"BUILD_TARGETS":           "RELEASE",
 		"SKUID_IDENTIFIER":        "DEFAULT",
 	}
@@ -376,7 +389,7 @@ func writeconfvars(ctxt *OsbuildContext, targetTriple string) {
 		f.WriteString(fmt.Sprintf("export BUILD_CC=\"%s -Wno-unknown-warning-option --target=%s\"\n", os.Getenv("CC"), targetTriple))
 		f.WriteString(fmt.Sprintf("export BUILD_CXX=\"%s --target=%s\"\n", os.Getenv("CXX"), targetTriple))
 		f.WriteString("export TARGET=RELEASE\n")
-		f.WriteString(fmt.Sprintf("export TARGET_ARCH=%s\n", ctxt.ArchEFI))
+		f.WriteString(fmt.Sprintf("export TARGET_ARCH=%s\n", strings.ToUpper(ctxt.ArchEFI)))
 		f.Close()
 	}
 }
@@ -512,9 +525,9 @@ func writetoolsdef(ctxt *OsbuildContext) {
 	if f, err := os.Create(path.Join(ctxt.Edk2ConfPath, "target.txt")); err != nil {
 		exe.Fatal("creating target.txt", err, ctxt.ExeContext)
 	} else {
-		f.WriteString("ACTIVE_PLATFORM = EmulatorPkg/EmulatorPkg.dsc\n")
+		f.WriteString(fmt.Sprintf("ACTIVE_PLATFORM = %s\n", "EmulatorPkg/EmulatorPkg.dscB"))
 		f.WriteString("TARGET = RELEASE\n")
-		f.WriteString(fmt.Sprintf("TARGET_ARCH = %s\n", ctxt.ArchEFI))
+		f.WriteString(fmt.Sprintf("TARGET_ARCH = %s\n", strings.ToUpper(ctxt.ArchEFI)))
 		f.WriteString(fmt.Sprintf("TOOL_CHAIN_CONF = %s\n", "tools_def.txt"))
 		f.WriteString("TOOL_CHAIN_TAG = SYS\n")
 		f.WriteString(fmt.Sprintf("BUILD_RULE_CONF = %s\n", "build_rule.txt"))
@@ -624,7 +637,7 @@ func dobootbuild(ctxt *OsbuildContext, srcfiles []string) {
 		}
 
 		edk2SetupPath := path.Join(ctxt.CacheDir, "dep", "edk2", "edksetup.sh")
-		buildCmd := fmt.Sprintf("build -n 0 -b RELEASE -t SYS -a %s -p %s -m %s", ctxt.ArchEFI,
+		buildCmd := fmt.Sprintf("build -n 0 -b RELEASE -t SYS -a %s -p %s -m %s", strings.ToUpper(ctxt.ArchEFI),
 			path.Join("edk2Conf", "SysModulePkg", "SysModulePkg.dsc"), path.Join("edk2Conf", "SysModulePkg", "Application", "Sys.inf"))
 		cmd := fmt.Sprintf("source %s ; source %s ; %s", ctxt.Edk2VarsPath, edk2SetupPath, buildCmd)
 		if stdOut, stdErr, err := exe.Doexec(ctxt.Edk2ConfPath, "bash", "-c", cmd); err != nil && tries < 2 {

@@ -43,21 +43,21 @@ func ioService(params *ioServiceParams) {
 		if n, err := comConns[0].Read(ioData); err != nil && !errors.Is(err, os.ErrDeadlineExceeded) {
 			logger.Error(err.Error())
 		} else if n > 0 {
-			// fmt.Print(string(ioData[:n]))
+			fmt.Print(string(ioData[:n]))
 			// TODO put the data where it goes
 		}
 		comConns[1].SetDeadline(time.Now().Add(50 * time.Millisecond))
 		if n, err := comConns[1].Read(ioData); err != nil && !errors.Is(err, os.ErrDeadlineExceeded) {
 			logger.Error(err.Error())
 		} else if n > 0 {
-			// fmt.Println(string(ioData[:n]))
+			fmt.Println(string(ioData[:n]))
 			// TODO put the data where it goes
 		}
 		comConns[2].SetDeadline(time.Now().Add(50 * time.Millisecond))
 		if n, err := comConns[2].Read(ioData); err != nil && !errors.Is(err, os.ErrDeadlineExceeded) {
 			logger.Error(err.Error())
 		} else if n > 0 {
-			// fmt.Println(string(ioData[:n]))
+			fmt.Println(string(ioData[:n]))
 			// TODO put the data where it goes
 		}
 		comConns[3].SetDeadline(time.Now().Add(50 * time.Millisecond))

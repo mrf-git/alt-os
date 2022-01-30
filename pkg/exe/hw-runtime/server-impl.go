@@ -5,15 +5,14 @@ import (
 	"alt-os/os/limits"
 	"context"
 	"fmt"
-	"path/filepath"
 
 	"github.com/gogo/protobuf/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-// newVmRuntimeServiceServerImpl returns a new server-impl for vm-runtime.
-func newVmRuntimeServiceServerImpl(ctxt *VmRuntimeContext) *VmRuntimeServiceServerImpl {
+// newVmRuntimeServiceServerImpl returns a new server-impl for hw-runtime.
+func newVmRuntimeServiceServerImpl(ctxt *HwRuntimeContext) *VmRuntimeServiceServerImpl {
 	return &VmRuntimeServiceServerImpl{
 		ctxt: ctxt,
 	}
@@ -21,27 +20,19 @@ func newVmRuntimeServiceServerImpl(ctxt *VmRuntimeContext) *VmRuntimeServiceServ
 
 type VmRuntimeServiceServerImpl struct {
 	api_os_machine_runtime_v0.UnimplementedVmRuntimeServiceServer
-	ctxt *VmRuntimeContext
+	ctxt *HwRuntimeContext
 }
 
 func (server *VmRuntimeServiceServerImpl) ApiServe(ctx context.Context,
 	in *api_os_machine_runtime_v0.ApiServeRequest) (*types.Empty, error) {
 
-	server.ctxt.imageDir = filepath.Clean(in.ImageDir)
-	if server.ctxt.imageDir == "" {
-		return &types.Empty{}, status.Errorf(codes.InvalidArgument, "missing imageDir")
-	}
-	server.ctxt.maxMachines = int(in.MaxMachines)
-	if server.ctxt.maxMachines == 0 {
-		return &types.Empty{}, status.Errorf(codes.InvalidArgument, "missing maxMachines")
-	}
 	return &types.Empty{}, nil
 }
 
 func (server *VmRuntimeServiceServerImpl) ApiUnserve(ctx context.Context,
 	in *api_os_machine_runtime_v0.ApiUnserveRequest) (*types.Empty, error) {
 
-	// TODO stop and delete all virtual machines
+	// TODO stop and delete all hardware virtual machines
 	addr := fmt.Sprintf("%s:%d", in.ApiHostname, in.ApiPort)
 	server.ctxt.AddrStopSignalMap[addr]()
 
@@ -62,21 +53,14 @@ func (server *VmRuntimeServiceServerImpl) QueryState(ctx context.Context,
 
 func (server *VmRuntimeServiceServerImpl) Create(ctx context.Context,
 	in *api_os_machine_runtime_v0.CreateRequest) (*types.Empty, error) {
-
-	if len(server.ctxt.vmEnvs) >= server.ctxt.maxMachines {
-		return &types.Empty{}, status.Errorf(codes.ResourceExhausted, "at maxMachines")
-	}
-	imagePath := filepath.Clean(filepath.Join(server.ctxt.imageDir, in.Image))
-	vmEnv := newVmEnvironment(imagePath, server.ctxt)
-	server.ctxt.vmEnvs[in.Id] = vmEnv
-
+	// TODO
 	return &types.Empty{}, nil
 }
 
 func (server *VmRuntimeServiceServerImpl) Start(ctx context.Context,
 	in *api_os_machine_runtime_v0.StartRequest) (*types.Empty, error) {
 
-	vmEnv, ok := server.ctxt.vmEnvs[in.Id]
+	hwEnv, ok := server.ctxt.hwEnvs[in.Id]
 	if !ok {
 		return &types.Empty{}, status.Errorf(codes.NotFound, in.Id)
 	}
@@ -85,7 +69,7 @@ func (server *VmRuntimeServiceServerImpl) Start(ctx context.Context,
 	}
 	signalCh := make(chan int, limits.MAX_PROCESS_SIGNALS)
 	returnCodeCh := make(chan int, 1)
-	if err := vmEnv.Run(signalCh, returnCodeCh); err != nil {
+	if err := hwEnv.Run(signalCh, returnCodeCh); err != nil {
 		return &types.Empty{}, status.Errorf(codes.Internal, err.Error())
 	}
 	server.ctxt.vmSigChs[in.Id] = signalCh
@@ -97,7 +81,7 @@ func (server *VmRuntimeServiceServerImpl) Start(ctx context.Context,
 func (server *VmRuntimeServiceServerImpl) Kill(ctx context.Context,
 	in *api_os_machine_runtime_v0.KillRequest) (*types.Empty, error) {
 
-	_, ok := server.ctxt.vmEnvs[in.Id]
+	_, ok := server.ctxt.hwEnvs[in.Id]
 	if !ok {
 		return &types.Empty{}, status.Errorf(codes.NotFound, in.Id)
 	}
@@ -119,5 +103,17 @@ func (server *VmRuntimeServiceServerImpl) Delete(ctx context.Context,
 	in *api_os_machine_runtime_v0.DeleteRequest) (*types.Empty, error) {
 
 	// TODO
+	return &types.Empty{}, nil
+}
+
+func (server *VmRuntimeServiceServerImpl) Deploy(ctx context.Context,
+	in *api_os_machine_runtime_v0.DeployRequest) (*types.Empty, error) {
+
+	if in.HwDefFile == "" {
+		return &types.Empty{}, status.Errorf(codes.InvalidArgument, "missing hwDefFile")
+	}
+
+	hwEnv := newHwEnvironment(in.HwDefFile, server.ctxt)
+	server.ctxt.hwEnvs[in.Id] = hwEnv
 	return &types.Empty{}, nil
 }

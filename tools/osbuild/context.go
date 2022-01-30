@@ -24,6 +24,7 @@ type OsbuildContext struct {
 	Profile           *api_os_build_v0.BuildProfile
 	BuildInfo         *api_os_build_v0.BuildInfo
 	ArchEFI           string
+	OutArchEFI        string
 	Edk2WorkspacePath string
 	Edk2ConfPath      string
 	Edk2VarsPath      string
